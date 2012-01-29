@@ -1,0 +1,9 @@
+RenderObject cube.obj
+material material1
+translation 0 0 0
+rotation 0 0 0 0
+scale 1 1 1
+
+Light
+translation 0 0 0
+intensity 1 1 1 1
