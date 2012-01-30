@@ -6,7 +6,7 @@ Camera3rdPerson::Camera3rdPerson(void) : Camera()
     this->currYRads = 0.0f;
     this->radius = 10;
     this->lookAt = glm::vec3(0,0,0);
-    this->updateWorldToCameraMatrix();
+    this->update();
 }
 
 Camera3rdPerson::~Camera3rdPerson(void)
@@ -25,18 +25,18 @@ void Camera3rdPerson::pan(float x, float y)
 	glm::vec3 moveY = y*up;
 	this->lookAt += moveX;
 	this->lookAt += moveY;
-	this->updateWorldToCameraMatrix();
+	this->update();
 }
 void Camera3rdPerson::rotate(float x, float y)
 {
 	this->currXZRads += x;
 	this->currYRads += y;
-	this->updateWorldToCameraMatrix();
+	this->update();
 }
 void Camera3rdPerson::zoom(float distance)
 {
 	this->radius -= distance;
-	this->updateWorldToCameraMatrix();
+	this->update();
 }
 
 void Camera3rdPerson::CalcMatrix(void)

@@ -3,16 +3,13 @@
 EventHandler::EventHandler(){}
 EventHandler::~EventHandler(){}
 
-/*---------------------------------
-	Events
----------------------------------*/
-
+/*---------------------------------------------
+  Input Event
+---------------------------------------------*/
 void EventHandler::addInputEventListener(sf::Event::EventType eventType, InputReceiver receiverFunction)
 {
-	/*
-	To use from another class:
-	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::MouseMoved, InputReceiver::from_method<World,&World::mouseMoved>(this));
-	*/
+	//Usage
+	//Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::MouseMoved, InputReceiver::from_method<World,&World::mouseMoved>(this));
 
 	InputReceiverList* inputReceivers = 0;
 	InputEventMap::iterator iter = this->inputEventMap.find(eventType);
@@ -40,12 +37,14 @@ void EventHandler::removeInputEventListener(sf::Event::EventType eventType, Inpu
 		}
 	}
 }
+
+/*---------------------------------------------
+  Enter Frame Event
+---------------------------------------------*/
 void EventHandler::addEnterFrameEventListener(EnterFrameReceiver receiverFunction)
 {
-	/*
-	To use from another class:
-	Singleton<EventHandler>::Instance()->addEnterFrameEventListener(EnterFrameReceiver::from_method<GameState,&GameState::enterFrame>(this));
-	*/
+	//Usage:
+	//Singleton<EventHandler>::Instance()->addEnterFrameEventListener(EnterFrameReceiver::from_method<GameState,&GameState::enterFrame>(this));
 	
 	enterFrameEvents.push_back(receiverFunction);
 }
@@ -62,6 +61,9 @@ void EventHandler::removeEnterFrameListener(EnterFrameReceiver receiverFunction)
 	}
 }
 
+/*---------------------------------------------
+  Other
+---------------------------------------------*/
 void EventHandler::processEvent(sf::Event sfEvent)
 {
 	//Process events
@@ -93,9 +95,9 @@ void EventHandler::enterFrame()
 	}
 }
 
-/*---------------------------------
-	Keyboard
----------------------------------*/
+/*---------------------------------------------
+  Keyboard
+---------------------------------------------*/
 bool EventHandler::isKeyDown(sf::Keyboard::Key keyCode)
 {
 	return sf::Keyboard::IsKeyPressed(keyCode);
@@ -113,9 +115,9 @@ bool EventHandler::isControlDown()
 	return this->isKeyDown(sf::Keyboard::LControl) || this->isKeyDown(sf::Keyboard::RControl);
 }
 
-/*---------------------------------
-	Mouse
----------------------------------*/
+/*---------------------------------------------
+  Mouse
+---------------------------------------------*/
 bool EventHandler::isMouseMoving()
 {
 	return (!(mouseX == prevMouseX && mouseY == prevMouseY));
@@ -136,7 +138,6 @@ bool EventHandler::isMiddleMouseDown()
 {
 	return this->isMouseDown(sf::Mouse::Middle);
 }
-
 glm::ivec2 EventHandler::getMousePos(void)
 {
 	return glm::ivec2(mouseX, mouseY);

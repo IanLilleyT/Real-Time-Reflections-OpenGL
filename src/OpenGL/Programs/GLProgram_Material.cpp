@@ -40,17 +40,17 @@ void GLProgram_Material::fillUniforms()
 	glUniformMatrix3fv(normalModelToCameraMatrixUniform, 1, GL_FALSE, glm::value_ptr(normalModelToCameraMatrix));
 
 	//In Diffuse Color
-	glm::vec4 diffuseColor = material->diffuseColor;
+	glm::vec4 diffuseColor = material->getDiffuseColor();
 	GLuint diffuseColorUniform = glGetUniformLocation(this->program, "diffuseColor");
 	glUniform4fv(diffuseColorUniform, 1, glm::value_ptr(diffuseColor));
 
 	//Specular Color
-	glm::vec4 specularColor = material->specularColor;
+	glm::vec4 specularColor = material->getSpecularColor();
 	GLuint specularColorUniform = glGetUniformLocation(this->program, "specularColor");
 	glUniform4fv(specularColorUniform, 1, glm::value_ptr(specularColor));
 
 	//Specular Shininess
-	float shininessFactor = material->specularShininess;
+	float shininessFactor = material->getSpecularShininess();
 	GLuint shininessFactorUniform = glGetUniformLocation(this->program, "specularShininess");
 	glUniform1f(shininessFactorUniform, shininessFactor);
 

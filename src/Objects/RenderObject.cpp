@@ -5,11 +5,14 @@ RenderObject::~RenderObject(){}
 
 void RenderObject::update()
 {
+	Object::update();
+	Singleton<GLState>::Instance()->setModelToWorldMatrix(this->transformationMatrix);
+	Singleton<GLState>::Instance()->setMaterial(this->material);
 	this->render();
 }
 void RenderObject::render()
 {
-	//update GLState
+	this->mesh->getGLMesh()->Render();
 }
 
 //Mesh
@@ -30,4 +33,14 @@ void RenderObject::setMaterial(Material* material)
 Material* RenderObject::getMaterial()
 {
 	return this->material;
+}
+
+//Program Type
+void RenderObject::setProgramType(std::string programType)
+{
+	this->mesh->setProgramType(programType);
+}
+std::string RenderObject::getProgramType()
+{
+	return this->mesh->getProgramType();
 }

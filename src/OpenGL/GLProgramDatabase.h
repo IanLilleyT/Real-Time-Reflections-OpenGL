@@ -9,23 +9,23 @@
 #include "Programs/GLProgram_White.h"
 #include "../GlobalValues.h"
 
-class GLProgramHelper
+class GLProgramDatabase
 {
 public:
-	GLProgramHelper();
-	~GLProgramHelper();
-	void initialize();
-	GLProgram* findProgram(std::string name);
+	GLProgramDatabase();
+	~GLProgramDatabase();
+
+	GLProgram* loadProgram(std::string programType);
 	
+
 	static std::string TYPE_WHITE;
 	static std::string TYPE_MATERIAL;
-	static std::string TYPE_DEFAULT_MESH;
 
 private:
-
-	std::map<std::string,GLProgram*> programMap;
+	GLProgram* findProgram(std::string programType);
 	GLProgram* makeProgramByName(std::string name);
 	std::pair<std::string, std::string> getShadersByType(std::string shaderType);
+	std::map<std::string,GLProgram*> programMap;
 
 	//Compiling shaders -- low level
 	const char* GetShaderName(GLenum eShaderType);

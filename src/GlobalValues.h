@@ -13,10 +13,12 @@ public:
 	std::string getShaderPath();
 	std::string getMeshPath();
 	std::string getWorldPath();
+	std::string getMaterialPath();
 
 private:
 	std::string dataPath;
 	std::string shaderPath;
 	std::string meshPath;
 	std::string worldPath;
+	std::string materialPath;
 };

@@ -1,9 +1,13 @@
-RenderObject cube.obj
+RenderObject
+mesh cube.obj
+name cube
 material material1
+program White
 translation 0 0 0
-rotation 0 0 0 0
+rotation 1 0 0 0
 scale 1 1 1
 
 Light
-translation 0 0 0
+name light1
 intensity 1 1 1 1
+translation 0 0 0

@@ -3,12 +3,15 @@
 #include <algorithm>
 #include <vector>
 
+#include "Singleton.h"
+#include "OpenGL/GLState.h"
 #include "Objects/Object.h"
 #include "Objects/RenderObject.h"
 #include "Objects/Light.h"
 
 class World
 {
+friend class WorldDatabase;
 public:
 	World();
 	~World();

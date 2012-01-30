@@ -3,12 +3,21 @@
 Object::Object(){}
 Object::~Object(){}
 
-void Object::update()
+void Object::update(){}
+
+//Name
+void Object::setName(std::string name)
 {
-	//Do nothing
+	this->name = name;
+}
+std::string Object::getName()
+{
+	return this->name;
 }
 
-//Transformation
+/*---------------------------------------------
+  Transformations
+---------------------------------------------*/
 void Object::updateTransformations()
 {
 	this->transformationMatrix = this->transformationMatrix * this->rotationMatrix * this->scaleMatrix;
@@ -17,8 +26,15 @@ glm::mat4 Object::getTransformationMatrix()
 {
 	return this->transformationMatrix;
 }
+void Object::setTransformationMatrix(glm::mat4 transformationMatrix)
+{
+	this->transformationMatrix = transformationMatrix;
+	this->updateTransformations();
+}
 
-//Translation
+/*---------------------------------------------
+  Translation
+---------------------------------------------*/
 void Object::translateX(float amount)
 {
     this->translationMatrix[3].x += amount;

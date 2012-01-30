@@ -9,7 +9,8 @@
 #include "OpenGL/GLDisplay.h"
 
 /*---------------------------------------------
-SFMLCore: Controls how often the screen redraws
+  SFMLCore: Controls the RenderWindow, SFML event
+  flow, window actions, etc
 ---------------------------------------------*/
 
 class SFMLCore

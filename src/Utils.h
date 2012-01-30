@@ -29,8 +29,15 @@ public:
 	static int getNumPartsInLine(std::string line);
 	static float parseIntoFloat(std::string line);
 	static int parseIntoInt(std::string line);
+
+	static glm::vec4 parseIntoVec4(std::string line);
+	static glm::ivec4 parseIntoIVec4(std::string line);
+	static glm::uvec4 parseIntoUVec4(std::string line);
+
 	static glm::vec3 parseIntoVec3(std::string line);
+	static glm::ivec3 parseIntoIVec3(std::string line);
 	static glm::uvec3 parseIntoUVec3(std::string line);
+
 	static glm::vec2 parseIntoVec2(std::string line);
 	static glm::ivec2 parseIntoIVec2(std::string line);
 	static glm::uvec2 parseIntoUVec2(std::string line);

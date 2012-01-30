@@ -9,6 +9,7 @@ void GlobalValues::setDataPath(std::string path)
 	this->shaderPath = dataPath + "shader/";
 	this->meshPath = dataPath + "mesh/";
 	this->worldPath = dataPath + "world/";
+	this->materialPath = dataPath + "material/";
 }
 std::string GlobalValues::getDataPath()
 {
@@ -25,4 +26,8 @@ std::string GlobalValues::getMeshPath()
 std::string GlobalValues::getWorldPath()
 {
 	return this->worldPath;
+}
+std::string GlobalValues::getMaterialPath()
+{
+	return this->materialPath;
 }

@@ -2,18 +2,56 @@
 
 Camera::Camera(void)
 {
-	//Do nothing
+	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::MouseMoved, InputReceiver::from_method<Camera,&Camera::mouseMoved>(this));
+	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::MouseWheelMoved, InputReceiver::from_method<Camera,&Camera::mouseWheelMoved>(this));
 }
-Camera::~Camera(void)
+Camera::~Camera(void){}
+
+void Camera::mouseWheelMoved(sf::Event sfEvent)
 {
-	//Do nothing
+	int delta = sfEvent.MouseWheel.Delta;
+	float scaleFactor = 1.0f;
+	this->zoom(delta*scaleFactor);
+}
+void Camera::mouseMoved(sf::Event sfEvent)
+{
+	EventHandler* eventHandler = Singleton<EventHandler>::Instance();
+	glm::ivec2 mousePos = eventHandler->getMousePos();
+	glm::ivec2 prevMousePos = eventHandler->getPrevMousePos();
+	int x = mousePos.x;
+	int y = mousePos.y;
+	int prevX = prevMousePos.x;
+	int prevY = prevMousePos.y;
+	int mouseXDiff = (x - prevX);
+	int mouseYDiff = (y - prevY);
+
+	bool altIsDown = eventHandler->isAltDown();
+	if(eventHandler->isLeftMouseDown() && altIsDown)
+	{	
+		float scaleFactor = .008f;
+		float mouseXDifference = -(float)mouseXDiff * scaleFactor;
+		float mouseYDifference = -(float)mouseYDiff * scaleFactor;
+		this->rotate(mouseXDifference,mouseYDifference);
+	}
+	else if(eventHandler->isMiddleMouseDown() && altIsDown)
+	{
+		float scaleFactor = .01f;
+		float mouseXDifference = -(float)mouseXDiff * scaleFactor;
+		float mouseYDifference = (float)mouseYDiff * scaleFactor;
+		this->pan(mouseXDifference,mouseYDifference);
+	}
+	else if(eventHandler->isRightMouseDown() && altIsDown)
+	{
+		float scaleFactor = .05f;
+		float mouseYDifference = -(float)mouseYDiff * scaleFactor;
+		this->zoom(mouseYDifference);
+	}
 }
 
-//Matrix calculations
-void Camera::updateWorldToCameraMatrix(void)
+void Camera::update(void)
 {
     this->CalcMatrix();
-    Singleton<GLState>::Instance()->setWorldToCameraMatrix(this->worldToCameraMatrix);
+    Singleton<GLCamera>::Instance()->setWorldToCameraMatrix(this->worldToCameraMatrix);
 }
 
 void Camera::CalcLookAtMatrix()

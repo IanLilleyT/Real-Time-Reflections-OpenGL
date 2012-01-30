@@ -10,7 +10,7 @@
 #include "GLVertexArrayObject.h"
 #include "GLAttribute.h"
 #include "GLState.h"
-#include "GLProgramHelper.h"
+#include "GLProgramDatabase.h"
 #include "GLProgram.h"
 #include "../Singleton.h"
 
@@ -21,7 +21,7 @@ public:
     ~GLMesh();
 
     //Setters
-	void setProgram(std::string programName);
+	void setProgramType(std::string programName);
 
     //Getters
     GLProgram* getProgram();

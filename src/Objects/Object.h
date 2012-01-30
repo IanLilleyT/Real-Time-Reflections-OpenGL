@@ -1,9 +1,12 @@
 #pragma once
 
+#include <string>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 
 #include "../Utils.h"
+#include "../Singleton.h"
 
 class Object
 {
@@ -13,8 +16,13 @@ public:
 
 	virtual void update();
 
+	//Name
+	void setName(std::string name);
+	std::string getName();
+
 	//Transformations
 	glm::mat4 getTransformationMatrix();
+	void setTransformationMatrix(glm::mat4 transformationMatrix);
 
 	//Translation
 	void translateX(float amount);
@@ -52,7 +60,9 @@ public:
 	glm::mat4 getRotationMatrix();
 	void setRotationMatrix(glm::mat4 rotationMatrix);
 
-private:
+protected:
+	std::string name;
+
 	void updateTransformations();
 	glm::mat4 transformationMatrix;
 	glm::mat4 translationMatrix;

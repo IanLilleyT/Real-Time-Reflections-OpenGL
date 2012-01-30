@@ -13,20 +13,20 @@ GLMesh::~GLMesh()
 	delete this->bufferObject;
 }
 
-//-----------------------------
-// Setters ////////////////////
-//-----------------------------
-void GLMesh::setProgram(std::string programName)
+/*---------------------------------------------
+  Setters
+---------------------------------------------*/
+void GLMesh::setProgramType(std::string programName)
 {
-	GLProgram* program = Singleton<GLProgramHelper>::Instance()->findProgram(programName);
+	GLProgram* program = Singleton<GLProgramDatabase>::Instance()->loadProgram(programName);
 	this->program = program;
 	this->vertexArrayObject = this->program->getVAO(); //Only fills the vao attributes, not the GLuint
     this->Generate();
 }
 
-//-----------------------------
-// Getters ////////////////////
-//-----------------------------
+/*---------------------------------------------
+  Getters
+---------------------------------------------*/
 GLProgram* GLMesh::getProgram()
 {
     return this->program;
@@ -39,9 +39,10 @@ GLVertexArrayObject* GLMesh::getVertexArrayObject()
 {
     return this->vertexArrayObject;
 }
-//-----------------------------
-// Other //////////////////////
-//-----------------------------
+
+/*---------------------------------------------
+  Other
+---------------------------------------------*/
 void GLMesh::Generate()
 {
 	//Make sure to fill the vbo before setting the program (which calls this method)

@@ -5,7 +5,7 @@ Camera1stPerson::Camera1stPerson(void)
 	this->currXZRads = 0.0f;
 	this->currYRads = 0.0f;
 	this->cameraPos = glm::vec3(0,0,0);
-	this->updateWorldToCameraMatrix();
+	this->update();
 }
 
 Camera1stPerson::~Camera1stPerson(void)
@@ -21,20 +21,20 @@ void Camera1stPerson::pan(float x, float y)
 	glm::vec3 moveY = y*up;
 	this->cameraPos += moveX;
 	this->cameraPos += moveY;
-	this->updateWorldToCameraMatrix();
+	this->update();
 }
 
 void Camera1stPerson::rotate(float x, float y)
 {
 	this->currXZRads += x/3.0f;
 	this->currYRads -= y/3.0f;
-	this->updateWorldToCameraMatrix();
+	this->update();
 }
 
 void Camera1stPerson::zoom(float distance)
 {
 	this->cameraPos += distance*this->lookDir;
-	this->updateWorldToCameraMatrix();
+	this->update();
 }
 
 void Camera1stPerson::CalcMatrix(void)

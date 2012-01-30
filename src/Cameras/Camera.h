@@ -3,15 +3,23 @@
 #include <glm/glm.hpp>
 #include <iostream>
 
+#include <SFML/Window/Event.hpp>
+#include <SFML/Window/Mouse.hpp>
+#include <SFML/Window/Keyboard.hpp>
+
 #include "../Singleton.h"
 #include "../Utils.h"
-#include "../OpenGL/GLState.h"
+#include "../OpenGL/GLCamera.h"
+#include "../EventHandler.h"
 
 class Camera
 {
 public:
     Camera(void);
     virtual ~Camera(void);
+
+	void mouseMoved(sf::Event sfEvent);
+	void mouseWheelMoved(sf::Event sfEvent);
 
     virtual void rotate(float x, float y) = 0;
     virtual void zoom(float delta) = 0;
@@ -26,7 +34,7 @@ protected:
 
     glm::mat4 worldToCameraMatrix;
 
-	void updateWorldToCameraMatrix(void);
+	void update();
 	void CalcLookAtMatrix();
 	virtual void CalcMatrix(void) = 0;
 

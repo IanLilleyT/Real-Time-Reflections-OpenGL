@@ -14,3 +14,9 @@ int main(int argc, char **argv)
 	Singleton<SFMLCore>::Instance();
 	return 0;
 }
+
+/* 
+Things to fix:
+-Combine mesh loader into one method
+-Test removing event listeners
+*/

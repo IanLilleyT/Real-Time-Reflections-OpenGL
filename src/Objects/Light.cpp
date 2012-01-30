@@ -1,6 +1,6 @@
 #include "Light.h"
 
-//Default values (otherwise linker error)
+//Default static values (otherwise linker error)
 glm::vec4 Light::ambientIntensity = glm::vec4(0.2f,0.2f,0.2f,1.0f);
 float Light::lightAttenuation = 0.1f;
 float Light::maxIntensity = 1.0f;
@@ -11,7 +11,7 @@ Light::~Light(){}
 
 void Light::update()
 {
-	//Do nothing
+	Object::update();
 }
 
 //Intensity

@@ -5,6 +5,7 @@ World::~World(){}
 
 void World::update()
 {
+	Singleton<GLState>::Instance()->setLights(this->lights);
 	for(unsigned int i = 0; i < this->objects.size(); i++)
 	{
 		Object* object = this->objects.at(i);

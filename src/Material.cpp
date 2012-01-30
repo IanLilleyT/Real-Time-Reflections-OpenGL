@@ -1,7 +1,5 @@
 #include "Material.h"
 
-std::vector<Material*> Material::allMaterials = std::vector<Material*>();
-
 Material::Material()
 {
 	//Do nothing
@@ -11,12 +9,42 @@ Material::~Material()
 	//Do nothing
 };
 
-//Static
-void Material::addMaterial(Material* material)
+//Diffuse Color
+void Material::setDiffuseColor(glm::vec4 diffuseColor)
 {
-	Material::allMaterials.push_back(material);
+	this->diffuseColor = diffuseColor;
 }
-std::vector<Material*> Material::getAllMaterials()
+glm::vec4 Material::getDiffuseColor()
 {
-	return Material::allMaterials;
+	return this->diffuseColor;
+}
+
+//Specular Color
+void Material::setSpecularColor(glm::vec4 specularColor)
+{
+	this->specularColor = specularColor;
+}
+glm::vec4 Material::getSpecularColor()
+{
+	return this->specularColor;
+}
+
+//Specular Shininess
+void Material::setSpecularShininess(float specularShininess)
+{
+	this->specularShininess = specularShininess;
+}
+float Material::getSpecularShininess()
+{
+	return this->specularShininess;
+}
+
+//Reflectivity
+void Material::setReflectivity(float reflectivity)
+{
+	this->reflectivity = reflectivity;
+}
+float Material::getReflectivity()
+{
+	return this->reflectivity;
 }

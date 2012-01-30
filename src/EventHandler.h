@@ -3,8 +3,8 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Mouse.hpp>
 #include <SFML/Window/Keyboard.hpp>
-#include <glm/glm.hpp>
 #include <srutil/delegate/delegate.hpp>
+#include <glm/glm.hpp>
 
 #include <map>
 #include <utility>
@@ -24,7 +24,6 @@ typedef std::map<sf::Event::EventType,InputReceiverList*> InputEventMap;
 
 class EventHandler
 {
-
 public:
 	EventHandler();
 	~EventHandler();

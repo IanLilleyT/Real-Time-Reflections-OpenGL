@@ -1,49 +1,42 @@
 #pragma once
 
-#include "gl3w/gl3w.h"
-#include "glm/glm.hpp"
+#include <vector>
+#include <string>
+
+#include <gl3w/gl3w.h>
+#include <glm/glm.hpp>
 
 #include "Face.h"
 #include "Utils.h"
+#include "OpenGL/GLMesh.h"
 
-#include <iostream>
-#include <vector>
-#include <math.h>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <istream>
-#include <string>
-#include <cstdlib>
-#include <utility>
-#include <limits.h>
-#include <iterator>
-#include <map>
-#include <limits>
-#include <cfloat>
-
-typedef std::pair<std::vector<GLfloat>,std::vector<GLushort>> VBOPair;
+/*---------------------------------------------
+  Mesh: Contains render information for an object
+  in the world
+---------------------------------------------*/
 
 class Mesh
 {
-private:
-    std::vector<Face*> faces;
-	VBOPair vboPair;
-
+friend class MeshDatabase;
 public:
     Mesh();
     ~Mesh();
 
-	//VBOPair
-	VBOPair getVBOPair();
+	//GLMesh
+	void setGLMesh(GLMesh* glMesh);
+	GLMesh* getGLMesh();
+
+	//Program Type
+	void setProgramType(std::string programType);
+	std::string getProgramType();
 
 	//Faces
 	std::vector<Face*> getFaces();
 
-    //Static
-    static Mesh* openOBJ(std::string filename);
-
 private:
+    std::vector<Face*> faces;
+	GLMesh* glMesh;
+
 	void addFace(Face* face);
-	void createVBOPair();
+	void createGLMesh();
 };

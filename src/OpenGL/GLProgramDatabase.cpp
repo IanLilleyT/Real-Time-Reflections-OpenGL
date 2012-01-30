@@ -1,34 +1,39 @@
-#include "GLProgramHelper.h"
+#include "GLProgramDatabase.h"
 
-std::string GLProgramHelper::TYPE_WHITE = "White";
-std::string GLProgramHelper::TYPE_MATERIAL = "Material";
-std::string GLProgramHelper::TYPE_DEFAULT_MESH = GLProgramHelper::TYPE_MATERIAL;
+std::string GLProgramDatabase::TYPE_WHITE = "White";
+std::string GLProgramDatabase::TYPE_MATERIAL = "Material";
 
-GLProgramHelper::GLProgramHelper(){}
-GLProgramHelper::~GLProgramHelper(){}
+GLProgramDatabase::GLProgramDatabase(){}
+GLProgramDatabase::~GLProgramDatabase(){}
 
-void GLProgramHelper::initialize()
+GLProgram* GLProgramDatabase::loadProgram(std::string programType)
 {
-	std::vector<std::string> allProgramNames = std::vector<std::string>();
-	allProgramNames.push_back(TYPE_WHITE);
-	allProgramNames.push_back(TYPE_MATERIAL);
-	
-	for(unsigned int i = 0; i < allProgramNames.size(); i++)
-	{
-		std::string programName = allProgramNames.at(i);
-		GLProgram* program = this->makeProgramByName(programName);
-		this->programMap.insert(std::pair<std::string, GLProgram*>(program->getName(),program));
-	}
+	GLProgram* newProgram = 0;
+	newProgram = this->findProgram(programType);
+	if(newProgram == 0) 
+		newProgram = this->makeProgramByName(programType);
+	if(newProgram != 0)
+		this->programMap[programType] = newProgram;
+	return newProgram;
 }
-GLProgram* GLProgramHelper::makeProgramByName(std::string name)
+GLProgram* GLProgramDatabase::findProgram(std::string programType)
+{
+	std::map<std::string, GLProgram*>::iterator it;
+	it = this->programMap.find(programType);
+	if(it != this->programMap.end())
+		return it->second;
+	else
+		return 0;
+}
+GLProgram* GLProgramDatabase::makeProgramByName(std::string name)
 {
 	//Given a program name, this assembles a new program object
 	GLProgram* glProgram = 0;
 
 	//CUSTOMIZE
-	if(name == GLProgramHelper::TYPE_WHITE)
+	if(name == GLProgramDatabase::TYPE_WHITE)
 		glProgram = new GLProgram_White();
-	else if(name == GLProgramHelper::TYPE_MATERIAL)
+	else if(name == GLProgramDatabase::TYPE_MATERIAL)
 		glProgram = new GLProgram_Material();
 
 	//Assembling the program
@@ -48,7 +53,7 @@ GLProgram* GLProgramHelper::makeProgramByName(std::string name)
 	return glProgram;
 }
 
-std::pair<std::string, std::string> GLProgramHelper::getShadersByType(std::string shaderType)
+std::pair<std::string, std::string> GLProgramDatabase::getShadersByType(std::string shaderType)
 {
 	//Given a program name, returns programNameVert.vert and programNameFrag.frag
 	std::string vertShader = shaderType + "Vert.vert";
@@ -57,20 +62,8 @@ std::pair<std::string, std::string> GLProgramHelper::getShadersByType(std::strin
 	return shaderPair;
 }
 
-GLProgram* GLProgramHelper::findProgram(std::string name)
-{	
-	//Returns a GLProgram object if found
-	std::map<std::string, GLProgram*>::iterator iter = this->programMap.find(name);
-	if(iter != this->programMap.end())
-	{
-		GLProgram* program = iter->second;
-		return program;
-	}
-	return 0;
-}
-
 //All low level stuff -- DO NOT LOOK HERE
-const char* GLProgramHelper::GetShaderName(GLenum eShaderType)
+const char* GLProgramDatabase::GetShaderName(GLenum eShaderType)
 {
 	switch(eShaderType)
 	{
@@ -80,7 +73,7 @@ const char* GLProgramHelper::GetShaderName(GLenum eShaderType)
 	}
 	return NULL;
 }
-GLuint GLProgramHelper::LoadShader(GLenum eShaderType, const std::string &strShaderFilename)
+GLuint GLProgramDatabase::LoadShader(GLenum eShaderType, const std::string &strShaderFilename)
 {
 	std::string strFilename = strShaderFilename;
 	std::ifstream shaderFile(strFilename.c_str());
@@ -96,7 +89,7 @@ GLuint GLProgramHelper::LoadShader(GLenum eShaderType, const std::string &strSha
 
 	return CreateShader(eShaderType, shaderData.str(), strShaderFilename);
 }
-GLuint GLProgramHelper::CreateShader(GLenum eShaderType, const std::string &strShaderFile, const std::string &strShaderName)
+GLuint GLProgramDatabase::CreateShader(GLenum eShaderType, const std::string &strShaderFile, const std::string &strShaderName)
 {
 	GLuint shader = glCreateShader(eShaderType);
 	const char *strFileData = strShaderFile.c_str();
@@ -121,7 +114,7 @@ GLuint GLProgramHelper::CreateShader(GLenum eShaderType, const std::string &strS
 
 	return shader;
 }
-GLuint GLProgramHelper::CreateProgram(const std::vector<GLuint> &shaderList)
+GLuint GLProgramDatabase::CreateProgram(const std::vector<GLuint> &shaderList)
 {
 	GLuint program = glCreateProgram();
 
