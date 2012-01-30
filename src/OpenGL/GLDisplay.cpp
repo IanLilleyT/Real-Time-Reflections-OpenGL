@@ -2,6 +2,7 @@
 
 GLDisplay::GLDisplay(){}
 GLDisplay::~GLDisplay(){}
+
 void GLDisplay::initialize()
 {
 	//Init GL
@@ -22,6 +23,7 @@ void GLDisplay::initialize()
 void GLDisplay::initializeGL()
 {
 	gl3wInit();
+	Singleton<GLUniformBlockHelper>::Instance()->initialize();
 
     //Set GL global vars
     glEnable(GL_CULL_FACE);
@@ -35,16 +37,14 @@ void GLDisplay::initializeGL()
 	glLineWidth(2);
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	//Initialize GL helper classes
-	Singleton<GLUniformBlockHelper>::Instance()->initialize();
 }
 void GLDisplay::update()
 {
-	this->paintGL();
+	Singleton<GLUniformBlockHelper>::Instance()->update();
+	this->clearGL();
 	world->update();
 }
-void GLDisplay::paintGL()
+void GLDisplay::clearGL()
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClearDepth(1.0f);
@@ -54,7 +54,6 @@ void GLDisplay::resizeGL(sf::Event sfEvent)
 {
 	int width = sfEvent.Size.Width;
 	int height = sfEvent.Size.Height;
-	glViewport(0, 0, (GLsizei) width, (GLsizei) height);
 	Singleton<GLCamera>::Instance()->changeWindowDimensions(width,height);
 }
 

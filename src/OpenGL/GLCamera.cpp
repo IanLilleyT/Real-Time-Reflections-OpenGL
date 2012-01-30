@@ -48,9 +48,10 @@ glm::mat4 GLCamera::getWorldToCameraMatrix()
 }
 
 //Other
-void GLCamera::changeWindowDimensions(int w, int h)
+void GLCamera::changeWindowDimensions(int width, int height)
 {
-	this->cameraToClipMatrix[0].x = frustumScale * (h/ (float)w);
+	glViewport(0, 0, (GLsizei) width, (GLsizei) height);
+	this->cameraToClipMatrix[0].x = frustumScale * (height/ (float)width);
 	this->cameraToClipMatrix[1].y = frustumScale;
 	this->update();
 }

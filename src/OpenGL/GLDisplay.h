@@ -45,5 +45,5 @@ private:
 	//GL methods
 	void resizeGL(sf::Event sfEvent);
 	void initializeGL();
-	void paintGL();
+	void clearGL();
 };

@@ -1,9 +1,10 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <gl3w/gl3w.h>
 
-#include "../Ray.h"
 #include "GLState.h"
+#include "../Ray.h"
 #include "../Singleton.h"
 
 class GLCamera

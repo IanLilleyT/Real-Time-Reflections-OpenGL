@@ -20,7 +20,7 @@ std::string Object::getName()
 ---------------------------------------------*/
 void Object::updateTransformations()
 {
-	this->transformationMatrix = this->transformationMatrix * this->rotationMatrix * this->scaleMatrix;
+	this->transformationMatrix = this->translationMatrix * this->rotationMatrix * this->scaleMatrix;
 }
 glm::mat4 Object::getTransformationMatrix()
 {

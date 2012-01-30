@@ -1,13 +1,36 @@
 RenderObject
-mesh cube.obj
-name cube
+mesh sphere.obj
+name sphere1
 material material1
-program White
+program Material
 translation 0 0 0
 rotation 1 0 0 0
+scale 1 1 1
+
+RenderObject
+mesh cube.obj
+name floor
+material material2
+program Material
+translation 0 -5 0
+rotation 1 0 0 0
+scale 10 1 10
+
+RenderObject
+mesh cube.obj
+name cube
+material material2
+program Material
+translation 0 2 0
+rotation 1 1 1 45
 scale 1 1 1
 
 Light
 name light1
 intensity 1 1 1 1
-translation 0 0 0
+translation 2 0 0
+
+Light
+name light1
+intensity .4 1 .6 1
+translation -2 2 0
