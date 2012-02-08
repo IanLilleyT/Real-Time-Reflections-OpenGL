@@ -30,14 +30,19 @@ public:
     void setName(std::string name);
 
     //Getters
-	GLAttribute* getAttribute(std::string name, GLushort size, GLenum type);
     GLuint getProgram();
     std::string getName();
-	virtual GLVertexArrayObject* getVAO() = 0;
+	GLVertexArrayObject* getVAO();
+
+	//Other
 	virtual void fillUniforms();
+	virtual void createVAO();
+	
+protected:
+	GLAttribute* getAttribute(std::string name, GLushort size, GLenum type);
 	virtual void bindUniformBlocks();
 
-protected:
+	GLVertexArrayObject* vao;
     GLuint program;
     std::string name;
 	std::vector<std::string> uniformBlocks;

@@ -1,6 +1,7 @@
 #include <string>
 
 #include <gl3w/gl3w.h>
+#include <time.h>
 
 #include "Singleton.h"
 #include "SFMLCore.h"
@@ -8,6 +9,7 @@
 
 int main(int argc, char **argv)
 {
+	srand((unsigned int)time(NULL));
 	std::string executablePath = std::string(argv[0]);
 	std::string dataPath = executablePath + "/../../data/";
 	Singleton<GlobalValues>::Instance()->setDataPath(dataPath);
@@ -19,4 +21,5 @@ int main(int argc, char **argv)
 Things to fix:
 -Combine mesh loader into one method
 -Test removing event listeners
+-Same mesh with different shaders
 */

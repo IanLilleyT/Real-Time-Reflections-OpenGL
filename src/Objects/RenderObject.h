@@ -1,9 +1,13 @@
 #pragma once
 
+#include <string>
+
 #include "Object.h"
 #include "../Mesh.h"
 #include "../Material.h"
 #include "../OpenGL/GLState.h"
+#include "../MaterialDatabase.h"
+#include "../Singleton.h"
 
 class RenderObject: public Object
 {
@@ -17,6 +21,7 @@ public:
 	void setMesh(Mesh* mesh);
 	Mesh* getMesh();
 
+	void setMaterial(std::string name);
 	void setMaterial(Material* material);
 	Material* getMaterial();
 

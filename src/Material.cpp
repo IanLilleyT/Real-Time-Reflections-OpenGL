@@ -48,3 +48,13 @@ float Material::getReflectivity()
 {
 	return this->reflectivity;
 }
+
+//Alpha
+void Material::setAlpha(float alpha)
+{
+	this->alpha = alpha;
+}
+float Material::getAlpha()
+{
+	return this->alpha;
+}

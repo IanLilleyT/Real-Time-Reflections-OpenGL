@@ -20,6 +20,7 @@ void GLMesh::setProgramType(std::string programName)
 {
 	GLProgram* program = Singleton<GLProgramDatabase>::Instance()->loadProgram(programName);
 	this->program = program;
+	this->program->createVAO();
 	this->vertexArrayObject = this->program->getVAO(); //Only fills the vao attributes, not the GLuint
     this->Generate();
 }

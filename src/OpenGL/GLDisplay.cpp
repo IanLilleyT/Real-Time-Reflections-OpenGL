@@ -11,7 +11,8 @@ void GLDisplay::initialize()
 	//Event handlers
 	Singleton<EventHandler>::Instance()->addEnterFrameEventListener(EnterFrameReceiver::from_method<GLDisplay,&GLDisplay::update>(this));
 	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::Resized, InputReceiver::from_method<GLDisplay,&GLDisplay::resizeGL>(this));
-	
+	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::KeyPressed, InputReceiver::from_method<GLDisplay,&GLDisplay::keyDown>(this));
+
 	//Camera
 	Singleton<GLCamera>::Instance()->calcCameraToClipMatrix(45.0f,1.0f,100.0f);
 	this->camera = new Camera3rdPerson();
@@ -35,8 +36,8 @@ void GLDisplay::initializeGL()
     glDepthRange(0.0f, 1.0f);
     glPointSize(10);
 	glLineWidth(2);
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 void GLDisplay::update()
 {
@@ -55,6 +56,14 @@ void GLDisplay::resizeGL(sf::Event sfEvent)
 	int width = sfEvent.Size.Width;
 	int height = sfEvent.Size.Height;
 	Singleton<GLCamera>::Instance()->changeWindowDimensions(width,height);
+}
+void GLDisplay::keyDown(sf::Event sfEvent)
+{
+	sf::Keyboard::Key key = sfEvent.Key.Code;
+	if(key == sf::Keyboard::S)
+	{
+		std::cout << "Pressed a key!" << std::endl;
+	}
 }
 
 //World

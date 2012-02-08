@@ -8,9 +8,11 @@ Mesh* MeshDatabase::loadMesh(std::string meshFileName)
 	Mesh* newMesh = 0;
 	newMesh = this->findMesh(meshFileName);
 	if(newMesh == 0) 
+	{
 		newMesh = this->openMeshFile(meshFileName);
-	if(newMesh != 0)
-		this->meshMap[meshFileName] = newMesh;
+		if(newMesh != 0)
+			this->meshMap[meshFileName] = newMesh;
+	}
 	return newMesh;
 }
 Mesh* MeshDatabase::findMesh(std::string meshFileName)

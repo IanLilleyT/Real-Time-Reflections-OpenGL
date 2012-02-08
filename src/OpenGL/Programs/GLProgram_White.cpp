@@ -1,15 +1,21 @@
 #include "GLProgram_White.h"
 
-GLProgram_White::GLProgram_White(){}
-GLProgram_White::~GLProgram_White(){}
-GLVertexArrayObject* GLProgram_White::getVAO()
+GLProgram_White::GLProgram_White()
 {
-    GLVertexArrayObject* vao = new GLVertexArrayObject();
+	this->createVAO();
+}
+GLProgram_White::~GLProgram_White(){}
+void GLProgram_White::createVAO()
+{
+    this->vao = new GLVertexArrayObject();
     GLAttribute* positionAttribute = this->getAttribute("position", 3, GL_FLOAT);
 	std::vector<GLAttribute*> attributes = std::vector<GLAttribute*>();
 	attributes.push_back(positionAttribute);
-	vao->setAttributes(attributes);
-	return vao;
+	this->vao->setAttributes(attributes);
+}
+void GLProgram_White::bindUniformBlocks()
+{
+	GLProgram::bindUniformBlocks();
 }
 void GLProgram_White::fillUniforms()
 {

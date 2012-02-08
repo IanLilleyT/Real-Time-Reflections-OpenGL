@@ -20,6 +20,7 @@ public:
 
 	void addRenderObject(RenderObject* object);
 	void removeRenderObject(RenderObject* object);
+	RenderObject* getRenderObject(int index);
 
 	void addLight(Light* light);
 	void removeLight(Light* light);

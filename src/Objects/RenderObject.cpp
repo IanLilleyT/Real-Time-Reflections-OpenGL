@@ -26,6 +26,11 @@ Mesh* RenderObject::getMesh()
 }
 
 //Material
+void RenderObject::setMaterial(std::string material)
+{
+	Material* newMaterial = Singleton<MaterialDatabase>::Instance()->loadMaterial(material);
+	this->setMaterial(newMaterial);
+}
 void RenderObject::setMaterial(Material* material)
 {
 	this->material = material;

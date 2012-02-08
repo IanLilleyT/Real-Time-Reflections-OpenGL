@@ -6,11 +6,18 @@ WorldDatabase::~WorldDatabase(){}
 World* WorldDatabase::loadWorld(std::string worldFileName)
 {
 	World* newWorld = 0;
+
+	std::string extension = ".world";
+	if(worldFileName.find(extension) == std::string::npos)
+		worldFileName += extension;
+
 	newWorld = this->findWorld(worldFileName);
 	if(newWorld == 0) 
+	{
 		newWorld = this->openWorldFile(worldFileName);
-	if(newWorld != 0)
-		this->worldMap[worldFileName] = newWorld;
+		if(newWorld != 0)
+			this->worldMap[worldFileName] = newWorld;
+	}
 	return newWorld;
 }
 World* WorldDatabase::findWorld(std::string worldFileName)
@@ -60,8 +67,7 @@ World* WorldDatabase::openWorldFile(std::string worldFileName)
 				getline(file, line);
 				results = Utils::splitByCharacter(line,' ');
 				std::string materialFileName = results.at(1);
-				Material* material = Singleton<MaterialDatabase>::Instance()->loadMaterial(materialFileName);
-				renderObject->setMaterial(material);
+				renderObject->setMaterial(materialFileName);
 
 				//Load program
 				getline(file, line);

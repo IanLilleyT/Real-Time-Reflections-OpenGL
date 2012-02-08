@@ -44,6 +44,10 @@ void World::removeRenderObject(RenderObject* renderObject)
 	}
 	this->removeObject(renderObject);
 }
+RenderObject* World::getRenderObject(int index)
+{
+	return this->renderObjects.at(index);
+}
 
 //Lights
 void World::addLight(Light* light)

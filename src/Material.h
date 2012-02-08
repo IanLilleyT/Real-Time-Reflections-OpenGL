@@ -26,9 +26,14 @@ public:
 	void setReflectivity(float reflectivity);
 	float getReflectivity();
 
+	//Alpha
+	void setAlpha(float alpha);
+	float getAlpha();
+
 private:
 	glm::vec4 diffuseColor;
 	glm::vec4 specularColor;
 	float specularShininess;
 	float reflectivity;
+	float alpha;
 };

@@ -1,19 +1,21 @@
 #include "GLProgram_Material.h"
 
-GLProgram_Material::GLProgram_Material() : GLProgram(){}
+GLProgram_Material::GLProgram_Material() : GLProgram()
+{
+	this->createVAO();
+}
 GLProgram_Material::~GLProgram_Material(){}
 
-GLVertexArrayObject* GLProgram_Material::getVAO()
+void GLProgram_Material::createVAO()
 {
 	//Only fills the vao attributes, not the GLuint
-	GLVertexArrayObject* vao = new GLVertexArrayObject();
+	this->vao = new GLVertexArrayObject();
 	GLAttribute* positionAttribute = this->getAttribute("position", 3, GL_FLOAT);
 	GLAttribute* normalAttribute = this->getAttribute("normal", 3, GL_FLOAT);
 	std::vector<GLAttribute*> attributes = std::vector<GLAttribute*>();
 	attributes.push_back(positionAttribute);
 	attributes.push_back(normalAttribute);
-	vao->setAttributes(attributes);
-	return vao;
+	this->vao->setAttributes(attributes);
 }
 void GLProgram_Material::bindUniformBlocks()
 {

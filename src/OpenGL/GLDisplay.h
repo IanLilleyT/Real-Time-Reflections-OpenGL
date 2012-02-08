@@ -13,6 +13,9 @@
 #include "../Cameras/Camera.h"
 #include "../Cameras/Camera3rdPerson.h"
 #include "../Cameras/Camera1stPerson.h"
+#include "../Objects/RenderObject.h"
+#include "../Material.h"
+#include "../MaterialDatabase.h"
 
 /*---------------------------------------------
 GLDisplay: Essentially a bridge between
@@ -44,6 +47,7 @@ private:
 
 	//GL methods
 	void resizeGL(sf::Event sfEvent);
+	void keyDown(sf::Event sfEvent);
 	void initializeGL();
 	void clearGL();
 };

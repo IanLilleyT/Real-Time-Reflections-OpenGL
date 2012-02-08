@@ -5,8 +5,8 @@ class GLProgram_Material: public GLProgram
 public:
 	GLProgram_Material();
 	virtual ~GLProgram_Material();
+	virtual void createVAO();
 protected:
-	virtual GLVertexArrayObject* getVAO();
 	virtual void bindUniformBlocks();
 	virtual void fillUniforms();
 };

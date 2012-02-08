@@ -11,9 +11,11 @@ GLProgram* GLProgramDatabase::loadProgram(std::string programType)
 	GLProgram* newProgram = 0;
 	newProgram = this->findProgram(programType);
 	if(newProgram == 0) 
+	{
 		newProgram = this->makeProgramByName(programType);
-	if(newProgram != 0)
-		this->programMap[programType] = newProgram;
+		if(newProgram != 0)
+			this->programMap[programType] = newProgram;
+	}
 	return newProgram;
 }
 GLProgram* GLProgramDatabase::findProgram(std::string programType)
@@ -49,6 +51,7 @@ GLProgram* GLProgramDatabase::makeProgramByName(std::string name)
 		shaderList.push_back(this->LoadShader(GL_FRAGMENT_SHADER, fragShader));
 		glProgram->setProgram(this->CreateProgram(shaderList));
 		glProgram->setName(name);
+		//glProgram->createVAO();
 	}
 	return glProgram;
 }

@@ -5,7 +5,8 @@ class GLProgram_White: public GLProgram
 public:
 	GLProgram_White();
 	virtual ~GLProgram_White();
+	virtual void createVAO();
 protected:
-	virtual GLVertexArrayObject* getVAO();
+	virtual void bindUniformBlocks();
 	virtual void fillUniforms();
 };
