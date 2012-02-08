@@ -25,6 +25,15 @@ translation 0 2 0
 rotation 1 1 1 45
 scale 1 1 1
 
+//Jello
+//name jelly
+//shape cube
+//origin 0 10 0
+//size 2 2 2
+//divisions 6 6 6
+//material material1
+//program Material
+
 Light
 name light1
 intensity 1 1 1 1
