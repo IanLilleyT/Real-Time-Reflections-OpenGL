@@ -17,11 +17,11 @@
 #include <cfloat>
 
 #include "World.h"
-#include "Mesh.h"
 #include "MeshDatabase.h"
 #include "MaterialDatabase.h"
 #include "Objects/RenderObject.h"
 #include "Objects/Light.h"
+#include "Objects/Jello.h"
 #include "Singleton.h"
 #include "GlobalValues.h"
 #include "OpenGL/GLProgramDatabase.h"
@@ -38,4 +38,10 @@ private:
 	World* findWorld(std::string worldFileName);
 	World* openWorldFile(std::string worldFileName);
 	std::map<std::string, World*> worldMap;
+
+	bool isFieldValid(std::ifstream& file, std::string name, std::vector<std::string>& results);
+
+	void processRenderObject(std::ifstream& file, World* world);
+	void processJello(std::ifstream& file, World* world);
+	void processLight(std::ifstream& file, World* world);
 };

@@ -12,15 +12,15 @@ void RenderObject::update()
 }
 void RenderObject::render()
 {
-	this->mesh->getGLMesh()->Render();
+	this->mesh->Render();
 }
 
 //Mesh
-void RenderObject::setMesh(Mesh* mesh)
+void RenderObject::setMesh(GLMesh* mesh)
 {
 	this->mesh = mesh;
 }
-Mesh* RenderObject::getMesh()
+GLMesh* RenderObject::getMesh()
 {
 	return this->mesh;
 }

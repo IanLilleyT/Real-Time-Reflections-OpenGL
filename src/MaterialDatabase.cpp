@@ -34,8 +34,8 @@ Material* MaterialDatabase::openMaterialFile(std::string materialFileName)
 	std::string materialPath = Singleton<GlobalValues>::Instance()->getMaterialPath();
 	std::string fullPath = materialPath + materialFileName;
 
-	std::string line;
 	std::ifstream file;
+	std::vector<std::string> results;
 
 	file.open(fullPath.c_str(), std::ifstream::in);
 	if(file.is_open())
@@ -44,36 +44,54 @@ Material* MaterialDatabase::openMaterialFile(std::string materialFileName)
 		while(file.good())
 		{
 			//Diffuse Color
-			getline(file, line);
-			glm::vec4 diffuseColor = Utils::parseIntoVec4(line);
-			material->setDiffuseColor(diffuseColor);
+			if(this->isFieldValid(file,"diffuseColor",results))
+			{
+				glm::vec4 diffuseColor = Utils::parseIntoVec4(results);
+				material->setDiffuseColor(diffuseColor);
+			}
 
 			//Specular Color
-			getline(file, line);
-			glm::vec4 specularColor = Utils::parseIntoVec4(line);
-			material->setSpecularColor(specularColor);
+			if(this->isFieldValid(file,"specularColor",results))
+			{
+				glm::vec4 specularColor = Utils::parseIntoVec4(results);
+				material->setSpecularColor(specularColor);
+			}
 			
 			//Specular Shininess
-			getline(file, line);
-			float specularShininess = Utils::parseIntoFloat(line);
-			material->setSpecularShininess(specularShininess);
+			if(this->isFieldValid(file,"specularShininess",results))
+			{
+				float specularShininess = Utils::parseIntoFloat(results);
+				material->setSpecularShininess(specularShininess);
+			}
 
 			//Reflectivity
-			getline(file, line);
-			float reflectivity = Utils::parseIntoFloat(line);
-			material->setReflectivity(reflectivity);
+			if(this->isFieldValid(file,"reflectivity",results))
+			{
+				float reflectivity = Utils::parseIntoFloat(results);
+				material->setReflectivity(reflectivity);
+			}
 
 			//Alpha
-			getline(file, line);
-			float alpha = Utils::parseIntoFloat(line);
-			material->setAlpha(alpha);
+			if(this->isFieldValid(file,"alpha",results))
+			{
+				float alpha = Utils::parseIntoFloat(results);
+				material->setAlpha(alpha);
+			}
 		}
 		file.close();
 		return material;
 	}
 	else
 	{
-		std::cout << "Unable to open world file." << std::endl;
+		std::cout << "Unable to open material file." << std::endl;
 		return 0;
 	}
+}
+
+bool MaterialDatabase::isFieldValid(std::ifstream& file, std::string name, std::vector<std::string>& results)
+{
+	std::string line;
+	getline(file, line);
+	results = Utils::splitByCharacter(line, ' ');
+	return results.at(0) == name;
 }

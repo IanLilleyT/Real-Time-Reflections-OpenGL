@@ -49,11 +49,11 @@ GLenum GLBufferObject::getDrawType()
 {
 	return this->drawType;
 }
-std::vector<GLfloat> GLBufferObject::getVertexBufferData()
+std::vector<GLfloat>& GLBufferObject::getVertexBufferData()
 {
 	return this->vertexBufferData;
 }
-std::vector<GLushort> GLBufferObject::getIndexBufferData()
+std::vector<GLushort>& GLBufferObject::getIndexBufferData()
 {
 	return this->indexBufferData;
 }

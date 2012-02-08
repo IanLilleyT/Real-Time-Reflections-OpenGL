@@ -14,24 +14,29 @@
 #include "GLProgram.h"
 #include "../Singleton.h"
 
+/*---------------------------------------------
+  GLMesh: Contains all the information needed
+  to render objects.
+
+  Usage (call methods in this order):
+  setVBOData, setProgramType, render
+---------------------------------------------*/
+
 class GLMesh
 {
 public:
     GLMesh();
     ~GLMesh();
 
-    //Setters
 	void setProgramType(std::string programName);
+	std::string getProgramType();
 
-    //Getters
-    GLProgram* getProgram();
-    GLBufferObject* getBufferObject();
-    GLVertexArrayObject* getVertexArrayObject();
-
-    //Other
+	void setVBOData(std::vector<GLfloat> vboData, std::vector<GLushort> iboData, GLenum drawType);
+    
     void Render();
 
 private:
+
     void Generate();
 
     GLVertexArrayObject* vertexArrayObject;

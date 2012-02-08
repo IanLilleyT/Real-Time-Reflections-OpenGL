@@ -21,8 +21,8 @@ public:
     GLuint getVertexBuffer();
     GLuint getIndexBuffer();
     GLenum getDrawType();
-    std::vector<GLfloat> getVertexBufferData();
-    std::vector<GLushort> getIndexBufferData();
+    std::vector<GLfloat>& getVertexBufferData();
+    std::vector<GLushort>& getIndexBufferData();
 	GLuint getNumElements();
 
 private:

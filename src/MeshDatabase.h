@@ -16,7 +16,7 @@
 #include <limits>
 #include <cfloat>
 
-#include "Mesh.h"
+#include "OpenGL/GLMesh.h"
 #include "Utils.h"
 
 class MeshDatabase
@@ -25,10 +25,12 @@ public:
 	MeshDatabase();
 	~MeshDatabase();
 
-	Mesh* loadMesh(std::string meshFileName);
+	GLMesh* loadMesh(std::string meshFileName);
 
 private:
-	Mesh* findMesh(std::string meshFileName);
-	Mesh* openMeshFile(std::string meshFileName);
-	std::map<std::string,Mesh*> meshMap;
+	GLMesh* findMesh(std::string meshFileName);
+	GLMesh* openMeshFile(std::string meshFileName);
+	std::map<std::string,GLMesh*> meshMap;
+
+	bool isFieldValid(std::ifstream& file, std::string name, std::vector<std::string>& results);
 };

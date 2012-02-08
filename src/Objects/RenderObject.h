@@ -3,7 +3,7 @@
 #include <string>
 
 #include "Object.h"
-#include "../Mesh.h"
+#include "../OpenGL/GLMesh.h"
 #include "../Material.h"
 #include "../OpenGL/GLState.h"
 #include "../MaterialDatabase.h"
@@ -18,8 +18,8 @@ public:
 	virtual void update();
 	virtual void render();
 
-	void setMesh(Mesh* mesh);
-	Mesh* getMesh();
+	void setMesh(GLMesh* mesh);
+	GLMesh* getMesh();
 
 	void setMaterial(std::string name);
 	void setMaterial(Material* material);
@@ -29,6 +29,6 @@ public:
 	std::string getProgramType();
 
 private:
-	Mesh* mesh;
+	GLMesh* mesh;
 	Material* material;
 };

@@ -36,6 +36,7 @@ World* WorldDatabase::openWorldFile(std::string worldFileName)
 
 	std::string line;
 	std::ifstream file;
+	std::vector<std::string> results;
 
 	file.open(fullPath.c_str(), std::ifstream::in);
 	if(file.is_open())
@@ -46,69 +47,15 @@ World* WorldDatabase::openWorldFile(std::string worldFileName)
 			getline(file, line);
 			if(line == "RenderObject")
 			{
-				RenderObject* renderObject = new RenderObject();
-				world->addRenderObject(renderObject);
-				std::vector<std::string> results;
-				
-				//Load mesh
-				getline(file, line);
-				results = Utils::splitByCharacter(line,' ');
-				std::string meshFileName = results.at(1);
-				Mesh* mesh = Singleton<MeshDatabase>::Instance()->loadMesh(meshFileName);
-				renderObject->setMesh(mesh);
-
-				//Load name
-				getline(file, line);
-				results = Utils::splitByCharacter(line,' ');
-				std::string name = results.at(1);
-				renderObject->setName(name);
-
-				//Load material
-				getline(file, line);
-				results = Utils::splitByCharacter(line,' ');
-				std::string materialFileName = results.at(1);
-				renderObject->setMaterial(materialFileName);
-
-				//Load program
-				getline(file, line);
-				results = Utils::splitByCharacter(line, ' ');
-				std::string programType = results.at(1);
-				renderObject->setProgramType(programType);
-
-				//Load transformations
-				getline(file, line);
-				glm::vec3 translation = Utils::parseIntoVec3(line);
-				getline(file, line);
-				glm::vec4 rotation = Utils::parseIntoVec4(line);
-				glm::vec3 axis = glm::vec3(rotation.x,rotation.y,rotation.z);
-				float angle = rotation.w;
-				getline(file, line);
-				glm::vec3 scale = Utils::parseIntoVec3(line);
-				renderObject->setTranslation(translation);
-				renderObject->setRotation(axis,angle);
-				renderObject->setScale(scale);	
+				this->processRenderObject(file, world);
+			}
+			else if(line == "Jello")
+			{
+				this->processJello(file,world);
 			}
 			else if(line == "Light")
 			{
-				Light* light = new Light();
-				world->addLight(light);
-				std::vector<std::string> results;
-				
-				//Load name
-				getline(file, line);
-				results = Utils::splitByCharacter(line,' ');
-				std::string lightName = results.at(1);
-				light->setName(lightName);
-
-				//Load intensity
-				getline(file, line);
-				glm::vec4 intensity = Utils::parseIntoVec4(line);
-				light->setIntensity(intensity);
-
-				//Load transformations
-				getline(file, line);
-				glm::vec3 translation = Utils::parseIntoVec3(line);
-				light->setTranslation(translation);
+				this->processLight(file,world);
 			}
 		}
 		file.close();
@@ -118,5 +65,160 @@ World* WorldDatabase::openWorldFile(std::string worldFileName)
 	{
 		std::cout << "Unable to open world file." << std::endl;
 		return 0;
+	}
+}
+
+bool WorldDatabase::isFieldValid(std::ifstream& file, std::string name, std::vector<std::string>& results)
+{
+	std::string line;
+	getline(file, line);
+	results = Utils::splitByCharacter(line, ' ');
+	return results.at(0) == name;
+}
+
+void WorldDatabase::processRenderObject(std::ifstream& file, World* world)
+{
+	std::vector<std::string> results;
+
+	RenderObject* renderObject = new RenderObject();
+	world->addRenderObject(renderObject);
+				
+	//Load name
+	if(this->isFieldValid(file,"name",results))
+	{
+		std::string name = results.at(1);
+		renderObject->setName(name);
+	}
+
+	//Load mesh
+	if(this->isFieldValid(file,"mesh",results))
+	{
+		std::string meshFileName = results.at(1);
+		GLMesh* mesh = Singleton<MeshDatabase>::Instance()->loadMesh(meshFileName);
+		renderObject->setMesh(mesh);
+	}
+				
+	//Load material
+	if(this->isFieldValid(file,"material",results))
+	{
+		std::string materialFileName = results.at(1);
+		renderObject->setMaterial(materialFileName);
+	}
+				
+	//Load program
+	if(this->isFieldValid(file,"program",results))
+	{
+		std::string programType = results.at(1);
+		renderObject->setProgramType(programType);
+	}
+				
+	//Load translation
+	if(this->isFieldValid(file,"translation",results))
+	{
+		glm::vec3 translation = Utils::parseIntoVec3(results);
+		renderObject->setTranslation(translation);
+	}
+				
+	//Load rotation
+	if(this->isFieldValid(file,"rotation",results))
+	{
+		glm::vec4 rotation = Utils::parseIntoVec4(results);
+		glm::vec3 axis = glm::vec3(rotation.x,rotation.y,rotation.z);
+		float angle = rotation.w;
+		renderObject->setRotation(axis,angle);
+	}
+				
+	//Load scale
+	if(this->isFieldValid(file,"scale",results))
+	{
+		glm::vec3 scale = Utils::parseIntoVec3(results);
+		renderObject->setScale(scale);	
+	}
+}
+void WorldDatabase::processJello(std::ifstream& file, World* world)
+{
+	/*std::vector<std::string> results;
+
+	Jello* jello = new Jello();
+	world->addRenderObject(renderObject);
+				
+	//Load name
+	if(this->isFieldValid(file,"name",results))
+	{
+		std::string name = results.at(1);
+		renderObject->setName(name);
+	}
+
+	//Load mesh
+	if(this->isFieldValid(file,"mesh",results))
+	{
+		std::string meshFileName = results.at(1);
+		GLMesh* mesh = Singleton<MeshDatabase>::Instance()->loadMesh(meshFileName);
+		renderObject->setMesh(mesh);
+	}
+				
+	//Load material
+	if(this->isFieldValid(file,"material",results))
+	{
+		std::string materialFileName = results.at(1);
+		renderObject->setMaterial(materialFileName);
+	}
+				
+	//Load program
+	if(this->isFieldValid(file,"program",results))
+	{
+		std::string programType = results.at(1);
+		renderObject->setProgramType(programType);
+	}
+				
+	//Load translation
+	if(this->isFieldValid(file,"translation",results))
+	{
+		glm::vec3 translation = Utils::parseIntoVec3(results);
+		renderObject->setTranslation(translation);
+	}
+				
+	//Load rotation
+	if(this->isFieldValid(file,"rotation",results))
+	{
+		glm::vec4 rotation = Utils::parseIntoVec4(results);
+		glm::vec3 axis = glm::vec3(rotation.x,rotation.y,rotation.z);
+		float angle = rotation.w;
+		renderObject->setRotation(axis,angle);
+	}
+				
+	//Load scale
+	if(this->isFieldValid(file,"scale",results))
+	{
+		glm::vec3 scale = Utils::parseIntoVec3(results);
+		renderObject->setScale(scale);	
+	}*/
+}
+void WorldDatabase::processLight(std::ifstream& file, World* world)
+{
+	std::vector<std::string> results;
+
+	Light* light = new Light();
+	world->addLight(light);
+				
+	//Load name
+	if(this->isFieldValid(file,"name",results))
+	{
+		std::string lightName = results.at(1);
+		light->setName(lightName);
+	}
+
+	//Load intensity
+	if(this->isFieldValid(file,"intensity",results))
+	{
+		glm::vec4 intensity = Utils::parseIntoVec4(results);
+		light->setIntensity(intensity);
+	}
+
+	//Load translation
+	if(this->isFieldValid(file,"translation",results))
+	{
+		glm::vec3 translation = Utils::parseIntoVec3(results);
+		light->setTranslation(translation);
 	}
 }

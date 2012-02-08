@@ -19,7 +19,6 @@ int main(int argc, char **argv)
 
 /* 
 Things to fix:
--Combine mesh loader into one method
 -Test removing event listeners
 -Same mesh with different shaders
 */

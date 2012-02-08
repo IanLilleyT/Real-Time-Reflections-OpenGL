@@ -1,6 +1,6 @@
 RenderObject
-mesh sphere.obj
 name sphere1
+mesh sphere.obj
 material material1
 program Material
 translation 0 0 0
@@ -8,8 +8,8 @@ rotation 1 0 0 0
 scale 1 1 1
 
 RenderObject
-mesh cube.obj
 name floor
+mesh cube.obj
 material material1
 program Material
 translation 0 -5 0
@@ -17,8 +17,8 @@ rotation 1 0 0 0
 scale 10 1 10
 
 RenderObject
-mesh cube.obj
 name cube
+mesh cube.obj
 material material1
 program Material
 translation 0 2 0

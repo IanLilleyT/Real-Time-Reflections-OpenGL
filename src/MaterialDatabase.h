@@ -35,4 +35,6 @@ private:
 	Material* findMaterial(std::string materialFileName);
 	Material* openMaterialFile(std::string materialFileName);
 	std::map<std::string, Material*> materialMap;
+
+	bool isFieldValid(std::ifstream& file, std::string name, std::vector<std::string>& results);
 };
