@@ -2,6 +2,8 @@
 
 #include <algorithm>
 #include <vector>
+#include <map>
+#include <string>
 
 #include "Singleton.h"
 #include "OpenGL/GLState.h"
@@ -18,18 +20,15 @@ public:
 
 	void update();
 
-	void addRenderObject(RenderObject* object);
-	void removeRenderObject(RenderObject* object);
-	RenderObject* getRenderObject(int index);
-
-	void addLight(Light* light);
-	void removeLight(Light* light);
-
-private:
 	void addObject(Object* object);
 	void removeObject(Object* object);
+	void removeObject(std::string name);
 
-	std::vector<Object*> objects;
-	std::vector<RenderObject*> renderObjects;
-	std::vector<Light*> lights;
+	std::vector<Object*>& getObjectsByType(std::string type);
+	Object* getObjectByTypeAndName(std::string type, std::string name);
+	Object* getObjectByName(std::string name);
+
+private:
+	
+	std::map<std::string,std::vector<Object*>> objectMap;
 };

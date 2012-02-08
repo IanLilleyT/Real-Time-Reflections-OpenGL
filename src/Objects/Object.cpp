@@ -15,6 +15,16 @@ std::string Object::getName()
 	return this->name;
 }
 
+//Type
+void Object::setType(std::string type)
+{
+	this->type = type;
+}
+std::string Object::getType()
+{
+	return this->type;
+}
+
 /*---------------------------------------------
   Transformations
 ---------------------------------------------*/

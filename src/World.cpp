@@ -5,63 +5,72 @@ World::~World(){}
 
 void World::update()
 {
-	Singleton<GLState>::Instance()->setLights(this->lights);
-	for(unsigned int i = 0; i < this->objects.size(); i++)
+	std::vector<Object*>& lights = this->getObjectsByType("Light");
+	Singleton<GLState>::Instance()->setLights(lights);
+
+	//Update all objects
+	std::map<std::string,std::vector<Object*>>::iterator iter;
+	for(iter = this->objectMap.begin(); iter != this->objectMap.end(); ++iter)
 	{
-		Object* object = this->objects.at(i);
-		object->update();
+		std::string type = iter->first;
+		std::vector<Object*>& objects = this->getObjectsByType(type);
+		for(unsigned int i = 0; i < objects.size(); i++)
+		{
+			Object* object = objects.at(i);
+			object->update();
+		}
 	}
 }
 
 //Objects
 void World::addObject(Object* object)
 {
-	this->objects.push_back(object);
+	if(object != 0)
+		(this->objectMap[object->getType()]).push_back(object);
 }
 void World::removeObject(Object* object)
 {
-	std::vector<Object*>::iterator it;
-	it = std::find(this->objects.begin(),this->objects.end(),object);
-	if(it != this->objects.end())
+	if(object != 0)
 	{
-		this->objects.erase(it);
+		std::vector<Object*>& objects = this->getObjectsByType(object->getType());
+		std::vector<Object*>::iterator iter = std::find(objects.begin(),objects.end(),object);
+		if(iter != objects.end())
+			objects.erase(iter);
 	}
+}
+void World::removeObject(std::string name)
+{
+	this->removeObject(this->getObjectByName(name));
 }
 
-//RenderObjects
-void World::addRenderObject(RenderObject* renderObject)
+Object* World::getObjectByName(std::string name)
 {
-	this->renderObjects.push_back(renderObject);
-	this->addObject(renderObject);
-}
-void World::removeRenderObject(RenderObject* renderObject)
-{
-	std::vector<RenderObject*>::iterator it;
-	it = std::find(this->renderObjects.begin(),this->renderObjects.end(),renderObject);
-	if(it != this->renderObjects.end())
+	std::map<std::string,std::vector<Object*>>::iterator iter;
+	for(iter = this->objectMap.begin(); iter != this->objectMap.end(); ++iter)
 	{
-		this->renderObjects.erase(it);
+		std::string type = iter->first;
+		Object* object = this->getObjectByTypeAndName(type, name);
+		if(object != 0)
+			return object;
 	}
-	this->removeObject(renderObject);
+	return 0;
 }
-RenderObject* World::getRenderObject(int index)
+Object* World::getObjectByTypeAndName(std::string type, std::string name)
 {
-	return this->renderObjects.at(index);
-}
-
-//Lights
-void World::addLight(Light* light)
-{
-	this->lights.push_back(light);
-	this->addObject(light);
-}
-void World::removeLight(Light* light)
-{
-	std::vector<Light*>::iterator it;
-	it = std::find(this->lights.begin(),this->lights.end(),light);
-	if(it != this->lights.end())
+	std::vector<Object*> objects = this->getObjectsByType(type);
+	for(int i = 0; i < objects.size(); i++)
 	{
-		this->lights.erase(it);
+		Object* object = objects.at(i);
+		std::string currName = object->getName();
+		if(currName == name)
+			return object;
 	}
-	this->removeObject(light);
+	return 0;
+}
+std::vector<Object*>& World::getObjectsByType(std::string type)
+{
+	std::map<std::string, std::vector<Object*>>::iterator iter = this->objectMap.find(type);
+	if(iter != this->objectMap.end())
+		return iter->second;
+	return std::vector<Object*>();
 }

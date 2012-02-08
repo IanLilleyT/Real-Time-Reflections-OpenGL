@@ -20,6 +20,10 @@ public:
 	void setName(std::string name);
 	std::string getName();
 
+	//Type
+	void setType(std::string type);
+	std::string getType();
+
 	//Transformations
 	glm::mat4 getTransformationMatrix();
 	void setTransformationMatrix(glm::mat4 transformationMatrix);
@@ -62,6 +66,7 @@ public:
 
 protected:
 	std::string name;
+	std::string type;
 
 	void updateTransformations();
 	glm::mat4 transformationMatrix;

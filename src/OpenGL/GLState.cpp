@@ -44,11 +44,11 @@ Material* GLState::getMaterial()
 }
 
 //Lights
-void GLState::setLights(std::vector<Light*> lights)
+void GLState::setLights(std::vector<Object*>& lights)
 {
 	this->lights = lights;
 }
-std::vector<Light*> GLState::getLights()
+std::vector<Object*>& GLState::getLights()
 {
 	return this->lights;
 }

@@ -47,15 +47,15 @@ World* WorldDatabase::openWorldFile(std::string worldFileName)
 			getline(file, line);
 			if(line == "RenderObject")
 			{
-				this->processRenderObject(file, world);
+				this->processRenderObject(file, line, world);
 			}
 			else if(line == "Jello")
 			{
-				this->processJello(file,world);
+				this->processJello(file, line, world);
 			}
 			else if(line == "Light")
 			{
-				this->processLight(file,world);
+				this->processLight(file, line, world);
 			}
 		}
 		file.close();
@@ -76,12 +76,13 @@ bool WorldDatabase::isFieldValid(std::ifstream& file, std::string name, std::vec
 	return results.at(0) == name;
 }
 
-void WorldDatabase::processRenderObject(std::ifstream& file, World* world)
+void WorldDatabase::processRenderObject(std::ifstream& file, std::string type, World* world)
 {
 	std::vector<std::string> results;
 
 	RenderObject* renderObject = new RenderObject();
-	world->addRenderObject(renderObject);
+	renderObject->setType(type);
+	world->addObject(renderObject);
 				
 	//Load name
 	if(this->isFieldValid(file,"name",results))
@@ -135,12 +136,14 @@ void WorldDatabase::processRenderObject(std::ifstream& file, World* world)
 		renderObject->setScale(scale);	
 	}
 }
-void WorldDatabase::processJello(std::ifstream& file, World* world)
+void WorldDatabase::processJello(std::ifstream& file, std::string type, World* world)
 {
-	/*std::vector<std::string> results;
+	/*
+	std::vector<std::string> results;
 
 	Jello* jello = new Jello();
-	world->addRenderObject(renderObject);
+	jello->setType(type);
+	world->addObject(jello);
 				
 	//Load name
 	if(this->isFieldValid(file,"name",results))
@@ -194,12 +197,13 @@ void WorldDatabase::processJello(std::ifstream& file, World* world)
 		renderObject->setScale(scale);	
 	}*/
 }
-void WorldDatabase::processLight(std::ifstream& file, World* world)
+void WorldDatabase::processLight(std::ifstream& file, std::string type, World* world)
 {
 	std::vector<std::string> results;
 
 	Light* light = new Light();
-	world->addLight(light);
+	light->setType(type);
+	world->addObject(light);
 				
 	//Load name
 	if(this->isFieldValid(file,"name",results))

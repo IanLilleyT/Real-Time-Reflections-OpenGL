@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 
 #include "../Material.h"
-#include "../Objects/Light.h"
+#include "../Objects/Object.h"
 
 class GLState
 {
@@ -25,13 +25,13 @@ public:
 	void setMaterial(Material* material);
 	Material* getMaterial();
 
-	void setLights(std::vector<Light*> lights);
-	std::vector<Light*> getLights();
+	void setLights(std::vector<Object*>& lights);
+	std::vector<Object*>& getLights();
 
 private:
 	glm::mat4 modelToWorldMatrix;
 	glm::mat4 worldToCameraMatrix;
 	glm::mat4 cameraToClipMatrix;
 	Material* material;
-	std::vector<Light*> lights;
+	std::vector<Object*> lights;
 };

@@ -51,11 +51,11 @@ void GLUniformBlockHelper::update()
 	//Lights Block
 	GLUniformBlock* lightsUniformBlock = this->findUniformBlock(TYPE_LIGHTS);
 	LightsBlock lightsBlock = LightsBlock();
-	std::vector<Light*> lights = glState->getLights();
+	std::vector<Object*>& lights = glState->getLights();
 	int numLights = (std::min)((int)lights.size(), (int)MAX_NUMBER_OF_LIGHTS);
 	for(int i = 0; i < numLights; i++)
 	{
-		Light* light = lights.at(i);
+		Light* light = dynamic_cast<Light*>(lights.at(i));
 		glm::vec4 lightPos = glm::vec4(light->getPosition(), 1.0f);
 		glm::vec4 lightPosCameraSpace = glm::vec4(glm::vec3(worldToCameraMatrix * lightPos),1.0f);
 		lightsBlock.lights[i].cameraSpaceLightPos = lightPosCameraSpace;

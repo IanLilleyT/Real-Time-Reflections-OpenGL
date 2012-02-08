@@ -31,6 +31,6 @@ intensity 1 1 1 1
 translation 2 0 0
 
 Light
-name light1
+name light2
 intensity .4 1 .6 1
 translation -2 2 0
