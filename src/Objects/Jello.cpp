@@ -44,20 +44,22 @@ void Jello::initialize(std::string shape, glm::vec3 origin, glm::vec3 size, glm:
 				float yPos = row*rowSize + origin.y;
 				float zPos = dep*depSize + origin.z;
 				glm::vec3 position = glm::vec3(xPos,yPos,zPos);
+
 				Jello::Particle* particle = new Particle();
 				particle->position = position;
 				particle->index3D = glm::uvec3(col,row,dep);
 				particle->index1D = this->convert3DTo1DIndex(col,row,dep);
-				if(((col % (numCols - 1)) == 0) || ((row % (numRows - 1)) == 0) || ((dep % (numDeps - 1)) == 0))
-					particle->isExternal = true;
-				this->particles[this->convert3DTo1DIndex(col,row,dep)] = particle;
+				this->particles[particle->index1D] = particle;
+
+				if((col % (numCols - 1)) == 0 || (row % (numRows - 1)) == 0 || (dep % (numDeps - 1)) == 0)
+					this->exteriorParticlesMap[particle] = this->exteriorParticlesMap.size();
 			}
 		}
 	}
 
 	//Set up mesh
 	this->mesh = new GLMesh();
-	std::vector<GLfloat> vboData = std::vector<GLfloat>(numParticles*3*2,0); // 3 components. x2 for normals
+	std::vector<GLfloat> vboData = std::vector<GLfloat>(this->exteriorParticlesMap.size()*3*2,0); // x3 for components. x2 for normals
 	int numTriangles = 4*((numCols-1)*(numRows-1) + (numRows-1)*(numDeps-1) + (numCols-1)*(numDeps-1));
 	std::vector<GLushort> iboData = std::vector<GLushort>(numTriangles*3,0);
 	this->mesh->setVBOData(vboData,iboData,GL_TRIANGLES);
@@ -65,80 +67,78 @@ void Jello::initialize(std::string shape, glm::vec3 origin, glm::vec3 size, glm:
 }
 void Jello::initializeExternalParticlesIBO()
 {
-	int iboCounter = 0;
-	std::vector<GLushort>& iboData = this->mesh->getIBOData();
-	for(unsigned int i = 0; i < this->particles.size(); i++)
-	{
-		Particle* particle = this->particles.at(i);
-		if(particle->isExternal)
-		{
-			int col = particle->index3D.x;
-			int row = particle->index3D.y;
-			int dep = particle->index3D.z;
-			int numCols = this->dimensions.x;
-			int numRows = this->dimensions.y;
-			int numDeps = this->dimensions.z;
+	int numCols = this->dimensions.x;
+	int numRows = this->dimensions.y;
+	int numDeps = this->dimensions.z;
 
-			if(dep == (numDeps-1) && col > 0 && row > 0) //front
-			{
-				iboData[iboCounter++] = particle->index1D;
-				iboData[iboCounter++] = this->getParticle(col-1,row,dep)->index1D;
-				iboData[iboCounter++] = this->getParticle(col,row-1,dep)->index1D;
+	std::vector<GLushort>& iboData = this->mesh->getIBOData();
+	std::map<Particle*,int>::iterator iter;
+	for(iter = this->exteriorParticlesMap.begin(); iter != this->exteriorParticlesMap.end(); ++iter)
+	{
+		Particle* particle = iter->first;
+		int col = particle->index3D.x;
+		int row = particle->index3D.y;
+		int dep = particle->index3D.z;
+
+		if(dep == (numDeps-1) && col > 0 && row > 0) //front
+		{
+			iboData[iboData.size()] = this->exteriorParticlesMap[particle];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col-1,row,dep)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row-1,dep)];
 				
-				iboData[iboCounter++] = this->getParticle(col,row-1,dep)->index1D;
-				iboData[iboCounter++] = this->getParticle(col-1,row,dep)->index1D;
-				iboData[iboCounter++] = this->getParticle(col-1,row-1,dep)->index1D;	
-			}
-			if(dep == 0 && col > 0 && row > 0) //back
-			{
-				iboData[iboCounter++] = particle->index1D;
-				iboData[iboCounter++] = this->getParticle(col,row-1,dep)->index1D;
-				iboData[iboCounter++] = this->getParticle(col-1,row,dep)->index1D;
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row-1,dep)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col-1,row,dep)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col-1,row-1,dep)];	
+		}
+		if(dep == 0 && col > 0 && row > 0) //back
+		{
+			iboData[iboData.size()] = this->exteriorParticlesMap[particle];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row-1,dep)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col-1,row,dep)];
+			
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row-1,dep)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col-1,row-1,dep)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col-1,row,dep)];
+		}
+		if(col == (numCols-1) && dep > 0 && row > 0) //right
+		{
+			iboData[iboData.size()] = this->exteriorParticlesMap[particle];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row-1,dep)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row,dep-1)];
+
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row-1,dep)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row-1,dep-1)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row,dep-1)];
+		}
+		if(col == 0 && dep > 0 && row > 0) //left
+		{
+			iboData[iboData.size()] = this->exteriorParticlesMap[particle];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row,dep-1)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row-1,dep)];
 				
-				iboData[iboCounter++] = this->getParticle(col,row-1,dep)->index1D;
-				iboData[iboCounter++] = this->getParticle(col-1,row-1,dep)->index1D;
-				iboData[iboCounter++] = this->getParticle(col-1,row,dep)->index1D;
-			}
-			if(col == 0 && dep > 0 && row > 0) //left
-			{
-				iboData[iboCounter++] = particle->index1D;
-				iboData[iboCounter++] = this->getParticle(col,row,dep-1)->index1D;
-				iboData[iboCounter++] = this->getParticle(col,row-1,dep)->index1D;
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row-1,dep)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row,dep-1)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row-1,dep-1)];
+		}
+		if(row == (numRows-1) && dep > 0 && col > 0) //top
+		{
+			iboData[iboData.size()] = this->exteriorParticlesMap[particle];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row,dep-1)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col-1,row,dep)];
 				
-				iboData[iboCounter++] = this->getParticle(col,row-1,dep)->index1D;
-				iboData[iboCounter++] = this->getParticle(col,row,dep-1)->index1D;
-				iboData[iboCounter++] = this->getParticle(col,row-1,dep-1)->index1D;
-			}
-			if(col == (numCols-1) && dep > 0 && row > 0) //right
-			{
-				iboData[iboCounter++] = particle->index1D;
-				iboData[iboCounter++] = this->getParticle(col,row-1,dep)->index1D;
-				iboData[iboCounter++] = this->getParticle(col,row,dep-1)->index1D;
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row,dep-1)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col-1,row,dep-1)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col-1,row,dep)];	
+		}
+		if(row == 0 && dep > 0 && col > 0) //bottom
+		{
+			iboData[iboData.size()] = this->exteriorParticlesMap[particle];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col-1,row,dep)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row,dep-1)];
 				
-				iboData[iboCounter++] = this->getParticle(col,row-1,dep)->index1D;
-				iboData[iboCounter++] = this->getParticle(col,row-1,dep-1)->index1D;
-				iboData[iboCounter++] = this->getParticle(col,row,dep-1)->index1D;
-			}
-			if(row == 0 && dep > 0 && col > 0) //bottom
-			{
-				iboData[iboCounter++] = particle->index1D;
-				iboData[iboCounter++] = this->getParticle(col-1,row,dep)->index1D;
-				iboData[iboCounter++] = this->getParticle(col,row,dep-1)->index1D;
-				
-				iboData[iboCounter++] = this->getParticle(col,row,dep-1)->index1D;
-				iboData[iboCounter++] = this->getParticle(col-1,row,dep)->index1D;
-				iboData[iboCounter++] = this->getParticle(col-1,row,dep-1)->index1D;
-			}
-			if(row == (numRows-1) && dep > 0 && col > 0) //top
-			{
-				iboData[iboCounter++] = particle->index1D;
-				iboData[iboCounter++] = this->getParticle(col,row,dep-1)->index1D;
-				iboData[iboCounter++] = this->getParticle(col-1,row,dep)->index1D;
-				
-				iboData[iboCounter++] = this->getParticle(col,row,dep-1)->index1D;
-				iboData[iboCounter++] = this->getParticle(col-1,row,dep-1)->index1D;
-				iboData[iboCounter++] = this->getParticle(col-1,row,dep)->index1D;	
-			}
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col,row,dep-1)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col-1,row,dep)];
+			iboData[iboData.size()] = this->exteriorParticlesMap[this->getParticle(col-1,row,dep-1)];
 		}
 	}
 }
@@ -149,28 +149,74 @@ void Jello::updateSprings()
 void Jello::updateExternalParticles()
 {
 	std::vector<GLfloat>& vboData = this->mesh->getVBOData();
-	int iboCounter = 0;
-	for(unsigned int i = 0; i < this->particles.size(); i++)
+	std::map<Particle*,int>::iterator iter;
+	for(iter = this->exteriorParticlesMap.begin(); iter != this->exteriorParticlesMap.end(); ++iter)
 	{
-		Particle* particle = this->particles.at(i);
-		if(particle->isExternal)
-		{
-			vboData[particle->index1D*3 + 0] = particle->position.x;
-			vboData[particle->index1D*3 + 1] = particle->position.y;
-			vboData[particle->index1D*3 + 2] = particle->position.z;
-			vboData[vboData.size()/2 + particle->index1D*3 + 0] = 0;
-			vboData[vboData.size()/2 + particle->index1D*3 + 1] = 0;
-			vboData[vboData.size()/2 + particle->index1D*3 + 2] = 1;
-		}
+		Particle* particle = iter->first;
+		int mappedIndex = iter->second;
+
+		//Vertex
+		vboData[mappedIndex*3 + 0] = particle->position.x;
+		vboData[mappedIndex*3 + 1] = particle->position.y;
+		vboData[mappedIndex*3 + 2] = particle->position.z;
+
+		//Normal
+		glm::vec3 normal = this->getNormal(particle);
+		vboData[vboData.size()/2 + mappedIndex*3 + 0] = normal.x;
+		vboData[vboData.size()/2 + mappedIndex*3 + 1] = normal.y;
+		vboData[vboData.size()/2 + mappedIndex*3 + 2] = normal.z;
 	}
 }
-/*glm::vec3 Jello::getNormal(Particle* particle)
+glm::vec3 Jello::getNormal(Particle* particle)
 {
-	if(particle->isExternal)
-	{
+	int numCols = this->dimensions.x;
+	int numRows = this->dimensions.y;
+	int numDeps = this->dimensions.z;
 
+	int col = particle->index3D.x;
+	int row = particle->index3D.y;
+	int dep = particle->index3D.z;
+
+	std::vector<Particle*> neighbors;
+
+	if((col % (numCols-1)) == 0  && (row % (numRows-1)) == 0 && (dep % (numDeps-1)) == 0) //corners
+	{
+		neighbors.push_back(this->getParticle(col+(col == 0 ? 1:-1),row,dep));
+		neighbors.push_back(this->getParticle(col,row+(row == 0 ? 1:-1),dep));
+		neighbors.push_back(this->getParticle(col,row,dep+(dep == 0 ? 1:-1)));
 	}
-}*/
+	else if((col % (numCols-1)) == 0 && (dep % (numDeps-1)) == 0) //col edges
+	{
+		neighbors.push_back(this->getParticle(col+(col == 0 ? 1:-1),row,dep));
+		neighbors.push_back(this->getParticle(col,row,dep+(dep == 0 ? 1:-1)));
+		neighbors.push_back(this->getParticle(col,row+1,dep));
+		neighbors.push_back(this->getParticle(col,row-1,dep));
+	}
+	else if((row % (numRows-1)) == 0 && (dep % (numDeps-1)) == 0) //row edges
+	{
+		neighbors.push_back(this->getParticle(col,row+(row == 0 ? 1:-1),dep));
+		neighbors.push_back(this->getParticle(col,row,dep+(dep == 0 ? 1:-1)));
+		neighbors.push_back(this->getParticle(col+1,row,dep));
+		neighbors.push_back(this->getParticle(col-1,row,dep));
+	}
+	else if((col % (numCols-1)) == 0 && (row % (numRows-1)) == 0) //dep edges
+	{
+		neighbors.push_back(this->getParticle(col+(col == 0 ? 1:-1),row,dep));
+		neighbors.push_back(this->getParticle(col,row+(row == 0 ? 1:-1),dep));
+		neighbors.push_back(this->getParticle(col,row,dep+1));
+		neighbors.push_back(this->getParticle(col,row,dep-1));
+	}
+
+	glm::vec3 accum;
+	for(int i = 0; i < neighbors.size(); i++)
+	{
+		glm::vec3 neighborPos = neighbors.at(i)->position;
+		glm::vec3 edge = glm::normalize(particle->position - neighborPos);
+		accum += edge;
+	}
+	accum = glm::normalize(accum);
+	return accum;
+}
 int Jello::convert3DTo1DIndex(int col, int row, int dep)
 {
 	return col*dimensions.y*dimensions.z + row*dimensions.z + dep;
@@ -180,6 +226,9 @@ Jello::Particle* Jello::getParticle(int col, int row, int dep)
 	return this->particles.at(this->convert3DTo1DIndex(col,row,dep));
 }
 
+/*---------------------------------------------
+  Getters
+---------------------------------------------*/
 std::string Jello::getShape()
 {
 	return this->shape;
@@ -204,18 +253,5 @@ Jello::Particle::Particle()
 {
 	this->index1D = -1;
 	this->mass = 1;
-	this->isExternal = false;
 }
 Jello::Particle::~Particle(){}
-/*glm::vec3 Jello::Particle::calcNormalFromNeighbors()
-{
-	glm::vec3 accum;
-	for(int i = 0; i < this->neighbors.size(); i++)
-	{
-		glm::vec3 neighborPos = neighbors.at(i)->position;
-		glm::vec3 edge = glm::normalize(this->position - neighborPos);
-		accum += edge;
-	}
-	accum = glm::normalize(accum);
-	return accum;
-}*/

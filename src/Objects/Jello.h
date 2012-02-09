@@ -36,8 +36,6 @@ protected:
         glm::vec3 velocity;
         glm::vec3 force;
         double mass;
-		bool isExternal;
-		std::vector<Particle*> neighbors;
     };
 
 	std::string shape;
@@ -45,11 +43,13 @@ protected:
 	glm::vec3 size;
 	glm::uvec3 dimensions;
 	std::vector<Particle*> particles;
+	std::map<Particle*,int> exteriorParticlesMap;
 
 	void initializeExternalParticlesIBO();
 	void updateExternalParticles();
 	void updateSprings();
-	//glm::vec3 getNormal(Particle* particle);
+
+	glm::vec3 getNormal(Particle* particle);
 	int convert3DTo1DIndex(int col, int row, int dep);
 	Particle* getParticle(int col, int row, int dep);
 };
