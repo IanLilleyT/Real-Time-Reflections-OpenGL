@@ -32,6 +32,8 @@ public:
 	std::string getProgramType();
 
 	void setVBOData(std::vector<GLfloat> vboData, std::vector<GLushort> iboData, GLenum drawType);
+	std::vector<GLfloat>& getVBOData();
+	std::vector<GLushort>& getIBOData();
     
     void Render();
 

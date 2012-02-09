@@ -28,7 +28,7 @@ public:
 	void setProgramType(std::string type);
 	std::string getProgramType();
 
-private:
+protected:
 	GLMesh* mesh;
 	Material* material;
 };

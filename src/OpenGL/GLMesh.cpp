@@ -34,6 +34,14 @@ void GLMesh::setVBOData(std::vector<GLfloat> vboData, std::vector<GLushort> iboD
 	this->bufferObject->setIndexBufferData(iboData);
 	this->bufferObject->setDrawType(drawType);
 }
+std::vector<GLfloat>& GLMesh::getVBOData()
+{
+	return this->bufferObject->getVertexBufferData();
+}
+std::vector<GLushort>& GLMesh::getIBOData()
+{
+	return this->bufferObject->getIndexBufferData();
+}
 
 /*---------------------------------------------
   Other
