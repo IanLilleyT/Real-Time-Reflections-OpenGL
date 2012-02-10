@@ -10,6 +10,7 @@
 #include "Objects/Object.h"
 #include "Objects/RenderObject.h"
 #include "Objects/Light.h"
+#include "Objects/Jello.h"
 
 class World
 {

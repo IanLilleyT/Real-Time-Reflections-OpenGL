@@ -16,6 +16,7 @@ public:
     void setDrawType(GLenum drawType);
     void setVertexBufferData(std::vector<GLfloat> vertexBufferData);
     void setIndexBufferData(std::vector<GLushort> indexBufferData);
+	void setNumElements(GLuint numElements);
 
     //Getters
     GLuint getVertexBuffer();
@@ -25,10 +26,12 @@ public:
     std::vector<GLushort>& getIndexBufferData();
 	GLuint getNumElements();
 
+
 private:
     GLuint vertexBuffer;
     GLuint indexBuffer;
     GLenum drawType;
     std::vector<GLfloat> vertexBufferData;
     std::vector<GLushort> indexBufferData;
+	GLuint numElements;
 };

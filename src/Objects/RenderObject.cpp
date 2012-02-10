@@ -5,13 +5,12 @@ RenderObject::~RenderObject(){}
 
 void RenderObject::update()
 {
-	Object::update();
-	Singleton<GLState>::Instance()->setModelToWorldMatrix(this->transformationMatrix);
-	Singleton<GLState>::Instance()->setMaterial(this->material);
 	this->render();
 }
 void RenderObject::render()
 {
+	Singleton<GLState>::Instance()->setModelToWorldMatrix(this->transformationMatrix);
+	Singleton<GLState>::Instance()->setMaterial(this->material);
 	this->mesh->Render();
 }
 

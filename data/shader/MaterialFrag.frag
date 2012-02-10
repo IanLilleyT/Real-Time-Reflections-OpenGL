@@ -8,6 +8,8 @@ out vec4 outputColor;
 uniform vec4 diffuseColor;
 uniform vec4 specularColor;
 uniform float specularShininess;
+uniform float alpha;
+
 uniform int numLights;
 
 struct PerLight
@@ -86,4 +88,5 @@ void main()
 	vec4 gamma = vec4(1.0 / LightsBlck.gamma);
 	gamma.w = 1.0;
 	outputColor = pow(accumLighting, gamma);
+	outputColor.w = alpha;
 }

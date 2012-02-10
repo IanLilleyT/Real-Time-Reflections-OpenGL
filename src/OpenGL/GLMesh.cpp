@@ -28,11 +28,12 @@ std::string GLMesh::getProgramType()
 {
 	return this->program->getName();
 }
-void GLMesh::setVBOData(std::vector<GLfloat> vboData, std::vector<GLushort> iboData, GLenum drawType)
+void GLMesh::setVBOData(std::vector<GLfloat> vboData, std::vector<GLushort> iboData, GLuint numElements, GLenum drawType)
 {
 	this->bufferObject->setVertexBufferData(vboData);
 	this->bufferObject->setIndexBufferData(iboData);
 	this->bufferObject->setDrawType(drawType);
+	this->bufferObject->setNumElements(numElements);
 }
 std::vector<GLfloat>& GLMesh::getVBOData()
 {
@@ -63,11 +64,11 @@ void GLMesh::Generate()
 
     //Enable attributes
 	size_t offset = 0;
-	GLuint numElements = this->bufferObject->getNumElements();
 	std::vector<GLAttribute*> attributes = this->vertexArrayObject->getAttributes();
-    for(unsigned int j = 0; j < attributes.size(); j++)
+	GLuint numElements = this->bufferObject->getNumElements();
+    for(unsigned int i = 0; i < attributes.size(); i++)
     {
-        GLAttribute* attribute = attributes.at(j);
+        GLAttribute* attribute = attributes.at(i);
         glEnableVertexAttribArray(attribute->getAttributePos()); //enable attribute
         glVertexAttribPointer(attribute->getAttributePos(), attribute->getSize(), attribute->getType(), GL_FALSE, 0, (void*) offset);
 		offset += numElements*attribute->getSize()*sizeof(GLfloat);

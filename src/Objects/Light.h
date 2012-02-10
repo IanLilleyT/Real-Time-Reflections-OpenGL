@@ -10,8 +10,6 @@ public:
 	Light();
 	virtual ~Light();
 
-	virtual void update();
-
 	//Intensity
 	void setIntensity(glm::vec4 intensity);
 	glm::vec4 getIntensity();

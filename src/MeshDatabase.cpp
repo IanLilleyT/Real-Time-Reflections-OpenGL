@@ -42,6 +42,8 @@ GLMesh* MeshDatabase::openMeshFile(std::string meshFileName)
 		std::vector<GLfloat> normalVBOData = std::vector<GLfloat>();
 		std::vector<GLfloat> vboData = std::vector<GLfloat>();
 		std::vector<GLushort> iboData = std::vector<GLushort>();
+		int numElements = 0;
+
 		while(file.good())
 		{
 			getline(file,line);
@@ -78,6 +80,7 @@ GLMesh* MeshDatabase::openMeshFile(std::string meshFileName)
 						normalVBOData.push_back((GLfloat)normal.y);
 						normalVBOData.push_back((GLfloat)normal.z);
 						iboData.push_back((GLushort)iboData.size());
+						numElements++;
 					}
 				}
 			}
@@ -87,7 +90,7 @@ GLMesh* MeshDatabase::openMeshFile(std::string meshFileName)
 		vboData.insert(vboData.end(), vertexVBOData.begin(), vertexVBOData.end());
 		vboData.insert(vboData.end(), normalVBOData.begin(), normalVBOData.end());
 		GLMesh* mesh = new GLMesh();
-		mesh->setVBOData(vboData,iboData,GL_TRIANGLES);
+		mesh->setVBOData(vboData,iboData,(GLuint)numElements,GL_TRIANGLES);
 		return mesh;
 	}
 	else

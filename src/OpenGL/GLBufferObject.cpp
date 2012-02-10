@@ -33,6 +33,10 @@ void GLBufferObject::setIndexBufferData(std::vector<GLushort> indexBufferData)
 {
 	this->indexBufferData = indexBufferData;
 }
+void GLBufferObject::setNumElements(GLuint numElements)
+{
+	this->numElements = numElements;
+}
 
 //----------------
 // Getters ///////
@@ -59,5 +63,5 @@ std::vector<GLushort>& GLBufferObject::getIndexBufferData()
 }
 GLuint GLBufferObject::getNumElements()
 {
-	return this->getIndexBufferData().size();
+	return this->numElements;
 }

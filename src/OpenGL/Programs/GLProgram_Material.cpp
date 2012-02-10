@@ -56,6 +56,11 @@ void GLProgram_Material::fillUniforms()
 	GLuint shininessFactorUniform = glGetUniformLocation(this->program, "specularShininess");
 	glUniform1f(shininessFactorUniform, shininessFactor);
 
+	//Alpha
+	float alpha = material->getAlpha();
+	GLuint alphaUniform = glGetUniformLocation(this->program, "alpha");
+	glUniform1f(alphaUniform,alpha);
+
 	//Num Lights
 	int numLights = glState->getLights().size();
 	GLuint numLightsUniform = glGetUniformLocation(this->program, "numLights");

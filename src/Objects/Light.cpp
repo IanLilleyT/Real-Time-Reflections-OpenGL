@@ -9,11 +9,6 @@ float Light::gamma = 2.2f;
 Light::Light(){}
 Light::~Light(){}
 
-void Light::update()
-{
-	Object::update();
-}
-
 //Intensity
 void Light::setIntensity(glm::vec4 intensity)
 {
