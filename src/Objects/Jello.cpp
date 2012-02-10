@@ -3,13 +3,19 @@
 std::string Jello::SHAPE_CUBE = "CUBE";
 std::string Jello::SHAPE_SPHERE = "SPHERE";
 
-Jello::Jello(){}
+Jello::Jello()
+{
+	this->externalAcceleration = glm::vec3(0,-1,0);
+}
 Jello::~Jello(){}
 
 void Jello::update()
 {
-	updateSprings();
-	updateExternalParticles();
+	this->checkForCollisions();
+	this->computeForces();
+	this->resolveContacts();
+	this->resolveCollisions();
+	this->updateExternalParticles();
 	RenderObject::update();
 }
 void Jello::render()
@@ -152,7 +158,23 @@ void Jello::initializeExternalParticlesIBO()
 		}
 	}
 }
-void Jello::updateSprings()
+void Jello::checkForCollisions()
+{
+	for(int i = 0; i < this->particles.size(); i++)
+	{
+		Particle* p = this->particles.at(i);
+		p->force = p->mass*this->externalAcceleration;
+	}
+}
+void Jello::computeForces()
+{
+
+}
+void Jello::resolveContacts()
+{
+
+}
+void Jello::resolveCollisions()
 {
 
 }
@@ -301,3 +323,22 @@ Jello::Particle::Particle()
 	this->mass = 1;
 }
 Jello::Particle::~Particle(){}
+
+/*---------------------------------------------
+  Spring
+---------------------------------------------*/
+Jello::Spring::Spring()
+{
+	this->p1 = 0;
+	this->p2 = 0;
+}
+Jello::Spring::~Spring(){}
+
+/*---------------------------------------------
+  Intersection
+---------------------------------------------*/
+Jello::Intersection::Intersection()
+{
+	this->particle = 0;
+}
+Jello::Intersection::~Intersection(){}

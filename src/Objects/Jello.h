@@ -39,7 +39,7 @@ protected:
         glm::vec3 position;
         glm::vec3 velocity;
         glm::vec3 force;
-        double mass;
+        float mass;
     };
 
 	enum SpringType { STRUCTURAL, SHEAR, BEND }; 
@@ -52,9 +52,9 @@ protected:
         SpringType type;
         Particle* p1;
         Particle* p2;
-        double Ks;
-        double Kd;
-        double restLen;
+        float Ks;
+        float Kd;
+        float restLen;
     };
 
     enum IntersectionType { CONTACT, COLLISION };
@@ -66,7 +66,7 @@ protected:
 
         Particle* particle;
         glm::vec3 normal;
-        double distance;
+        float distance;
         IntersectionType type;
     };
 
@@ -79,10 +79,15 @@ protected:
 
 	GLMesh* normalMesh;
 
-	void initializeExternalParticlesIBO();
-	void updateExternalParticles();
-	void updateSprings();
+	glm::vec3 externalAcceleration;
 
+	void checkForCollisions();
+	void computeForces();
+	void resolveContacts();
+	void resolveCollisions();
+	void updateExternalParticles();
+
+	void initializeExternalParticlesIBO();
 	glm::vec3 getNormal(Particle* particle);
 	int convert3DTo1DIndex(int col, int row, int dep);
 	Particle* getParticle(int col, int row, int dep);
