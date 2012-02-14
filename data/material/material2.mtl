@@ -1,5 +1,5 @@
 diffuseColor .2 .2 1 1
 specularColor 1 1 1 1
-specularShininess .3
+specularShininess .1
 reflectivity 0
 alpha 1

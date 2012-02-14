@@ -11,23 +11,17 @@ public:
 	Jello();
 	virtual ~Jello();
 
+	void initialize(std::string shape, glm::vec3 origin, glm::vec3 size, glm::uvec3 divisions); 
 	virtual void update();
 	virtual void render();
-
-	void initialize(std::string shape, glm::vec3 origin, glm::vec3 size, glm::uvec3 divisions); 
-
-	std::string getShape();
-	glm::vec3 getOrigin();
-	glm::vec3 getSize();
-	glm::uvec3 getDimensions();
-
-	static std::string SHAPE_CUBE;
-	static std::string SHAPE_SPHERE;
 
 protected:
 
 	enum IntegrationType { EULER, MIDPOINT, RK4 };
+	enum SpringType { STRUCTURAL, SHEAR, BEND }; 
+	enum IntersectionType { CONTACT, COLLISION };
 
+	//Helper Classes
 	class Particle
     {
     public:
@@ -41,54 +35,93 @@ protected:
         glm::vec3 force;
         float mass;
     };
-
-	enum SpringType { STRUCTURAL, SHEAR, BEND }; 
 	class Spring
     {
     public:
         Spring();
+		Spring(SpringType t, int p1, int p2, float Ks, float Kd, float restLen);
 		~Spring();
 
         SpringType type;
-        Particle* p1;
-        Particle* p2;
+        int p1;
+        int p2;
         float Ks;
         float Kd;
         float restLen;
     };
-
-    enum IntersectionType { CONTACT, COLLISION };
     class Intersection
     {
     public:
         Intersection();
 		~Intersection();
 
-        Particle* particle;
+        int p;
         glm::vec3 normal;
         float distance;
         IntersectionType type;
     };
 
+	//Variables
+	GLMesh* normalMesh;
 	std::string shape;
 	glm::vec3 origin;
 	glm::vec3 size;
-	glm::uvec3 dimensions;
-	std::vector<Particle*> particles;
-	std::map<Particle*,int> exteriorParticlesMap;
+	int numRows;
+	int numCols;
+	int numDeps;
+	std::vector<Particle> particles;
+	std::map<int,int> exteriorParticlesMap;
 
-	GLMesh* normalMesh;
-
+	Jello::IntegrationType integrationType;
+	float integrationTimestep;
 	glm::vec3 externalAcceleration;
 
+	//Integration
+	void EulerIntegrate();
+	void MidPointIntegrate();
+	void RK4Integrate();
+
+	//Updaters
 	void checkForCollisions();
-	void computeForces();
+	void computeForces(std::vector<Particle>& particles);
 	void resolveContacts();
 	void resolveCollisions();
 	void updateExternalParticles();
 
+	//Initializers
+	void initializeParticles();
+	void initializeExternalParticles();
 	void initializeExternalParticlesIBO();
-	glm::vec3 getNormal(Particle* particle);
+	void initializeNormalMesh();
+	void initializeSprings();
+
+	//Springs
+	std::vector<Spring> springs;
+	void addStructuralSpring(Particle& p1, Particle& p2);
+	void addBendSpring(Particle& p1, Particle& p2);
+	void addShearSpring(Particle& p1, Particle& p2);
+
+	//Intersections
+	std::vector<Intersection> contacts;
+	std::vector<Intersection> collisions;
+	bool FloorIntersection(Particle& p, Intersection& intersection);
+    //virtual bool CylinderIntersection(Particle& p, World::Cylinder* cylinder, Intersection& intersection);
+
+	//Spring constants
+	static float structuralKs; 
+	static float structuralKd; 
+	static float attachmentKs;
+	static float attachmentKd;
+	static float shearKs;
+	static float shearKd;
+	static float bendKs;
+	static float bendKd;
+	static float penaltyKs;
+	static float penaltyKd;
+
+	//Helpers
+	glm::vec3 getNormal(Particle& particle);
 	int convert3DTo1DIndex(int col, int row, int dep);
-	Particle* getParticle(int col, int row, int dep);
+	Particle& getParticle(int col, int row, int dep);
+	Particle& getParticle(int index);
 };

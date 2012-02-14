@@ -58,7 +58,7 @@ Object* World::getObjectByName(std::string name)
 Object* World::getObjectByTypeAndName(std::string type, std::string name)
 {
 	std::vector<Object*> objects = this->getObjectsByType(type);
-	for(int i = 0; i < objects.size(); i++)
+	for(unsigned int i = 0; i < objects.size(); i++)
 	{
 		Object* object = objects.at(i);
 		std::string currName = object->getName();
