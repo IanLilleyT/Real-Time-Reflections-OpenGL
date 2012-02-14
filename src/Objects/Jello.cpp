@@ -1,7 +1,7 @@
 #include "Jello.h"
 
 //Constants
-float Jello::structuralKs = 1000; 
+float Jello::structuralKs = 5000;//1000; 
 float Jello::structuralKd = 10; 
 float Jello::attachmentKs = 0;
 float Jello::attachmentKd = 0;
@@ -14,7 +14,7 @@ float Jello::penaltyKd = 0.0;
 
 Jello::Jello()
 {
-	this->externalAcceleration = glm::vec3(0,-10,0);
+	this->externalAcceleration = glm::vec3(0,-9.8,0);
 	this->integrationType = RK4;
 	this->integrationTimestep = 0.01f;
 }
@@ -81,7 +81,6 @@ bool Jello::FloorIntersection(Particle& p, Intersection& intersection)
 {
 	float particlePosY = p.position[1];
 	float floorPosY = 0.0f;
-	float epsilon = .05f;
 	intersection.normal = glm::vec3(0,1,0);
 	intersection.p = p.index1D;
 	if(particlePosY < floorPosY)
@@ -100,15 +99,49 @@ void Jello::computeForces(std::vector<Particle>& particles)
 		Particle& p = particles.at(i);
 		p.force = p.mass*externalAcceleration;
 	}
-	//do spring force calculations
+	
+	// Update springs
+    for(unsigned int i = 0; i < this->springs.size(); i++)
+    {
+        Spring& spring = this->springs[i];
+        Particle& a = this->getParticle(spring.p1);
+        Particle& b = this->getParticle(spring.p2);
+
+		glm::vec3 diff = a.position - b.position;
+		float dist = glm::length(diff);
+		glm::vec3 diffNormalized = diff/dist;
+		float displacement = dist - spring.restLen;
+		glm::vec3 diffVel = a.velocity - b.velocity;
+		glm::vec3 force;
+
+		force = -diffNormalized*(spring.Ks*displacement + spring.Kd*(diffVel*diffNormalized));
+ 		a.force += force;
+		b.force -= force;
+    }
 }
 void Jello::resolveContacts()
 {
+	for (unsigned int i = 0; i < this->contacts.size(); i++)
+    {
+		const Intersection& contact = contacts[i];
+		Particle& p = this->getParticle(contact.p);
+		glm::vec3 normal = contact.normal; 
+		float dist = contact.distance;
 
+		p.position[1] = 0;
+		p.velocity *= -1;  
+    }
 }
 void Jello::resolveCollisions()
 {
-
+	for(unsigned int i = 0; i < this->collisions.size(); i++)
+    {
+        Intersection result = this->collisions[i];
+        Particle& pt = this->getParticle(result.p);
+        glm::vec3 normal = result.normal;
+        float dist = result.distance;
+		//Doesn't do anything yet
+	}
 }
 void Jello::updateExternalParticles()
 {
@@ -458,6 +491,7 @@ void Jello::initializeSprings()
                 if (j < numRows-1) this->addStructuralSpring(this->getParticle(i,j,k), this->getParticle(i,j+1,k));
                 if (k < numDeps-1) this->addStructuralSpring(this->getParticle(i,j,k), this->getParticle(i,j,k+1));
 
+				/*
 				//Shear Springs
 				if (i < numCols-1 && k < numDeps-1) this->addShearSpring(this->getParticle(i,j,k), this->getParticle(i+1,j,k+1));
 				if (j < numRows-1 && i < numCols-1) this->addShearSpring(this->getParticle(i,j,k), this->getParticle(i+1,j+1,k));
@@ -472,7 +506,7 @@ void Jello::initializeSprings()
 					if (i < numCols - 2) this->addBendSpring(this->getParticle(i,j,k), this->getParticle(i+2,j,k));
 					if (j < numRows - 2) this->addBendSpring(this->getParticle(i,j,k), this->getParticle(i,j+2,k));
 					if (k < numDeps - 2) this->addBendSpring(this->getParticle(i,j,k), this->getParticle(i,j,k+2));
-				}
+				}*/
             }
         }
     }

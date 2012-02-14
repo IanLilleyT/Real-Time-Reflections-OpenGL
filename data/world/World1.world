@@ -3,7 +3,7 @@ name floor
 mesh cube.obj
 material material2
 program Material
-translation 0 -5 0
+translation 0 -.5 0
 rotation 1 0 0 0
 scale 10 1 10
 
@@ -19,7 +19,7 @@ scale 1 1 1
 Jello
 name jelly
 shape cube
-origin -1 0 -1
+origin -1 1 -1
 size 2 2 2
 divisions 6 6 6
 material material2
