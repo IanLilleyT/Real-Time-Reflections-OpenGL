@@ -37,6 +37,7 @@ public:
     
 	void setVisible(bool visible);
 	bool isVisible();
+	int getNumElements();
 
     void Render();
 

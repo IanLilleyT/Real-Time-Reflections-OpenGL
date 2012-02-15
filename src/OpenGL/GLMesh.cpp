@@ -43,6 +43,10 @@ std::vector<GLushort>& GLMesh::getIBOData()
 {
 	return this->bufferObject->getIndexBufferData();
 }
+int GLMesh::getNumElements()
+{
+	return this->bufferObject->getNumElements();
+}
 
 /*---------------------------------------------
   Other

@@ -21,6 +21,7 @@ protected:
 	enum IntegrationType { EULER, MIDPOINT, RK4 };
 	enum SpringType { STRUCTURAL, SHEAR, BEND }; 
 	enum IntersectionType { CONTACT, COLLISION };
+	enum FaceType { LEFT, RIGHT, TOP, BOTTOM, FRONT, BACK };
 
 	//Helper Classes
 	class Particle
@@ -70,7 +71,7 @@ protected:
 	int numCols;
 	int numDeps;
 	std::vector<Particle> particles;
-	std::map<int,int> exteriorParticlesMap;
+	std::map<std::pair<FaceType,int>,int> exteriorParticlesMap;
 
 	//Normals
 	GLMesh* normalMesh;
@@ -96,11 +97,12 @@ protected:
 	void initializeParticles();
 	void initializeJelloMesh();
 	void initializeJelloMeshIBO();
+	void addFaceAtIndex(int& i, FaceType f, int c1, int r1, int d1, 
+		                int c2, int r2, int d2, int c3, int r3, int d3);
 	void initializeNormalMesh();
 	void initializeSprings();
 
 	//Springs
-
 	std::map<SpringType,std::vector<Spring>> springs;
 	std::map<SpringType,GLMesh*> springMeshes;
 	std::map<SpringType,std::pair<float,float>> springConstants;
@@ -114,7 +116,7 @@ protected:
     //virtual bool CylinderIntersection(Particle& p, World::Cylinder* cylinder, Intersection& intersection);
 
 	//Helpers
-	glm::vec3 getNormal(Particle& particle);
+	glm::vec3 getNormal(FaceType f, Particle& particle);
 	int convert3DTo1DIndex(int col, int row, int dep);
 	Particle& getParticle(int col, int row, int dep);
 	Particle& getParticle(int index);
