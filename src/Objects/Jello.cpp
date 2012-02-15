@@ -1,22 +1,16 @@
 #include "Jello.h"
 
-//Constants
-float Jello::structuralKs = 5000;//1000; 
-float Jello::structuralKd = 10; 
-float Jello::attachmentKs = 0;
-float Jello::attachmentKd = 0;
-float Jello::shearKs = 5000;
-float Jello::shearKd = 5;
-float Jello::bendKs = 10;
-float Jello::bendKd = 1;
-float Jello::penaltyKs = 0.0;
-float Jello::penaltyKd = 0.0;
-
 Jello::Jello()
 {
 	this->externalAcceleration = glm::vec3(0,-9.8,0);
 	this->integrationType = RK4;
-	this->integrationTimestep = 0.01f;
+	this->integrationTimestep = 0.0001f;
+
+	this->springConstants[STRUCTURAL] = std::pair<float,float>(1000.0f,10.0f); //Structural
+	this->springConstants[SHEAR] =      std::pair<float,float>(5000.0f,5.0f);  //Shear
+	this->springConstants[BEND] =       std::pair<float,float>(10.0f,1.0f);    //Bend
+
+	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::KeyPressed, InputReceiver::from_method<Jello,&Jello::keyDown>(this));
 }
 Jello::~Jello(){}
 
@@ -29,7 +23,7 @@ void Jello::initialize(std::string shape, glm::vec3 origin, glm::vec3 size, glm:
 	this->numRows = divisions.y + 1;
 	this->numDeps = divisions.z + 1;
 	this->initializeParticles();
-	this->initializeExternalParticles();
+	this->initializeJelloMesh();
 	this->initializeNormalMesh();
 	this->initializeSprings();
 }
@@ -45,13 +39,26 @@ void Jello::update()
 		case MIDPOINT: MidPointIntegrate(); break;
 		case RK4: RK4Integrate(); break;
     }
-	this->updateExternalParticles();
+	this->updateJelloMesh();
+	this->updateSpringMeshes();
 	RenderObject::update();
 }
 void Jello::render()
 {
 	RenderObject::render();
-	//this->normalMesh->Render();
+	if(this->normalMesh->isVisible())
+		this->normalMesh->Render();
+	this->renderSprings();
+}
+void Jello::renderSprings()
+{
+	std::map<SpringType,GLMesh*>::iterator iter;
+	for(iter = this->springMeshes.begin(); iter != this->springMeshes.end(); ++iter)
+	{
+		GLMesh* springMesh = iter->second;
+		if(springMesh->isVisible())
+			springMesh->Render();
+	}
 }
 
 /*---------------------------------------------
@@ -101,22 +108,28 @@ void Jello::computeForces(std::vector<Particle>& particles)
 	}
 	
 	// Update springs
-    for(unsigned int i = 0; i < this->springs.size(); i++)
-    {
-        Spring& spring = this->springs[i];
-        Particle& a = this->getParticle(spring.p1);
-        Particle& b = this->getParticle(spring.p2);
+	std::map<SpringType,std::vector<Spring>>::iterator iter;
+	for(iter = this->springs.begin(); iter != springs.end(); ++iter)
+	{
+		std::vector<Spring>& s = iter->second;
+		for(unsigned int i = 0; i < s.size(); i++)
+		{
+			Spring& spring = s.at(i);
 
-		glm::vec3 diff = a.position - b.position;
-		float dist = glm::length(diff);
-		glm::vec3 diffNormalized = diff/dist;
-		float displacement = dist - spring.restLen;
-		glm::vec3 diffVel = a.velocity - b.velocity;
-		glm::vec3 force;
+			Particle& a = this->getParticle(spring.p1);
+			Particle& b = this->getParticle(spring.p2);
 
-		force = -diffNormalized*(spring.Ks*displacement + spring.Kd*(diffVel*diffNormalized));
- 		a.force += force;
-		b.force -= force;
+			glm::vec3 diff = a.position - b.position;
+			float dist = glm::length(diff);
+			glm::vec3 diffNormalized = diff/dist;
+			float displacement = dist - spring.restLen;
+			glm::vec3 diffVel = a.velocity - b.velocity;
+			glm::vec3 force;
+
+			force = -diffNormalized*(spring.Ks*displacement + spring.Kd*(diffVel*diffNormalized));
+ 			a.force += force;
+			b.force -= force;
+		}
     }
 }
 void Jello::resolveContacts()
@@ -143,7 +156,7 @@ void Jello::resolveCollisions()
 		//Doesn't do anything yet
 	}
 }
-void Jello::updateExternalParticles()
+void Jello::updateJelloMesh()
 {
 	std::vector<GLfloat>& vboData = this->mesh->getVBOData();
 	std::vector<GLfloat>& normalVBOData = this->normalMesh->getVBOData();
@@ -165,27 +178,24 @@ void Jello::updateExternalParticles()
 		vboData[vboData.size()/2 + mappedIndex*3 + 2] = (GLfloat)normal.z;
 
 		//Normal vbo
-		normalVBOData[mappedIndex*6 + 0] = (GLfloat)(particle.position.x);
-		normalVBOData[mappedIndex*6 + 1] = (GLfloat)(particle.position.y);
-		normalVBOData[mappedIndex*6 + 2] = (GLfloat)(particle.position.z);
-		normalVBOData[mappedIndex*6 + 3] = (GLfloat)(particle.position.x+normal.x);
-		normalVBOData[mappedIndex*6 + 4] = (GLfloat)(particle.position.y+normal.y);
-		normalVBOData[mappedIndex*6 + 5] = (GLfloat)(particle.position.z+normal.z);
+		if(this->normalMesh->isVisible())
+		{
+			float normalSize = .2;
+			normalVBOData[mappedIndex*6 + 0] = (GLfloat)(particle.position.x);
+			normalVBOData[mappedIndex*6 + 1] = (GLfloat)(particle.position.y);
+			normalVBOData[mappedIndex*6 + 2] = (GLfloat)(particle.position.z);
+			normalVBOData[mappedIndex*6 + 3] = (GLfloat)(particle.position.x+normal.x*normalSize);
+			normalVBOData[mappedIndex*6 + 4] = (GLfloat)(particle.position.y+normal.y*normalSize);
+			normalVBOData[mappedIndex*6 + 5] = (GLfloat)(particle.position.z+normal.z*normalSize);
+		}
 	}
 }
 glm::vec3 Jello::getNormal(Particle& particle)
 {
-	int numCols = this->numCols;
-	int numRows = this->numRows;
-	int numDeps = this->numDeps;
-
 	int col = particle.index3D.x;
 	int row = particle.index3D.y;
 	int dep = particle.index3D.z;
-
-	glm::vec3 suggestedNormal;
 	std::vector<Particle> neighbors;
-
 	if((col % (numCols-1)) == 0  && (row % (numRows-1)) == 0 && (dep % (numDeps-1)) == 0) //corners
 	{
 		neighbors.push_back(this->getParticle(col+(col == 0 ? 1:-1),row,dep));
@@ -195,61 +205,90 @@ glm::vec3 Jello::getNormal(Particle& particle)
 	else if((col % (numCols-1)) == 0 && (dep % (numDeps-1)) == 0) //col edges
 	{
 		neighbors.push_back(this->getParticle(col+(col == 0 ? 1:-1),row,dep));
+		neighbors.push_back(this->getParticle(col,row+(col == 0 ? 1:-1),dep));
 		neighbors.push_back(this->getParticle(col,row,dep+(dep == 0 ? 1:-1)));
-		neighbors.push_back(this->getParticle(col,row+1,dep));
-		neighbors.push_back(this->getParticle(col,row-1,dep));
+		neighbors.push_back(this->getParticle(col,row-(col == 0 ? 1:-1),dep));
 	}
 	else if((row % (numRows-1)) == 0 && (dep % (numDeps-1)) == 0) //row edges
 	{
 		neighbors.push_back(this->getParticle(col,row+(row == 0 ? 1:-1),dep));
+		neighbors.push_back(this->getParticle(col+(row == 0 ? 1:-1),row,dep));
 		neighbors.push_back(this->getParticle(col,row,dep+(dep == 0 ? 1:-1)));
-		neighbors.push_back(this->getParticle(col+1,row,dep));
-		neighbors.push_back(this->getParticle(col-1,row,dep));
+		neighbors.push_back(this->getParticle(col-(row == 0 ? 1:-1),row,dep));
 	}
 	else if((col % (numCols-1)) == 0 && (row % (numRows-1)) == 0) //dep edges
 	{
 		neighbors.push_back(this->getParticle(col+(col == 0 ? 1:-1),row,dep));
-		neighbors.push_back(this->getParticle(col,row+(row == 0 ? 1:-1),dep));
 		neighbors.push_back(this->getParticle(col,row,dep+1));
+		neighbors.push_back(this->getParticle(col,row+(row == 0 ? 1:-1),dep));
 		neighbors.push_back(this->getParticle(col,row,dep-1));
 	}
 	else if((col % (numCols-1)) == 0) //left and right face
 	{
 		neighbors.push_back(this->getParticle(col,row-1,dep));
-		neighbors.push_back(this->getParticle(col,row+1,dep));
 		neighbors.push_back(this->getParticle(col,row,dep-1));
+		neighbors.push_back(this->getParticle(col,row+1,dep));
 		neighbors.push_back(this->getParticle(col,row,dep+1));
-		suggestedNormal = col == 0 ? glm::vec3(-1,0,0) : glm::vec3(1,0,0);
 	}
 	else if((row % (numRows-1)) == 0) //top and bottom face
 	{
 		neighbors.push_back(this->getParticle(col-1,row,dep));
-		neighbors.push_back(this->getParticle(col+1,row,dep));
 		neighbors.push_back(this->getParticle(col,row,dep-1));
+		neighbors.push_back(this->getParticle(col+1,row,dep));
 		neighbors.push_back(this->getParticle(col,row,dep+1));
-		suggestedNormal = row == 0 ? glm::vec3(0,-1,0) : glm::vec3(0,1,0);
 	}
 	else if((dep % (numDeps-1)) == 0) //front and back face
 	{
 		neighbors.push_back(this->getParticle(col-1,row,dep));
-		neighbors.push_back(this->getParticle(col+1,row,dep));
 		neighbors.push_back(this->getParticle(col,row-1,dep));
+		neighbors.push_back(this->getParticle(col+1,row,dep));
 		neighbors.push_back(this->getParticle(col,row+1,dep));
-		suggestedNormal = dep == 0 ? glm::vec3(0,0,-1) : glm::vec3(0,0,1);
 	}
 
 	glm::vec3 accum;
 	for(unsigned int i = 0; i < neighbors.size(); i++)
 	{
-		glm::vec3 neighborPos = neighbors.at(i).position;
-		glm::vec3 edge = glm::normalize(particle.position - neighborPos);
-		accum += edge;
+		int neighbor1Index = i;
+		int neighbor2Index = (i+1)%neighbors.size();
+		glm::vec3 neighbor1Pos = neighbors.at(neighbor1Index).position;
+		glm::vec3 neighbor2Pos = neighbors.at(neighbor2Index).position;
+		glm::vec3 edge1 = glm::normalize(particle.position - neighbor1Pos);
+		glm::vec3 edge2 = glm::normalize(particle.position - neighbor2Pos);
+		glm::vec3 cross = glm::cross(edge1,edge2);
+		if(glm::length(cross) > 0)
+			accum += cross;
 	}
 
-	float accumLength = glm::length(accum);
-	accum = (accumLength < .001) ? suggestedNormal : glm::normalize(accum);
+	accum = glm::normalize(accum);
 	return accum;
 }
+void Jello::updateSpringMeshes()
+{
+	std::map<SpringType,std::vector<Spring>>::iterator iter;
+	for(iter = this->springs.begin(); iter != this->springs.end(); ++iter)
+	{
+		SpringType type = iter->first;
+		GLMesh* springMesh = this->springMeshes[type];
+		if(springMesh->isVisible())
+		{
+			std::vector<GLfloat>& springMeshVBOData = springMesh->getVBOData();
+			std::vector<Spring>& s = iter->second;
+			for(unsigned int i = 0; i < s.size(); i++)
+			{
+				Spring& spring = s.at(i);
+				glm::vec3 p1Pos = this->getParticle(spring.p1).position;
+				glm::vec3 p2Pos = this->getParticle(spring.p2).position;
+				springMeshVBOData[i*6 + 0] = p1Pos.x;
+				springMeshVBOData[i*6 + 1] = p1Pos.y;
+				springMeshVBOData[i*6 + 2] = p1Pos.z;
+				springMeshVBOData[i*6 + 3] = p2Pos.x;
+				springMeshVBOData[i*6 + 4] = p2Pos.y;
+				springMeshVBOData[i*6 + 5] = p2Pos.z;
+			}
+		}
+	}
+}
+
 /*---------------------------------------------
   Integration Methods
 ---------------------------------------------*/
@@ -376,7 +415,7 @@ void Jello::initializeParticles()
 		}
 	}
 }
-void Jello::initializeExternalParticles()
+void Jello::initializeJelloMesh()
 {
 	//Create map of grid index to mesh index
 	for(unsigned int i = 0; i < this->particles.size(); i++)
@@ -391,9 +430,9 @@ void Jello::initializeExternalParticles()
 	int numTriangles = 4*((numCols-1)*(numRows-1) + (numRows-1)*(numDeps-1) + (numCols-1)*(numDeps-1));
 	std::vector<GLushort> iboData = std::vector<GLushort>(numTriangles*3,(GLushort)0); // x3 for three points in triangle
 	this->mesh->setVBOData(vboData,iboData,(GLuint)this->exteriorParticlesMap.size(),GL_TRIANGLES);
-	this->initializeExternalParticlesIBO();
+	this->initializeJelloMeshIBO();
 }
-void Jello::initializeExternalParticlesIBO()
+void Jello::initializeJelloMeshIBO()
 {
 	std::vector<GLushort>& iboData = this->mesh->getIBOData();
 	int iboCounter = 0;
@@ -477,6 +516,7 @@ void Jello::initializeNormalMesh()
 		normalIBOData[i] = i;
 	this->normalMesh->setVBOData(normalVBOData,normalIBOData,normalVBOData.size(),GL_LINES);
 	this->normalMesh->setProgramType(GLProgramDatabase::TYPE_WHITE);
+	this->normalMesh->setVisible(false);
 }
 void Jello::initializeSprings()
 {
@@ -487,47 +527,51 @@ void Jello::initializeSprings()
             for (int k = 0; k < numDeps; k++)
             {
 				//Structural Springs
-				if (i < numCols-1) this->addStructuralSpring(this->getParticle(i,j,k), this->getParticle(i+1,j,k));
-                if (j < numRows-1) this->addStructuralSpring(this->getParticle(i,j,k), this->getParticle(i,j+1,k));
-                if (k < numDeps-1) this->addStructuralSpring(this->getParticle(i,j,k), this->getParticle(i,j,k+1));
+				if (i < numCols-1) this->addSpring(STRUCTURAL, this->getParticle(i,j,k), this->getParticle(i+1,j,k));
+                if (j < numRows-1) this->addSpring(STRUCTURAL, this->getParticle(i,j,k), this->getParticle(i,j+1,k));
+                if (k < numDeps-1) this->addSpring(STRUCTURAL, this->getParticle(i,j,k), this->getParticle(i,j,k+1));
 
-				/*
 				//Shear Springs
-				if (i < numCols-1 && k < numDeps-1) this->addShearSpring(this->getParticle(i,j,k), this->getParticle(i+1,j,k+1));
-				if (j < numRows-1 && i < numCols-1) this->addShearSpring(this->getParticle(i,j,k), this->getParticle(i+1,j+1,k));
-                if (j < numRows-1 && k < numDeps-1) this->addShearSpring(this->getParticle(i,j,k), this->getParticle(i,j+1,k+1));
-				if (i > 0 && k < numDeps-1) this->addShearSpring(this->getParticle(i,j,k), this->getParticle(i-1,j,k+1));
-				if (j > 0 && i < numCols-1) this->addShearSpring(this->getParticle(i,j,k), this->getParticle(i+1,j-1,k));
-				if (j > 0 && k < numDeps-1) this->addShearSpring(this->getParticle(i,j,k), this->getParticle(i,j-1,k+1));
+				if (i < numCols-1 && k < numDeps-1) this->addSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i+1,j,k+1));
+				if (j < numRows-1 && i < numCols-1) this->addSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i+1,j+1,k));
+                if (j < numRows-1 && k < numDeps-1) this->addSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i,j+1,k+1));
+				if (i > 0 && k < numDeps-1) this->addSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i-1,j,k+1));
+				if (j > 0 && i < numCols-1) this->addSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i+1,j-1,k));
+				if (j > 0 && k < numDeps-1) this->addSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i,j-1,k+1));
 				
 				//Bend Springs
 				if(i%2 == 0 && j%2 == 0 && k%2 == 0)
 				{
-					if (i < numCols - 2) this->addBendSpring(this->getParticle(i,j,k), this->getParticle(i+2,j,k));
-					if (j < numRows - 2) this->addBendSpring(this->getParticle(i,j,k), this->getParticle(i,j+2,k));
-					if (k < numDeps - 2) this->addBendSpring(this->getParticle(i,j,k), this->getParticle(i,j,k+2));
-				}*/
+					if (i < numCols - 2) this->addSpring(BEND, this->getParticle(i,j,k), this->getParticle(i+2,j,k));
+					if (j < numRows - 2) this->addSpring(BEND, this->getParticle(i,j,k), this->getParticle(i,j+2,k));
+					if (k < numDeps - 2) this->addSpring(BEND, this->getParticle(i,j,k), this->getParticle(i,j,k+2));
+				}
             }
         }
     }
+	std::map<SpringType,std::vector<Spring>>::iterator iter;
+	for(iter = this->springs.begin(); iter != this->springs.end(); ++iter)
+	{
+		SpringType type = iter->first;
+		int num = iter->second.size();
+
+		GLMesh* springMesh = new GLMesh();
+		std::vector<GLfloat> springVBOData = std::vector<GLfloat>(num*3*2,(GLfloat)0); // x3 for components, two points per line
+		std::vector<GLushort> springIBOData = std::vector<GLushort>(springVBOData.size(),(GLushort)0);
+		for(unsigned int i = 0; i < springIBOData.size(); i++)
+			springIBOData[i] = i;
+		springMesh->setVBOData(springVBOData,springIBOData,num,GL_LINES);
+		springMesh->setProgramType(GLProgramDatabase::TYPE_WHITE);
+		springMesh->setVisible(false);
+		this->springMeshes[type] = springMesh;
+	}
 }
-/*---------------------------------------------
-  Springs
----------------------------------------------*/
-void Jello::addStructuralSpring(Particle& p1, Particle& p2)
+void Jello::addSpring(SpringType type, Particle& p1, Particle& p2)
 {
 	float restLen = glm::length(p1.position - p2.position);
-	this->springs.push_back(Spring(STRUCTURAL, p1.index1D, p2.index1D, structuralKs, structuralKd, restLen));
-}
-void Jello::addBendSpring(Particle& p1, Particle& p2)
-{
-    float restLen = glm::length(p1.position - p2.position);
-    this->springs.push_back(Spring(BEND, p1.index1D, p2.index1D, bendKs, bendKd, restLen));
-}
-void Jello::addShearSpring(Particle& p1, Particle& p2)
-{
-    float restLen = glm::length(p1.position - p2.position);
-    this->springs.push_back(Spring(SHEAR, p1.index1D, p2.index1D, shearKs, shearKd, restLen));
+	float ks = this->springConstants[type].first;
+	float kd = this->springConstants[type].second;
+	this->springs[type].push_back(Spring(STRUCTURAL, p1.index1D, p2.index1D, ks, kd, restLen));
 }
 /*---------------------------------------------
   Helpers
@@ -544,13 +588,38 @@ Jello::Particle& Jello::getParticle(int index)
 {
 	return this->particles.at(index);
 }
-
+/*---------------------------------------------
+  Events
+---------------------------------------------*/
+void Jello::keyDown(sf::Event sfEvent)
+{
+	sf::Keyboard::Key key = sfEvent.Key.Code;
+	if(key == sf::Keyboard::Num1)
+	{
+		GLMesh* mesh = this->springMeshes[STRUCTURAL];
+		mesh->setVisible(!mesh->isVisible());
+	}
+	else if(key == sf::Keyboard::Num2)
+	{
+		GLMesh* mesh = this->springMeshes[SHEAR];
+		mesh->setVisible(!mesh->isVisible());
+	}
+	else if(key == sf::Keyboard::Num3)
+	{
+		GLMesh* mesh = this->springMeshes[BEND];
+		mesh->setVisible(!mesh->isVisible());
+	}
+	else if(key == sf::Keyboard::Num4)
+	{
+		this->normalMesh->setVisible(!this->normalMesh->isVisible());
+	}
+}
 /*---------------------------------------------
   Particle
 ---------------------------------------------*/
 Jello::Particle::Particle()
 {
-	this->index1D = -1;
+	this->index1D = 0;
 	this->mass = 1;
 }
 Jello::Particle::~Particle(){}

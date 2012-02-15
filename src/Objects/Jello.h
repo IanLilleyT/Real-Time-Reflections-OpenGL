@@ -4,6 +4,7 @@
 
 #include "../OpenGL/GlProgramDatabase.h"
 #include "RenderObject.h"
+#include "../EventHandler.h"
 
 class Jello: public RenderObject
 {
@@ -62,7 +63,6 @@ protected:
     };
 
 	//Variables
-	GLMesh* normalMesh;
 	std::string shape;
 	glm::vec3 origin;
 	glm::vec3 size;
@@ -71,6 +71,9 @@ protected:
 	int numDeps;
 	std::vector<Particle> particles;
 	std::map<int,int> exteriorParticlesMap;
+
+	//Normals
+	GLMesh* normalMesh;
 
 	Jello::IntegrationType integrationType;
 	float integrationTimestep;
@@ -86,20 +89,23 @@ protected:
 	void computeForces(std::vector<Particle>& particles);
 	void resolveContacts();
 	void resolveCollisions();
-	void updateExternalParticles();
+	void updateJelloMesh();
+	void updateSpringMeshes();
 
 	//Initializers
 	void initializeParticles();
-	void initializeExternalParticles();
-	void initializeExternalParticlesIBO();
+	void initializeJelloMesh();
+	void initializeJelloMeshIBO();
 	void initializeNormalMesh();
 	void initializeSprings();
 
 	//Springs
-	std::vector<Spring> springs;
-	void addStructuralSpring(Particle& p1, Particle& p2);
-	void addBendSpring(Particle& p1, Particle& p2);
-	void addShearSpring(Particle& p1, Particle& p2);
+
+	std::map<SpringType,std::vector<Spring>> springs;
+	std::map<SpringType,GLMesh*> springMeshes;
+	std::map<SpringType,std::pair<float,float>> springConstants;
+	void addSpring(SpringType s,Particle& p1, Particle& p2);
+	void renderSprings();
 
 	//Intersections
 	std::vector<Intersection> contacts;
@@ -107,21 +113,12 @@ protected:
 	bool FloorIntersection(Particle& p, Intersection& intersection);
     //virtual bool CylinderIntersection(Particle& p, World::Cylinder* cylinder, Intersection& intersection);
 
-	//Spring constants
-	static float structuralKs; 
-	static float structuralKd; 
-	static float attachmentKs;
-	static float attachmentKd;
-	static float shearKs;
-	static float shearKd;
-	static float bendKs;
-	static float bendKd;
-	static float penaltyKs;
-	static float penaltyKd;
-
 	//Helpers
 	glm::vec3 getNormal(Particle& particle);
 	int convert3DTo1DIndex(int col, int row, int dep);
 	Particle& getParticle(int col, int row, int dep);
 	Particle& getParticle(int index);
+
+	//Events
+	void keyDown(sf::Event event);
 };

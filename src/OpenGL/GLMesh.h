@@ -35,6 +35,9 @@ public:
 	std::vector<GLfloat>& getVBOData();
 	std::vector<GLushort>& getIBOData();
     
+	void setVisible(bool visible);
+	bool isVisible();
+
     void Render();
 
 private:
@@ -44,4 +47,5 @@ private:
     GLVertexArrayObject* vertexArrayObject;
     GLBufferObject* bufferObject;
     GLProgram* program;
+	bool visible;
 };

@@ -20,7 +20,7 @@ Jello
 name jelly
 shape cube
 origin -1 1 -1
-size 2 2 2
+size 1 1 1
 divisions 6 6 6
 material material2
 program Material

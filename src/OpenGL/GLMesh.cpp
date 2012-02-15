@@ -84,26 +84,34 @@ void GLMesh::Generate()
 }
 void GLMesh::Render()
 {
-    //Put data in VERTEX buffer
-    glUseProgram(this->program->getProgram()); //bind program
-    glBindVertexArray(this->vertexArrayObject->getVertexArrayObject()); //bind vao
+	//Put data in VERTEX buffer
+	glUseProgram(this->program->getProgram()); //bind program
+	glBindVertexArray(this->vertexArrayObject->getVertexArrayObject()); //bind vao
 	std::vector<GLfloat>& bufferData = this->bufferObject->getVertexBufferData();
-    glBindBuffer(GL_ARRAY_BUFFER, this->bufferObject->getVertexBuffer()); //bind vertex buffer
-    glBufferData(GL_ARRAY_BUFFER, bufferData.size()*sizeof(GLfloat),
-                 &(bufferData.at(0)), GL_DYNAMIC_DRAW); //put vertex array data in vertex buffer
+	glBindBuffer(GL_ARRAY_BUFFER, this->bufferObject->getVertexBuffer()); //bind vertex buffer
+	glBufferData(GL_ARRAY_BUFFER, bufferData.size()*sizeof(GLfloat),
+					&(bufferData.at(0)), GL_DYNAMIC_DRAW); //put vertex array data in vertex buffer
 
-    //Fill uniforms
+	//Fill uniforms
 	this->program->fillUniforms();
 
-    //Draw the mesh
-    //Put data in INDEX buffer
+	//Draw the mesh
+	//Put data in INDEX buffer
 	std::vector<GLushort>& indexData = this->bufferObject->getIndexBufferData();
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->bufferObject->getIndexBuffer()); //bind index buffer
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.size()*sizeof(GLushort),
-                 &(indexData.at(0)), GL_DYNAMIC_DRAW); //put index array data in the index buffer
-    glDrawElements(this->bufferObject->getDrawType(), indexData.size(), GL_UNSIGNED_SHORT, 0); //Draw on the screen
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->bufferObject->getIndexBuffer()); //bind index buffer
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData.size()*sizeof(GLushort),
+					&(indexData.at(0)), GL_DYNAMIC_DRAW); //put index array data in the index buffer
+	glDrawElements(this->bufferObject->getDrawType(), indexData.size(), GL_UNSIGNED_SHORT, 0); //Draw on the screen
 
-    //Unbind
-    glBindVertexArray(0); //unbind vao
-    glUseProgram(0); //unbind program
+	//Unbind
+	glBindVertexArray(0); //unbind vao
+	glUseProgram(0); //unbind program
+}
+void GLMesh::setVisible(bool visible)
+{
+	this->visible = visible;
+}
+bool GLMesh::isVisible()
+{
+	return this->visible;
 }

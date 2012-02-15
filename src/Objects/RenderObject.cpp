@@ -11,7 +11,8 @@ void RenderObject::render()
 {
 	Singleton<GLState>::Instance()->setModelToWorldMatrix(this->transformationMatrix);
 	Singleton<GLState>::Instance()->setMaterial(this->material);
-	this->mesh->Render();
+	if(this->mesh->isVisible())
+		this->mesh->Render();
 }
 
 //Mesh
