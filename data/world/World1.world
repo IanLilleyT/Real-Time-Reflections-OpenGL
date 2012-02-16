@@ -35,12 +35,12 @@ program Material
 
 Light
 name light1
-intensity 1 1 1 1
+intensity 1 .5 0 1
 translation 2 2 2
 
 Light
 name light3
-intensity 1 0 0 1
+intensity 1 .5 0 1
 translation 2 2 -2
 
 Light
@@ -50,5 +50,5 @@ translation -2 2 2
 
 Light
 name light4
-intensity .5 1 0 1
+intensity 1 .5 0 1
 translation -2 2 -2

@@ -73,16 +73,31 @@ protected:
 
 	//Initializers
 	void initializeParticles();
+	void initializeSprings();
+	void initializeMeshes();
 	void initializeJelloMesh();
 	void initializeJelloMeshIBO();
-	void addFaceAtIndex(int& i, FaceType f, int c1, int r1, int d1, 
-		                int c2, int r2, int d2, int c3, int r3, int d3);
+	void initializeFaceAtIndex(int& i, FaceType f, glm::uvec3 p1, glm::uvec3 p2, glm::uvec3 p3);
 	void initializeJelloMeshNeighbors();
+	void initializeSpringMeshes();
 	void initializeNormalMesh();
-	void initializeSprings();
+	void initializeForcesMesh();
+	void initializeCollisionNormalsMesh();
+
+	//Updaters
+	void checkForCollisions();
+	void computeForces(std::vector<Particle>& particles);
+	void resolveContacts();
+	void resolveCollisions();
+	//Integration
+	void EulerIntegrate();
+	void MidPointIntegrate();
+	void RK4Integrate();
+	/////////////
+	void updateJelloMesh();
+	void updateSpringMeshes();
 
 	//Particles
-	void updateJelloMesh();
 	int convert3DTo1DIndex(int col, int row, int dep);
 	Particle& getParticle(int col, int row, int dep);
 	Particle& getParticle(int index);
@@ -91,17 +106,7 @@ protected:
 	std::map<std::pair<FaceType,int>,int> exteriorParticlesToVBOIndexMap;
 	std::map<std::pair<FaceType,int>,std::vector<int>> exteriorParticlesToNeighborsMap;
 
-	//Normals
-	GLMesh* normalMesh;
-
-	//Integration
-	void EulerIntegrate();
-	void MidPointIntegrate();
-	void RK4Integrate();
-
-	//Springs
-	void computeForces(std::vector<Particle>& particles);
-	void updateSpringMeshes();
+	//Springs	
 	std::map<SpringType,std::vector<Spring>> springMap;
 	std::map<SpringType,GLMesh*> springMeshes;
 	std::map<SpringType,std::pair<float,float>> springConstants;
@@ -111,9 +116,6 @@ protected:
 	//Intersections
 	std::vector<Intersection> contacts;
 	std::vector<Intersection> collisions;
-	void checkForCollisions();
-	void resolveContacts();
-	void resolveCollisions();
 	bool FloorIntersection(Particle& p, Intersection& intersection);
     //virtual bool CylinderIntersection(Particle& p, World::Cylinder* cylinder, Intersection& intersection);
 
@@ -124,7 +126,12 @@ protected:
 	int numCols;
 	int numDeps;
 	
-	//Tweak
+	//Meshes
+	GLMesh* normalMesh;
+	GLMesh* forcesMesh;
+	GLMesh* collisionNormalsMesh;
+
+	//Other
 	static Jello::IntegrationType integrationType;
 	static float integrationTimestep;
 	glm::vec3 externalAcceleration;

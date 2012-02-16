@@ -26,6 +26,7 @@ public:
 	~MeshDatabase();
 
 	GLMesh* loadMesh(std::string meshFileName);
+	void copyMesh(std::string meshFileName, std::string newName);
 
 private:
 	GLMesh* findMesh(std::string meshFileName);

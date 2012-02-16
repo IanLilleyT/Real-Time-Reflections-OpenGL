@@ -29,6 +29,14 @@ GLMesh* MeshDatabase::findMesh(std::string meshFileName)
 	else
 		return 0;
 }
+void MeshDatabase::copyMesh(std::string meshFileName, std::string newName)
+{
+	if(this->loadMesh(newName) == 0)
+	{
+		GLMesh* mesh = this->loadMesh(meshFileName);
+		this->meshMap[newName] = new GLMesh(*mesh);
+	}
+}
 GLMesh* MeshDatabase::openMeshFile(std::string meshFileName)
 {
 	std::string meshPath = Singleton<GlobalValues>::Instance()->getMeshPath();
