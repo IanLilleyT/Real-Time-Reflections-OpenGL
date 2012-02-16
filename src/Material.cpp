@@ -58,3 +58,13 @@ float Material::getAlpha()
 {
 	return this->alpha;
 }
+
+//Name
+void Material::setName(std::string name)
+{
+	this->name = name;
+}
+std::string Material::getName()
+{
+	return this->name;
+}

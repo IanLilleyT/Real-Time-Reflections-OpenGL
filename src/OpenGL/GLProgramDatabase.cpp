@@ -6,22 +6,22 @@ std::string GLProgramDatabase::TYPE_MATERIAL = "Material";
 GLProgramDatabase::GLProgramDatabase(){}
 GLProgramDatabase::~GLProgramDatabase(){}
 
-GLProgram* GLProgramDatabase::loadProgram(std::string programType)
+GLProgram* GLProgramDatabase::loadProgram(std::string ProgramName)
 {
 	GLProgram* newProgram = 0;
-	newProgram = this->findProgram(programType);
+	newProgram = this->findProgram(ProgramName);
 	if(newProgram == 0) 
 	{
-		newProgram = this->makeProgramByName(programType);
+		newProgram = this->makeProgramByName(ProgramName);
 		if(newProgram != 0)
-			this->programMap[programType] = newProgram;
+			this->programMap[ProgramName] = newProgram;
 	}
 	return newProgram;
 }
-GLProgram* GLProgramDatabase::findProgram(std::string programType)
+GLProgram* GLProgramDatabase::findProgram(std::string ProgramName)
 {
 	std::map<std::string, GLProgram*>::iterator it;
-	it = this->programMap.find(programType);
+	it = this->programMap.find(ProgramName);
 	if(it != this->programMap.end())
 		return it->second;
 	else
@@ -51,7 +51,6 @@ GLProgram* GLProgramDatabase::makeProgramByName(std::string name)
 		shaderList.push_back(this->LoadShader(GL_FRAGMENT_SHADER, fragShader));
 		glProgram->setProgram(this->CreateProgram(shaderList));
 		glProgram->setName(name);
-		//glProgram->createVAO();
 	}
 	return glProgram;
 }

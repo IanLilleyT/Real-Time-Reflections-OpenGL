@@ -69,8 +69,5 @@ Object* World::getObjectByTypeAndName(std::string type, std::string name)
 }
 std::vector<Object*>& World::getObjectsByType(std::string type)
 {
-	std::map<std::string, std::vector<Object*>>::iterator iter = this->objectMap.find(type);
-	if(iter != this->objectMap.end())
-		return iter->second;
-	return std::vector<Object*>();
+	return this->objectMap.find(type)->second;
 }

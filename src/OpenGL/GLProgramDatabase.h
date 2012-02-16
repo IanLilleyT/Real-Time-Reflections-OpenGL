@@ -15,14 +15,14 @@ public:
 	GLProgramDatabase();
 	~GLProgramDatabase();
 
-	GLProgram* loadProgram(std::string programType);
+	GLProgram* loadProgram(std::string ProgramName);
 	
 
 	static std::string TYPE_WHITE;
 	static std::string TYPE_MATERIAL;
 
 private:
-	GLProgram* findProgram(std::string programType);
+	GLProgram* findProgram(std::string ProgramName);
 	GLProgram* makeProgramByName(std::string name);
 	std::pair<std::string, std::string> getShadersByType(std::string shaderType);
 	std::map<std::string,GLProgram*> programMap;

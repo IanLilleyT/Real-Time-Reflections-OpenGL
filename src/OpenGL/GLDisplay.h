@@ -14,6 +14,7 @@
 #include "../Cameras/Camera3rdPerson.h"
 #include "../Cameras/Camera1stPerson.h"
 #include "../Objects/RenderObject.h"
+#include "../Objects/Jello.h"
 #include "../Material.h"
 #include "../MaterialDatabase.h"
 

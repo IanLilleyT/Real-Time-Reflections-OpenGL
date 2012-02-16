@@ -1,12 +1,21 @@
 #include "Light.h"
 
-//Default static values (otherwise linker error)
+//Default static values
 glm::vec4 Light::ambientIntensity = glm::vec4(0.2f,0.2f,0.2f,1.0f);
 float Light::lightAttenuation = 0.1f;
 float Light::maxIntensity = 1.0f;
 float Light::gamma = 2.2f;
 
-Light::Light(){}
+std::string Light::className = "Light";
+Light::Light() : Object() 
+{
+	this->type = Object::className;
+}
+Light::Light(std::string name, glm::vec4 intensity) : Object(name) 
+{
+	this->type = Light::className;
+	this->setIntensity(intensity);
+}
 Light::~Light(){}
 
 //Intensity

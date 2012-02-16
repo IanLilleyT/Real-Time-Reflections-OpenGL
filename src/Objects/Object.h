@@ -12,6 +12,7 @@ class Object
 {
 public:
 	Object();
+	Object(std::string name);
 	virtual ~Object();
 
 	virtual void update();
@@ -21,7 +22,6 @@ public:
 	std::string getName();
 
 	//Type
-	void setType(std::string type);
 	std::string getType();
 
 	//Transformations
@@ -65,8 +65,10 @@ public:
 	void setRotationMatrix(glm::mat4 rotationMatrix);
 
 protected:
-	std::string name;
+	static std::string className;
+
 	std::string type;
+	std::string name;
 
 	void updateTransformations();
 	glm::mat4 transformationMatrix;

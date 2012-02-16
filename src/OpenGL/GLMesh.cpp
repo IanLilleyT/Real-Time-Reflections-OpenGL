@@ -16,7 +16,7 @@ GLMesh::~GLMesh()
 /*---------------------------------------------
   Setters
 ---------------------------------------------*/
-void GLMesh::setProgramType(std::string programName)
+void GLMesh::setProgram(std::string programName)
 {
 	GLProgram* program = Singleton<GLProgramDatabase>::Instance()->loadProgram(programName);
 	this->program = program;
@@ -24,7 +24,7 @@ void GLMesh::setProgramType(std::string programName)
 	this->vertexArrayObject = this->program->getVAO(); //Only fills the vao attributes, not the GLuint
     this->Generate();
 }
-std::string GLMesh::getProgramType()
+std::string GLMesh::getProgram()
 {
 	return this->program->getName();
 }
@@ -46,6 +46,16 @@ std::vector<GLushort>& GLMesh::getIBOData()
 int GLMesh::getNumElements()
 {
 	return this->bufferObject->getNumElements();
+}
+
+//Name
+void GLMesh::setName(std::string name)
+{
+	this->name = name;
+}
+std::string GLMesh::getName()
+{
+	return this->name;
 }
 
 /*---------------------------------------------

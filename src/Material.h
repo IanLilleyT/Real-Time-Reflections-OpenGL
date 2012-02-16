@@ -30,10 +30,15 @@ public:
 	void setAlpha(float alpha);
 	float getAlpha();
 
+	//Name
+	void setName(std::string name);
+	std::string getName();
+
 private:
 	glm::vec4 diffuseColor;
 	glm::vec4 specularColor;
 	float specularShininess;
 	float reflectivity;
 	float alpha;
+	std::string name;
 };

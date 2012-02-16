@@ -16,10 +16,29 @@ void GLDisplay::initialize()
 	//Camera
 	Singleton<GLCamera>::Instance()->calcCameraToClipMatrix(45.0f,1.0f,100.0f);
 	this->camera = new Camera3rdPerson();
-	this->camera->zoom(-10);
+	this->camera->zoom(-1);
+	this->camera->rotate(0,-.4f);
 	
 	//World
 	this->world = Singleton<WorldDatabase>::Instance()->loadWorld("World1");
+
+	float spacing = .1f;
+	int numX = 5;
+	int numZ = 1;
+	for(int x = 0; x < numX; x++)
+	{
+		for(int z = 0; z < numZ; z++)
+		{
+			int index = x*z + z;
+			std::string name = "RandomJello" + index;
+			glm::vec3 origin = glm::vec3(x + x*spacing,2,z+z*spacing);
+			glm::vec3 size = glm::vec3(1,2,3);
+			glm::uvec3 divisions = glm::uvec3(6,6,6);
+
+			Jello* jello = new Jello(name,"material1","Material",origin,size,divisions);
+			this->world->addObject(jello);
+		}
+	}
 }
 void GLDisplay::initializeGL()
 {

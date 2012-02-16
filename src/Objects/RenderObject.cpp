@@ -1,6 +1,21 @@
 #include "RenderObject.h"
 
-RenderObject::RenderObject(){}
+std::string RenderObject::className = "RenderObject";
+RenderObject::RenderObject() : Object() 
+{
+	this->type = Object::className;
+}
+RenderObject::RenderObject(std::string name) : Object(name)
+{
+	this->type = RenderObject::className;
+}
+RenderObject::RenderObject(std::string name, std::string mesh, std::string material, std::string program) : Object(name) 
+{
+	this->type = RenderObject::className;
+	this->setMesh(mesh);
+	this->setMaterial(material);
+	this->setProgram(program);
+}
 RenderObject::~RenderObject(){}
 
 void RenderObject::update()
@@ -16,36 +31,31 @@ void RenderObject::render()
 }
 
 //Mesh
-void RenderObject::setMesh(GLMesh* mesh)
+void RenderObject::setMesh(std::string name)
 {
-	this->mesh = mesh;
+	this->mesh = Singleton<MeshDatabase>::Instance()->loadMesh(name);
 }
-GLMesh* RenderObject::getMesh()
+std::string RenderObject::getMesh()
 {
-	return this->mesh;
+	return this->mesh->getName();
 }
 
 //Material
 void RenderObject::setMaterial(std::string material)
 {
-	Material* newMaterial = Singleton<MaterialDatabase>::Instance()->loadMaterial(material);
-	this->setMaterial(newMaterial);
+	this->material = Singleton<MaterialDatabase>::Instance()->loadMaterial(material);
 }
-void RenderObject::setMaterial(Material* material)
+std::string RenderObject::getMaterial()
 {
-	this->material = material;
-}
-Material* RenderObject::getMaterial()
-{
-	return this->material;
+	return this->material->getName();
 }
 
 //Program Type
-void RenderObject::setProgramType(std::string programType)
+void RenderObject::setProgram(std::string programName)
 {
-	this->mesh->setProgramType(programType);
+	this->mesh->setProgram(programName);
 }
-std::string RenderObject::getProgramType()
+std::string RenderObject::getProgram()
 {
-	return this->mesh->getProgramType();
+	return this->mesh->getProgram();
 }

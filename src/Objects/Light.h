@@ -8,6 +8,7 @@ class Light: public Object
 {
 public:
 	Light();
+	Light(std::string name, glm::vec4 intensity);
 	virtual ~Light();
 
 	//Intensity
@@ -26,6 +27,7 @@ public:
 	static float getGamma();
 
 private:
+	static std::string className;
 	glm::vec4 intensity;
 
 	//Static

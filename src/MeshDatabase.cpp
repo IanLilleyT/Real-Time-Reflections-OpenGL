@@ -6,6 +6,11 @@ MeshDatabase::~MeshDatabase(){}
 GLMesh* MeshDatabase::loadMesh(std::string meshFileName)
 {
 	GLMesh* newMesh = 0;
+
+	std::string extension = ".obj";
+	if(meshFileName.find(extension) == std::string::npos)
+		meshFileName += extension;
+
 	newMesh = this->findMesh(meshFileName);
 	if(newMesh == 0) 
 	{
@@ -91,6 +96,8 @@ GLMesh* MeshDatabase::openMeshFile(std::string meshFileName)
 		vboData.insert(vboData.end(), normalVBOData.begin(), normalVBOData.end());
 		GLMesh* mesh = new GLMesh();
 		mesh->setVBOData(vboData,iboData,(GLuint)numElements,GL_TRIANGLES);
+		mesh->setName(meshFileName);
+		mesh->setVisible(true);
 		return mesh;
 	}
 	else

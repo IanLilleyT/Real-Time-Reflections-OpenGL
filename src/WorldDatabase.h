@@ -41,7 +41,7 @@ private:
 
 	bool isFieldValid(std::ifstream& file, std::string name, std::vector<std::string>& results);
 
-	void processRenderObject(std::ifstream& file, std::string type, World* world);
-	void processJello(std::ifstream& file, std::string type, World* world);
-	void processLight(std::ifstream& file, std::string type, World* world);
+	void processRenderObject(std::ifstream& file, World* world);
+	void processJello(std::ifstream& file, World* world);
+	void processLight(std::ifstream& file, World* world);
 };

@@ -19,7 +19,7 @@
   to render objects.
 
   Usage (call methods in this order):
-  setVBOData, setProgramType, render
+  setVBOData, setProgram, render
 ---------------------------------------------*/
 
 class GLMesh
@@ -28,8 +28,8 @@ public:
     GLMesh();
     ~GLMesh();
 
-	void setProgramType(std::string programName);
-	std::string getProgramType();
+	void setProgram(std::string programName);
+	std::string getProgram();
 
 	void setVBOData(std::vector<GLfloat> vboData, std::vector<GLushort> iboData, GLuint numElements, GLenum drawType);
 	std::vector<GLfloat>& getVBOData();
@@ -38,6 +38,9 @@ public:
 	void setVisible(bool visible);
 	bool isVisible();
 	int getNumElements();
+
+	void setName(std::string name);
+	std::string getName();
 
     void Render();
 
@@ -49,4 +52,5 @@ private:
     GLBufferObject* bufferObject;
     GLProgram* program;
 	bool visible;
+	std::string name;
 };

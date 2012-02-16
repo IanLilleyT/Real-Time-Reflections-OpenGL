@@ -77,6 +77,9 @@ Material* MaterialDatabase::openMaterialFile(std::string materialFileName)
 				float alpha = Utils::parseIntoFloat(results);
 				material->setAlpha(alpha);
 			}
+
+			//Name
+			material->setName(materialFileName);
 		}
 		file.close();
 		return material;

@@ -1,6 +1,15 @@
 #include "Object.h"
 
-Object::Object(){}
+std::string Object::className = "Object";
+Object::Object()
+{
+	this->type = Object::className;
+}
+Object::Object(std::string name)
+{
+	this->type = Object::className;
+	this->setName(name);
+}
 Object::~Object(){}
 
 void Object::update(){}
@@ -16,10 +25,6 @@ std::string Object::getName()
 }
 
 //Type
-void Object::setType(std::string type)
-{
-	this->type = type;
-}
 std::string Object::getType()
 {
 	return this->type;
