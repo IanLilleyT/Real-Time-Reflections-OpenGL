@@ -22,6 +22,7 @@ void GLDisplay::initialize()
 	//World
 	this->world = Singleton<WorldDatabase>::Instance()->loadWorld("World1");
 
+	//Random jello
 	float spacing = .1f;
 	int numX = 3;
 	int numZ = 3;
@@ -66,7 +67,7 @@ void GLDisplay::update()
 }
 void GLDisplay::clearGL()
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(0.1f, 0.1f, 0.3f, 0.0f);
     glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

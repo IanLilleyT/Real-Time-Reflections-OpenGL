@@ -21,9 +21,9 @@ Jello::Jello(std::string name, std::string material, std::string program,
 	this->setExternalAcceleration(glm::vec3(0,-9.8,0));
 
 	//Spring constants
-	this->springConstants[STRUCTURAL] = std::pair<float,float>(1500.0f,10.0f); //Structural
-	this->springConstants[SHEAR] =      std::pair<float,float>(5000.0f,5.0f);  //Shear
-	this->springConstants[BEND] =       std::pair<float,float>(1000.0f,3.0f);  //Bend
+	this->springConstants[STRUCTURAL] = std::pair<float,float>(1000.0f,10.0f); //Structural
+	this->springConstants[SHEAR] =      std::pair<float,float>(3000.0f,5.0f);  //Shear
+	this->springConstants[BEND] =       std::pair<float,float>(500.0f,1.0f);  //Bend
 
 	//Set values
 	this->origin = origin;
@@ -119,30 +119,30 @@ void Jello::initializeSprings()
             for (int k = 0; k < numDeps; k++)
             {
 				//Structural Springs
-				if (i < numCols-1) this->addSpring(STRUCTURAL, this->getParticle(i,j,k), this->getParticle(i+1,j,k));
-                if (j < numRows-1) this->addSpring(STRUCTURAL, this->getParticle(i,j,k), this->getParticle(i,j+1,k));
-                if (k < numDeps-1) this->addSpring(STRUCTURAL, this->getParticle(i,j,k), this->getParticle(i,j,k+1));
+				if (i < numCols-1) this->initializeSpring(STRUCTURAL, this->getParticle(i,j,k), this->getParticle(i+1,j,k));
+                if (j < numRows-1) this->initializeSpring(STRUCTURAL, this->getParticle(i,j,k), this->getParticle(i,j+1,k));
+                if (k < numDeps-1) this->initializeSpring(STRUCTURAL, this->getParticle(i,j,k), this->getParticle(i,j,k+1));
 
 				//Shear Springs
-				if (i < numCols-1 && k < numDeps-1) this->addSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i+1,j,k+1));
-				if (j < numRows-1 && i < numCols-1) this->addSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i+1,j+1,k));
-                if (j < numRows-1 && k < numDeps-1) this->addSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i,j+1,k+1));
-				if (i > 0 && k < numDeps-1) this->addSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i-1,j,k+1));
-				if (j > 0 && i < numCols-1) this->addSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i+1,j-1,k));
-				if (j > 0 && k < numDeps-1) this->addSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i,j-1,k+1));
+				if (i < numCols-1 && k < numDeps-1) this->initializeSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i+1,j,k+1));
+				if (j < numRows-1 && i < numCols-1) this->initializeSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i+1,j+1,k));
+                if (j < numRows-1 && k < numDeps-1) this->initializeSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i,j+1,k+1));
+				if (i > 0 && k < numDeps-1) this->initializeSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i-1,j,k+1));
+				if (j > 0 && i < numCols-1) this->initializeSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i+1,j-1,k));
+				if (j > 0 && k < numDeps-1) this->initializeSpring(SHEAR, this->getParticle(i,j,k), this->getParticle(i,j-1,k+1));
 				
 				//Bend Springs
 				if(i%2 == 0 && j%2 == 0 && k%2 == 0)
 				{
-					if (i < numCols - 2) this->addSpring(BEND, this->getParticle(i,j,k), this->getParticle(i+2,j,k));
-					if (j < numRows - 2) this->addSpring(BEND, this->getParticle(i,j,k), this->getParticle(i,j+2,k));
-					if (k < numDeps - 2) this->addSpring(BEND, this->getParticle(i,j,k), this->getParticle(i,j,k+2));
+					if (i < numCols - 2) this->initializeSpring(BEND, this->getParticle(i,j,k), this->getParticle(i+2,j,k));
+					if (j < numRows - 2) this->initializeSpring(BEND, this->getParticle(i,j,k), this->getParticle(i,j+2,k));
+					if (k < numDeps - 2) this->initializeSpring(BEND, this->getParticle(i,j,k), this->getParticle(i,j,k+2));
 				}
             }
         }
     }
 }
-void Jello::addSpring(SpringType type, Particle& p1, Particle& p2)
+void Jello::initializeSpring(SpringType type, Particle& p1, Particle& p2)
 {
 	float restLen = glm::length(p1.position - p2.position);
 	float ks = this->springConstants[type].first;
@@ -436,22 +436,28 @@ void Jello::computeForces(std::vector<Particle>& particleSet)
 		for(unsigned int i = 0; i < springs.size(); i++)
 		{
 			Spring& spring = springs.at(i);
-
 			Particle& a = particleSet.at(spring.p1);
 			Particle& b = particleSet.at(spring.p2);
-
-			glm::vec3 diff = a.position - b.position;
-			float dist = glm::length(diff);
-			glm::vec3 diffNormalized = diff/dist;
-			float displacement = dist - spring.restLen;
-			glm::vec3 diffVel = a.velocity - b.velocity;
-			glm::vec3 force;
-
-			force = -diffNormalized*(spring.Ks*displacement + spring.Kd*(diffVel*diffNormalized));
+			glm::vec3 force = this->getSpringForce(spring,particleSet);
  			a.force += force;
 			b.force -= force;
 		}
     }
+}
+glm::vec3 Jello::getSpringForce(Spring& spring, std::vector<Particle>& particleSet)
+{
+	Particle& a = particleSet.at(spring.p1);
+	Particle& b = particleSet.at(spring.p2);
+
+	glm::vec3 diff = a.position - b.position;
+	float dist = glm::length(diff);
+	glm::vec3 diffNormalized = diff/dist;
+	float displacement = dist - spring.restLen;
+	glm::vec3 diffVel = a.velocity - b.velocity;
+	glm::vec3 force;
+
+	force = -diffNormalized*(spring.Ks*displacement + spring.Kd*(diffVel*diffNormalized));
+	return force;
 }
 void Jello::resolveContacts()
 {

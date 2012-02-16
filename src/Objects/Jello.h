@@ -74,6 +74,7 @@ protected:
 	//Initializers
 	void initializeParticles();
 	void initializeSprings();
+	void initializeSpring(SpringType s,Particle& p1, Particle& p2);
 	void initializeMeshes();
 	void initializeJelloMesh();
 	void initializeJelloMeshIBO();
@@ -110,7 +111,7 @@ protected:
 	std::map<SpringType,std::vector<Spring>> springMap;
 	std::map<SpringType,GLMesh*> springMeshes;
 	std::map<SpringType,std::pair<float,float>> springConstants;
-	void addSpring(SpringType s,Particle& p1, Particle& p2);
+	glm::vec3 getSpringForce(Spring& spring, std::vector<Particle>& particleSet);
 	void renderSprings();
 
 	//Intersections
