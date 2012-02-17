@@ -72,6 +72,7 @@ protected:
         int p;
 		glm::vec3 point;
         glm::vec3 normal;
+		glm::vec3 reflection;
         float distance;
         IntersectionType type;
     };

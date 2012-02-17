@@ -14,17 +14,19 @@ public:
 	float t; 
 	glm::vec3 point;
 	glm::vec3 normal;
-	Ray reflectedRay;
+	glm::vec3 reflection;
 };
 
 class IntersectionAlgorithms
 {
 public:
 	static IntersectionData RaySphereIntersect(Ray& ray, glm::mat4 T);
+	static IntersectionData RayYPlaneIntersect(Ray& ray, float yPos);
 	static bool PointInSphere(glm::vec3 point, glm::mat4 T);
 	
 private:
 	static float getMinT(bool expression1, bool expression2, float t1, float t2);
 	static bool equal(float val1, float val2);
-	static Ray getReflectedRay(glm::vec3 initialRayDir, glm::vec3 normal, glm::vec3 intersectionPoint);
+	static glm::vec3 getReflection(glm::vec3 initialDir, glm::vec3 normal);
+
 };
