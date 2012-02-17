@@ -62,3 +62,12 @@ bool IntersectionAlgorithms::equal(float val1, float val2)
 	float epsilon = .001f;
 	return abs(val1-val2) < epsilon;
 }
+static Ray getReflectedRay(glm::vec3 initialRayDir, glm::vec3 normal, glm::vec3 intersectionPoint)
+{
+	float epsilon = .001f;
+	glm::vec3 reflectedRayDir = initialRayDir - 2.0f*normal*glm::dot(initialRayDir,normal);
+	reflectedRayDir = glm::normalize(reflectedRayDir);
+	glm::vec3 reflectionOrigin = intersectionPoint + epsilon*reflectedRayDir;
+	Ray r = Ray(reflectionOrigin,reflectedRayDir);
+	return r;
+}

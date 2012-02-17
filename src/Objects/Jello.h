@@ -70,6 +70,7 @@ protected:
 		~Intersection();
 
         int p;
+		glm::vec3 point;
         glm::vec3 normal;
         float distance;
         IntersectionType type;

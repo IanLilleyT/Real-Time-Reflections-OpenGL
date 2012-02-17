@@ -8,16 +8,32 @@ rotation 1 0 0 0
 scale 10 1 10
 
 Sphere
-name sphere
+name sphere1
 material material2
 program Material
 translation 0 2 0
 rotation 1 0 0 0
-scale 2 1 2
+scale 2 2 2
+
+//Sphere
+name sphere2
+material material2
+program Material
+translation 0 1 0
+rotation 1 0 0 0
+scale 1 2 1
 
 Jello
 name jelly1
-origin 0 4 0
+origin .2 5 0
+size 1 1 1
+divisions 6 6 6
+material red
+program Jello
+
+Jello
+name jelly1
+origin -.5 5 0
 size 1 1 1
 divisions 6 6 6
 material red

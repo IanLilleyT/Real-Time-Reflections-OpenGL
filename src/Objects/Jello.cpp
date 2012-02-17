@@ -25,9 +25,9 @@ Jello::Jello(std::string name, std::string material, std::string program,
 	//this->springConstants[SHEAR] =      std::pair<float,float>(3000.0f,5.0f);  //Shear
 	//this->springConstants[BEND] =       std::pair<float,float>(500.0f,1.0f);   //Bend
 	//this->springConstants[PENALTY] =    std::pair<float,float>(1000.0f,10.0f); //Penalty
-	this->springConstants[STRUCTURAL] = std::pair<float,float>(5000.0f,10.0f);//(1000.0f,10.0f); //Structural
-	this->springConstants[SHEAR] =      std::pair<float,float>(5000.0f,10.0f);//(3000.0f,5.0f);  //Shear
-	this->springConstants[BEND] =       std::pair<float,float>(2000.0f,5.0f);//(500.0f,1.0f);   //Bend
+	this->springConstants[STRUCTURAL] = std::pair<float,float>(5000.0f,5.0f);//(1000.0f,10.0f); //Structural
+	this->springConstants[SHEAR] =      std::pair<float,float>(5000.0f,5.0f);//(3000.0f,5.0f);  //Shear
+	this->springConstants[BEND] =       std::pair<float,float>(2000.0f,2.0f);//(500.0f,1.0f);   //Bend
 	this->springConstants[PENALTY] =    std::pair<float,float>(2000.0f,1.0f);//(1000.0f,10.0f); //Penalty
 
 	//Set values
@@ -445,13 +445,13 @@ bool Jello::FloorIntersection(Particle& p, Intersection& intersection)
 		intersection.type = COLLISION;
 		return true;
 	}
-	/*else if(particlePosY < floorPosY + epsilon)
+	else if(particlePosY < floorPosY + epsilon)// && glm::abs(p.velocity.y) > 2)
 	{
-		float diffY = particlePosY - floorPosY + epsilon;
+		float diffY = particlePosY - floorPosY - epsilon;
 		intersection.distance = diffY;
 		intersection.type = COLLISION;
 		return true;
-	}*/
+	}
     return false;
 }
 bool Jello::SphereIntersection(Particle& p, Intersection& intersection, glm::mat4 T)
@@ -478,7 +478,7 @@ void Jello::resolveContacts()
     {
 		const Intersection& contact = contacts[i];
 		Particle& particle = this->getParticle(contact.p);
-		particle.position[1] = 0;
+		particle.position -= contact.normal*contact.distance;
 		particle.velocity *= -1;  
     }
 }
@@ -500,9 +500,14 @@ void Jello::resolveCollisions()
 		float kd = this->springConstants[PENALTY].second;
 		Spring spring =  Spring(PENALTY, 0, 0, ks, kd, restLen);
 		glm::vec3 force = this->getSpringForce(spring,particle,tempParticle);
-
 		particle.force -= force;
-		particle.velocity *= .9;
+		
+		float velAmount = glm::length(particle.velocity);
+		glm::vec3 newVel = glm::normalize(glm::reflect(-glm::normalize(particle.velocity),normal));
+		newVel *= velAmount;
+		particle.velocity = newVel*.9f;
+
+		//particle.position += newVel/10000.0f;
 	}
 }
 void Jello::computeForces(std::vector<Particle>& particleSet)
@@ -537,8 +542,6 @@ glm::vec3 Jello::getSpringForce(Spring& spring, Particle& p1, Particle& p2)
 	float dist = glm::length(diff);
 	glm::vec3 diffNormalized = diff/dist;
 	float displacement = dist - spring.restLen;
-	//if(std::abs(displacement) > std::abs(spring.restLen)/2)
-	//	displacement = displacement*(glm::pow(std::abs(displacement),1.0f));
 	glm::vec3 diffVel = p1.velocity - p2.velocity;
 	glm::vec3 force = -diffNormalized*(spring.Ks*displacement + spring.Kd*(diffVel*diffNormalized));
 	return force;
@@ -617,7 +620,6 @@ glm::vec3 Jello::getNormal(FaceType f, Particle& particle)
 	accum = glm::normalize(accum);
 	return accum;
 }
-
 void Jello::updateSpringMeshes()
 {
 	std::map<SpringType,std::vector<Spring>>::iterator iter;
