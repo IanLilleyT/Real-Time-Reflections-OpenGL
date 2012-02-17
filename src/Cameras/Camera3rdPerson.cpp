@@ -9,10 +9,7 @@ Camera3rdPerson::Camera3rdPerson(void) : Camera()
     this->update();
 }
 
-Camera3rdPerson::~Camera3rdPerson(void)
-{
-	//Do nothing
-}
+Camera3rdPerson::~Camera3rdPerson(void){}
 
 //-----------------------------
 // Camera Movements ///////////

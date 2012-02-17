@@ -47,6 +47,8 @@ World* WorldDatabase::openWorldFile(std::string worldFileName)
 			getline(file, line);
 			if(line == "RenderObject")
 				this->processRenderObject(file, world);
+			else if(line == "Sphere")
+				this->processSphere(file,world);
 			else if(line == "Jello")
 				this->processJello(file, world);
 			else if(line == "Light")
@@ -107,7 +109,47 @@ void WorldDatabase::processRenderObject(std::ifstream& file, World* world)
 	renderObject->setScale(scale);
 	world->addObject(renderObject);
 }
+void WorldDatabase::processSphere(std::ifstream& file, World* world)
+{
+	std::vector<std::string> results;		
+	std::string name;
+	std::string material;
+	std::string program;
+	glm::vec3 translation;
+	glm::vec3 axis;
+	float angle;
+	glm::vec3 scale;
 
+	//Load name
+	if(this->isFieldValid(file,"name",results))
+		name = results.at(1);		
+	//Load material
+	if(this->isFieldValid(file,"material",results))
+		material = results.at(1);		
+	//Load program
+	if(this->isFieldValid(file,"program",results))
+		program = results.at(1);
+	//Load translation
+	if(this->isFieldValid(file,"translation",results))
+		translation = Utils::parseIntoVec3(results);
+	//Load rotation
+	if(this->isFieldValid(file,"rotation",results))
+	{
+		glm::vec4 rotation = Utils::parseIntoVec4(results);
+		axis = glm::vec3(rotation.x,rotation.y,rotation.z);
+		angle = rotation.w;
+	}		
+	//Load scale
+	if(this->isFieldValid(file,"scale",results))
+		scale = Utils::parseIntoVec3(results);
+
+	//Initialize
+	Sphere* sphere = new Sphere(name,material,program);
+	sphere->setTranslation(translation);
+	sphere->setRotation(axis,angle);
+	sphere->setScale(scale);
+	world->addObject(sphere);
+}
 void WorldDatabase::processJello(std::ifstream& file, World* world)
 {
 	std::vector<std::string> results;
@@ -135,7 +177,7 @@ void WorldDatabase::processJello(std::ifstream& file, World* world)
 		material = results.at(1);	
 	//Load program
 	if(this->isFieldValid(file,"program",results))
-		std::string program = results.at(1);
+		program = results.at(1);
 
 	//Initialize
 	Jello* jello = new Jello(name,material,program,origin,size,divisions);
@@ -165,10 +207,10 @@ void WorldDatabase::processLight(std::ifstream& file, World* world)
 	world->addObject(light);
 
 	//Load physics representation
-	RenderObject* sphere = new RenderObject("helperLight","sphere","material1","Material");
-	sphere->setTranslation(light->getPosition());
-	sphere->setScale(.2f);
-	world->addObject(sphere);
+	//RenderObject* sphere = new RenderObject("helperLight","sphere","material1","Material");
+	//sphere->setTranslation(light->getPosition());
+	//sphere->setScale(.2f);
+	//world->addObject(sphere);
 }
 
 bool WorldDatabase::isFieldValid(std::ifstream& file, std::string name, std::vector<std::string>& results)

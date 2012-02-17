@@ -18,12 +18,17 @@ Jello::Jello(std::string name, std::string material, std::string program,
 	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::KeyPressed, InputReceiver::from_method<Jello,&Jello::keyDown>(this));
 	
 	//External accelerations
-	this->setExternalAcceleration(glm::vec3(0,-9.8,0));
+	this->setExternalAcceleration(glm::vec3(0,0,0));
 
 	//Spring constants
-	this->springConstants[STRUCTURAL] = std::pair<float,float>(1000.0f,10.0f); //Structural
-	this->springConstants[SHEAR] =      std::pair<float,float>(3000.0f,5.0f);  //Shear
-	this->springConstants[BEND] =       std::pair<float,float>(500.0f,1.0f);  //Bend
+	//this->springConstants[STRUCTURAL] = std::pair<float,float>(1000.0f,10.0f); //Structural
+	//this->springConstants[SHEAR] =      std::pair<float,float>(3000.0f,5.0f);  //Shear
+	//this->springConstants[BEND] =       std::pair<float,float>(500.0f,1.0f);   //Bend
+	//this->springConstants[PENALTY] =    std::pair<float,float>(1000.0f,10.0f); //Penalty
+	this->springConstants[STRUCTURAL] = std::pair<float,float>(5000.0f,10.0f);//(1000.0f,10.0f); //Structural
+	this->springConstants[SHEAR] =      std::pair<float,float>(5000.0f,10.0f);//(3000.0f,5.0f);  //Shear
+	this->springConstants[BEND] =       std::pair<float,float>(2000.0f,5.0f);//(500.0f,1.0f);   //Bend
+	this->springConstants[PENALTY] =    std::pair<float,float>(2000.0f,1.0f);//(1000.0f,10.0f); //Penalty
 
 	//Set values
 	this->origin = origin;
@@ -393,10 +398,30 @@ void Jello::checkForCollisions()
 	for(unsigned int i = 0; i < this->particles.size(); i++)
 	{
 		Particle& p = this->getParticle(i);
+		Intersection intersection;
+		bool collisionFound = false;
+			
+		//Floor
+		if(!collisionFound)
+		{
+			collisionFound = FloorIntersection(p, intersection);
+		}
+		//Spheres
+		if(!collisionFound)
+		{
+			World* world = Singleton<GLDisplay>::Instance()->getWorld();
+			std::vector<Object*>& objects = world->getObjectsByType("Sphere");
+			for(unsigned int j = 0; j < objects.size(); j++)
+			{
+				Object* object = objects.at(j);
+				glm::mat4 transformation = object->getTransformationMatrix();
+				collisionFound = SphereIntersection(p, intersection, transformation);
+				if(collisionFound) 
+					break;
+			}
+		}
 
-        Intersection intersection;
-		bool floorCollision = FloorIntersection(p, intersection);
-		if(floorCollision)
+		if(collisionFound)
 		{
 			if (intersection.type == CONTACT)
 				contacts.push_back(intersection);
@@ -409,22 +434,84 @@ bool Jello::FloorIntersection(Particle& p, Intersection& intersection)
 {
 	float particlePosY = p.position[1];
 	float floorPosY = 0.0f;
+	float epsilon = 0.3f;
 	intersection.normal = glm::vec3(0,1,0);
 	intersection.p = p.index1D;
+
 	if(particlePosY < floorPosY)
 	{
 		float diffY = particlePosY - floorPosY;
 		intersection.distance = diffY;
-		intersection.type = CONTACT;
+		intersection.type = COLLISION;
 		return true;
 	}
+	/*else if(particlePosY < floorPosY + epsilon)
+	{
+		float diffY = particlePosY - floorPosY + epsilon;
+		intersection.distance = diffY;
+		intersection.type = COLLISION;
+		return true;
+	}*/
     return false;
+}
+bool Jello::SphereIntersection(Particle& p, Intersection& intersection, glm::mat4 T)
+{
+	bool pointInSphere = IntersectionAlgorithms::PointInSphere(p.position,T);
+	if(pointInSphere)
+	{
+		Ray ray = Ray(p.position - p.velocity*100.0f, p.velocity);
+		IntersectionData intersectionData = IntersectionAlgorithms::RaySphereIntersect(ray, T);
+		if(intersectionData.t > 0)
+		{
+			intersection.p = p.index1D;
+			intersection.normal = intersectionData.normal;
+			intersection.distance = -glm::length(p.position - intersectionData.point);
+			intersection.type = COLLISION;
+			return true;
+		}
+	}
+	return false;
+}
+void Jello::resolveContacts()
+{
+	for (unsigned int i = 0; i < this->contacts.size(); i++)
+    {
+		const Intersection& contact = contacts[i];
+		Particle& particle = this->getParticle(contact.p);
+		particle.position[1] = 0;
+		particle.velocity *= -1;  
+    }
+}
+void Jello::resolveCollisions()
+{
+	for(unsigned int i = 0; i < this->collisions.size(); i++)
+    {
+        const Intersection& contact = collisions[i];
+		glm::vec3 normal = contact.normal; 
+		float dist = contact.distance;
+
+		Particle& particle = this->getParticle(contact.p);
+		Particle& tempParticle = Particle();
+		tempParticle.position = particle.position - normal*dist;
+		tempParticle.velocity = glm::vec3(0,0,0);
+
+		float restLen = 1;
+		float ks = this->springConstants[PENALTY].first;
+		float kd = this->springConstants[PENALTY].second;
+		Spring spring =  Spring(PENALTY, 0, 0, ks, kd, restLen);
+		glm::vec3 force = this->getSpringForce(spring,particle,tempParticle);
+
+		particle.force -= force;
+		particle.velocity *= .9;
+	}
 }
 void Jello::computeForces(std::vector<Particle>& particleSet)
 {
 	for(unsigned int i = 0; i < particleSet.size(); i++)
 	{
 		Particle& p = particleSet.at(i);
+		externalAcceleration += glm::vec3(0,-10.0f,0);
+		externalAcceleration.y = std::max(-10.0f,externalAcceleration.y);
 		p.force = p.mass*externalAcceleration;
 	}
 	
@@ -438,50 +525,23 @@ void Jello::computeForces(std::vector<Particle>& particleSet)
 			Spring& spring = springs.at(i);
 			Particle& a = particleSet.at(spring.p1);
 			Particle& b = particleSet.at(spring.p2);
-			glm::vec3 force = this->getSpringForce(spring,particleSet);
+			glm::vec3 force = this->getSpringForce(spring,a,b);
  			a.force += force;
 			b.force -= force;
 		}
     }
 }
-glm::vec3 Jello::getSpringForce(Spring& spring, std::vector<Particle>& particleSet)
+glm::vec3 Jello::getSpringForce(Spring& spring, Particle& p1, Particle& p2)
 {
-	Particle& a = particleSet.at(spring.p1);
-	Particle& b = particleSet.at(spring.p2);
-
-	glm::vec3 diff = a.position - b.position;
+	glm::vec3 diff = p1.position - p2.position;
 	float dist = glm::length(diff);
 	glm::vec3 diffNormalized = diff/dist;
 	float displacement = dist - spring.restLen;
-	glm::vec3 diffVel = a.velocity - b.velocity;
-	glm::vec3 force;
-
-	force = -diffNormalized*(spring.Ks*displacement + spring.Kd*(diffVel*diffNormalized));
+	//if(std::abs(displacement) > std::abs(spring.restLen)/2)
+	//	displacement = displacement*(glm::pow(std::abs(displacement),1.0f));
+	glm::vec3 diffVel = p1.velocity - p2.velocity;
+	glm::vec3 force = -diffNormalized*(spring.Ks*displacement + spring.Kd*(diffVel*diffNormalized));
 	return force;
-}
-void Jello::resolveContacts()
-{
-	for (unsigned int i = 0; i < this->contacts.size(); i++)
-    {
-		const Intersection& contact = contacts[i];
-		Particle& p = this->getParticle(contact.p);
-		glm::vec3 normal = contact.normal; 
-		float dist = contact.distance;
-
-		p.position[1] = 0;
-		p.velocity *= -1;  
-    }
-}
-void Jello::resolveCollisions()
-{
-	for(unsigned int i = 0; i < this->collisions.size(); i++)
-    {
-        Intersection result = this->collisions[i];
-        Particle& pt = this->getParticle(result.p);
-        glm::vec3 normal = result.normal;
-        float dist = result.distance;
-		//Doesn't do anything yet
-	}
 }
 void Jello::updateJelloMesh()
 {
@@ -541,8 +601,6 @@ glm::vec3 Jello::getNormal(FaceType f, Particle& particle)
 	
 	glm::vec3 accum;
 	int numNeighbors = neighbors.size();
-	//If only two neighbors, only do one cross product
-	if(numNeighbors == 2) numNeighbors--; 
 	for(int i = 0; i < numNeighbors; i++)
 	{
 		int neighbor1Index = neighbors.at(i);
@@ -754,6 +812,8 @@ void Jello::keyDown(sf::Event sfEvent)
 		this->addExternalAcceleration(glm::vec3(0,0,-userForceMagnitude));
 	if(eventHandler->isKeyDown(sf::Keyboard::Down))
 		this->addExternalAcceleration(glm::vec3(0,0,userForceMagnitude));
+	if(eventHandler->isKeyDown(sf::Keyboard::Space))
+		this->addExternalAcceleration(glm::vec3(0,1000,0));
 }
 /*---------------------------------------------
   Particle

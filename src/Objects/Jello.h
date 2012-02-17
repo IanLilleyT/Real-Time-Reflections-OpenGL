@@ -3,8 +3,12 @@
 #include <glm/glm.hpp>
 
 #include "../OpenGL/GlProgramDatabase.h"
-#include "RenderObject.h"
 #include "../EventHandler.h"
+#include "RenderObject.h"
+#include "../OpenGL/GLDisplay.h"
+#include "../Singleton.h"
+#include "../Ray.h"
+#include "../IntersectionAlgorithms.h"
 
 class Jello: public RenderObject
 {
@@ -27,7 +31,7 @@ protected:
 
 	//Enums
 	enum IntegrationType { EULER, MIDPOINT, RK4 };
-	enum SpringType { STRUCTURAL, SHEAR, BEND }; 
+	enum SpringType { STRUCTURAL, SHEAR, BEND, PENALTY }; 
 	enum IntersectionType { CONTACT, COLLISION };
 	enum FaceType { LEFT, RIGHT, TOP, BOTTOM, FRONT, BACK };
 
@@ -111,13 +115,14 @@ protected:
 	std::map<SpringType,std::vector<Spring>> springMap;
 	std::map<SpringType,GLMesh*> springMeshes;
 	std::map<SpringType,std::pair<float,float>> springConstants;
-	glm::vec3 getSpringForce(Spring& spring, std::vector<Particle>& particleSet);
+	glm::vec3 getSpringForce(Spring& spring, Particle& p1, Particle& p2);
 	void renderSprings();
 
 	//Intersections
 	std::vector<Intersection> contacts;
 	std::vector<Intersection> collisions;
 	bool FloorIntersection(Particle& p, Intersection& intersection);
+	bool SphereIntersection(Particle& p, Intersection& intersection, glm::mat4 T);
     //virtual bool CylinderIntersection(Particle& p, World::Cylinder* cylinder, Intersection& intersection);
 
 	//Dimensions

@@ -24,15 +24,15 @@ void GLDisplay::initialize()
 
 	//Random jello
 	float spacing = .1f;
-	int numX = 3;
-	int numZ = 3;
+	int numX = 0;
+	int numZ = 0;
 	for(int x = 0; x < numX; x++)
 	{
 		for(int z = 0; z < numZ; z++)
 		{
 			int index = x*z + z;
 			std::string name = "RandomJello" + index;
-			glm::vec3 origin = glm::vec3(x + x*spacing,1,z+z*spacing);
+			glm::vec3 origin = glm::vec3(x + x*spacing,5,z+z*spacing);
 			glm::vec3 size = glm::vec3(1,1,1);
 			glm::uvec3 divisions = glm::uvec3(6,6,6);
 

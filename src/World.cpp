@@ -1,6 +1,9 @@
 #include "World.h"
 
-World::World(){}
+World::World()
+{
+	this->objectMap["None"] = std::vector<Object*>();
+}
 World::~World(){}
 
 void World::update()
@@ -43,6 +46,7 @@ void World::removeObject(std::string name)
 	this->removeObject(this->getObjectByName(name));
 }
 
+
 Object* World::getObjectByName(std::string name)
 {
 	std::map<std::string,std::vector<Object*>>::iterator iter;
@@ -69,5 +73,10 @@ Object* World::getObjectByTypeAndName(std::string type, std::string name)
 }
 std::vector<Object*>& World::getObjectsByType(std::string type)
 {
-	return this->objectMap.find(type)->second;
+	std::map<std::string,std::vector<Object*>>::iterator iter;
+	iter = this->objectMap.find(type);
+	if(iter != this->objectMap.end())
+		return iter->second;
+	else
+		return this->objectMap["None"];
 }

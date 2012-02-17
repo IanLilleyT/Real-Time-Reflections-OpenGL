@@ -7,6 +7,7 @@
 #include "GLProgram.h"
 #include "Programs/GLProgram_Material.h"
 #include "Programs/GLProgram_White.h"
+#include "Programs/GLProgram_Jello.h"
 #include "../GlobalValues.h"
 
 class GLProgramDatabase
@@ -20,6 +21,7 @@ public:
 
 	static std::string TYPE_WHITE;
 	static std::string TYPE_MATERIAL;
+	static std::string TYPE_JELLO;
 
 private:
 	GLProgram* findProgram(std::string ProgramName);

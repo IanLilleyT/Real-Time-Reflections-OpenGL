@@ -22,6 +22,7 @@
 #include "Objects/RenderObject.h"
 #include "Objects/Light.h"
 #include "Objects/Jello.h"
+#include "Objects/Primitives/Sphere.h"
 #include "Singleton.h"
 #include "GlobalValues.h"
 #include "OpenGL/GLProgramDatabase.h"
@@ -42,6 +43,7 @@ private:
 	bool isFieldValid(std::ifstream& file, std::string name, std::vector<std::string>& results);
 
 	void processRenderObject(std::ifstream& file, World* world);
+	void processSphere(std::ifstream& file, World* world);
 	void processJello(std::ifstream& file, World* world);
 	void processLight(std::ifstream& file, World* world);
 };

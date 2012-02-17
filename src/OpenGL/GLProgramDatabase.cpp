@@ -2,6 +2,7 @@
 
 std::string GLProgramDatabase::TYPE_WHITE = "White";
 std::string GLProgramDatabase::TYPE_MATERIAL = "Material";
+std::string GLProgramDatabase::TYPE_JELLO = "Jello";
 
 GLProgramDatabase::GLProgramDatabase(){}
 GLProgramDatabase::~GLProgramDatabase(){}
@@ -37,6 +38,8 @@ GLProgram* GLProgramDatabase::makeProgramByName(std::string name)
 		glProgram = new GLProgram_White();
 	else if(name == GLProgramDatabase::TYPE_MATERIAL)
 		glProgram = new GLProgram_Material();
+	else if(name == GLProgramDatabase::TYPE_JELLO)
+		glProgram = new GLProgram_Jello();
 
 	//Assembling the program
 	if(glProgram != 0)

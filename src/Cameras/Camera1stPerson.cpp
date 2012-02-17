@@ -8,10 +8,7 @@ Camera1stPerson::Camera1stPerson(void)
 	this->update();
 }
 
-Camera1stPerson::~Camera1stPerson(void)
-{
-	//Do nothing
-}
+Camera1stPerson::~Camera1stPerson(void){}
 
 void Camera1stPerson::pan(float x, float y)
 {

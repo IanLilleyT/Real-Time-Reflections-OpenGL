@@ -28,6 +28,7 @@ public:
 
 private:
 	static std::string className;
+
 	glm::vec4 intensity;
 
 	//Static
