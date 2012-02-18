@@ -17,15 +17,6 @@ Jello::Jello(std::string name, std::string material, std::string program,
 	//Event Listeners
 	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::KeyPressed, InputReceiver::from_method<Jello,&Jello::keyDown>(this));
 	
-	//External accelerations
-	this->setExternalAcceleration(glm::vec3(0,0,0));
-
-	//Spring constants
-	this->springConstants[STRUCTURAL] = std::pair<float,float>(5000.0f,5.0f); //Structural
-	this->springConstants[SHEAR] =      std::pair<float,float>(5000.0f,5.0f); //Shear
-	this->springConstants[BEND] =       std::pair<float,float>(3000.0f,2.0f); //Bend
-	this->springConstants[PENALTY] =    std::pair<float,float>(2000.0f,1.0f); //Penalty
-
 	//Set values
 	this->origin = origin;
 	this->size = size;
@@ -113,6 +104,7 @@ void Jello::initializeParticles()
 }
 void Jello::initializeSprings()
 {
+	this->initializeSpringConstants();
     for (int i = 0; i < numCols; i++)
     {
         for (int j = 0; j < numRows; j++)
@@ -146,9 +138,41 @@ void Jello::initializeSprings()
 void Jello::initializeSpring(SpringType type, Particle& p1, Particle& p2)
 {
 	float restLen = glm::length(p1.position - p2.position);
-	float ks = this->springConstants[type].first;
-	float kd = this->springConstants[type].second;
+	float ks = this->springConstants[std::pair<SpringType,IntegrationType>(type,this->integrationType)].first;
+	float kd = this->springConstants[std::pair<SpringType,IntegrationType>(type,this->integrationType)].second;
 	this->springMap[type].push_back(Spring(type, p1.index1D, p2.index1D, ks, kd, restLen));
+}
+void Jello::initializeSpringConstants()
+{
+	//RK4
+	this->springConstants[std::pair<SpringType,IntegrationType>(STRUCTURAL,RK4)] = 
+		std::pair<float,float>(5000.0f,5.0f);
+	this->springConstants[std::pair<SpringType,IntegrationType>(SHEAR,RK4)] = 
+		std::pair<float,float>(5000.0f,5.0f);
+	this->springConstants[std::pair<SpringType,IntegrationType>(BEND,RK4)] = 
+		std::pair<float,float>(3000.0f,2.0f);
+	this->springConstants[std::pair<SpringType,IntegrationType>(PENALTY,RK4)] = 
+		std::pair<float,float>(2000.0f,1.0f);
+
+	//Euler
+	this->springConstants[std::pair<SpringType,IntegrationType>(STRUCTURAL,EULER)] = 
+		std::pair<float,float>(1500.0f,2.0f);
+	this->springConstants[std::pair<SpringType,IntegrationType>(SHEAR,EULER)] = 
+		std::pair<float,float>(500.0f,2.0f);
+	this->springConstants[std::pair<SpringType,IntegrationType>(BEND,EULER)] = 
+		std::pair<float,float>(500.0f,1.0f);
+	this->springConstants[std::pair<SpringType,IntegrationType>(PENALTY,EULER)] = 
+		std::pair<float,float>(400.0f,1.0f);
+
+	//Midpoint
+	this->springConstants[std::pair<SpringType,IntegrationType>(STRUCTURAL,MIDPOINT)] = 
+		std::pair<float,float>(1500.0f,2.0f);
+	this->springConstants[std::pair<SpringType,IntegrationType>(SHEAR,MIDPOINT)] = 
+		std::pair<float,float>(1000.0f,2.0f);
+	this->springConstants[std::pair<SpringType,IntegrationType>(BEND,MIDPOINT)] = 
+		std::pair<float,float>(500.0f,1.0f);
+	this->springConstants[std::pair<SpringType,IntegrationType>(PENALTY,MIDPOINT)] = 
+		std::pair<float,float>(400.0f,1.0f);
 }
 void Jello::initializeMeshes()
 {
@@ -517,8 +541,8 @@ void Jello::resolveCollisions()
 		tempParticle.velocity = glm::vec3(0,0,0);
 
 		float restLen = 1;
-		float ks = this->springConstants[PENALTY].first;
-		float kd = this->springConstants[PENALTY].second;
+		float ks = this->springConstants[std::pair<SpringType,IntegrationType>(PENALTY,this->integrationType)].first;
+		float kd = this->springConstants[std::pair<SpringType,IntegrationType>(PENALTY,this->integrationType)].second;
 		Spring spring =  Spring(PENALTY, 0, 0, ks, kd, restLen);
 		glm::vec3 force = this->getSpringForce(spring,particle,tempParticle);
 		particle.force -= force;
@@ -562,7 +586,9 @@ glm::vec3 Jello::getSpringForce(Spring& spring, Particle& p1, Particle& p2)
 	glm::vec3 diffNormalized = diff/dist;
 	float displacement = dist - spring.restLen;
 	glm::vec3 diffVel = p1.velocity - p2.velocity;
-	glm::vec3 force = -diffNormalized*(spring.Ks*displacement + spring.Kd*(diffVel*diffNormalized));
+	float ks = this->springConstants[std::pair<SpringType,IntegrationType>(spring.type,this->integrationType)].first;
+	float kd = this->springConstants[std::pair<SpringType,IntegrationType>(spring.type,this->integrationType)].second;
+	glm::vec3 force = -diffNormalized*(ks*displacement + kd*(diffVel*diffNormalized));
 	return force;
 }
 void Jello::updateJelloMesh()
@@ -671,11 +697,31 @@ void Jello::updateSpringMeshes()
 ---------------------------------------------*/
 void Jello::EulerIntegrate()
 {
-
+	for(unsigned int i = 0; i < this->particles.size(); i++)
+	{
+		Particle& s = this->getParticle(i);
+		Particle t = this->getParticle(i);
+		t.force /= s.mass;
+		s.velocity += t.force * this->integrationTimestep;
+		s.position += this->integrationTimestep*(s.velocity + .5f*t.force*this->integrationTimestep);
+	}
 }
 void Jello::MidPointIntegrate()
 {
+	for(unsigned int i = 0; i < this->particles.size(); i++)
+	{
+		Particle& s = this->getParticle(i);
+		Particle t = this->getParticle(i);
+		float halfT = this->integrationTimestep/2.0f;
 
+		//Get position at half timestep
+		t.force /= 0.5f*s.mass;
+		t.velocity += t.force * this->integrationTimestep;
+		t.position += this->integrationTimestep*(t.velocity + .5f*t.force*this->integrationTimestep);
+
+		s.velocity += t.force * halfT;
+		s.position += halfT*(t.velocity + .5f*t.force*halfT);
+	}
 }
 void Jello::RK4Integrate()
 {
@@ -851,7 +897,7 @@ Jello::Particle::~Particle(){}
 ---------------------------------------------*/
 Jello::Spring::Spring(){}
 Jello::Spring::Spring(SpringType t, int p1, int p2, float Ks, float Kd, float restLen): 
-	type(t), Ks(Ks), Kd(Kd), p1(p1), p2(p2), restLen(restLen) {}
+	type(t), p1(p1), p2(p2), restLen(restLen) {}
 Jello::Spring::~Spring(){}
 
 /*---------------------------------------------

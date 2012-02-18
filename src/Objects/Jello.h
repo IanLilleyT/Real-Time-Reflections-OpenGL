@@ -59,8 +59,6 @@ protected:
         SpringType type;
         int p1;
         int p2;
-        float Ks;
-        float Kd;
         float restLen;
     };
     class Intersection
@@ -81,6 +79,7 @@ protected:
 	void initializeParticles();
 	void initializeSprings();
 	void initializeSpring(SpringType s,Particle& p1, Particle& p2);
+	void initializeSpringConstants();
 	void initializeMeshes();
 	void initializeJelloMesh();
 	void initializeJelloMeshIBO();
@@ -116,7 +115,7 @@ protected:
 	//Springs	
 	std::map<SpringType,std::vector<Spring>> springMap;
 	std::map<SpringType,GLMesh*> springMeshes;
-	std::map<SpringType,std::pair<float,float>> springConstants;
+	std::map<std::pair<SpringType,IntegrationType>,std::pair<float,float>> springConstants;
 	glm::vec3 getSpringForce(Spring& spring, Particle& p1, Particle& p2);
 	void renderSprings();
 
