@@ -3,6 +3,7 @@
 IntersectionData IntersectionAlgorithms::RaySphereIntersect(Ray& ray, glm::mat4 T)
 {
 	IntersectionData intersectionData;
+	intersectionData.t = -1;
 
 	glm::mat4 invT = glm::inverse(T);
 	Ray invRay = Ray::Transform(ray,invT);
@@ -15,18 +16,13 @@ IntersectionData IntersectionAlgorithms::RaySphereIntersect(Ray& ray, glm::mat4 
 	//Quadratic formula
 	float insideSqrt = b*b-4*a*c;
 	if(insideSqrt < 0)
-	{
-		intersectionData.t = -1;
 		return intersectionData;
-	}
+
 	float t1 = (-b + std::sqrt(insideSqrt))/(2*a);
 	float t2 = (-b - std::sqrt(insideSqrt))/(2*a);
 	float tMin = IntersectionAlgorithms::getMinT((t1 > 0), (t2 > 0), t1, t2);
 	if(tMin <= 0) 
-	{
-		intersectionData.t = -1;
 		return intersectionData;
-	}
 
 	glm::vec3 intersectionPointTransformed = invRay.GetPointAlongRay(tMin);
 	glm::vec3 intersectionPoint = glm::vec3(T*glm::vec4(intersectionPointTransformed,1.0f));
@@ -37,6 +33,7 @@ IntersectionData IntersectionAlgorithms::RaySphereIntersect(Ray& ray, glm::mat4 
 	intersectionData.t = finalPointDistance;
 	intersectionData.point = intersectionPoint;
 	intersectionData.normal = intersectionNormal;
+	intersectionData.reflection = IntersectionAlgorithms::getReflection(ray.direction,intersectionNormal);
 	return intersectionData;
 }
 bool IntersectionAlgorithms::PointInSphere(glm::vec3 point, glm::mat4 T)
@@ -62,12 +59,10 @@ bool IntersectionAlgorithms::equal(float val1, float val2)
 	float epsilon = .001f;
 	return abs(val1-val2) < epsilon;
 }
-static Ray getReflectedRay(glm::vec3 initialRayDir, glm::vec3 normal, glm::vec3 intersectionPoint)
+glm::vec3 IntersectionAlgorithms::getReflection(glm::vec3 initialDir, glm::vec3 normal)
 {
 	float epsilon = .001f;
-	glm::vec3 reflectedRayDir = initialRayDir - 2.0f*normal*glm::dot(initialRayDir,normal);
-	reflectedRayDir = glm::normalize(reflectedRayDir);
-	glm::vec3 reflectionOrigin = intersectionPoint + epsilon*reflectedRayDir;
-	Ray r = Ray(reflectionOrigin,reflectedRayDir);
-	return r;
+	glm::vec3 reflectedDir = initialDir - 2.0f*normal*glm::dot(initialDir,normal);
+	reflectedDir = glm::normalize(reflectedDir);
+	return reflectedDir;
 }
