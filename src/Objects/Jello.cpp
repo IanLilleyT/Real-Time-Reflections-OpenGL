@@ -471,6 +471,7 @@ bool Jello::FloorIntersection(Particle& p, Intersection& intersection)
 	float epsilon = 0.15f;
 	intersection.normal = glm::vec3(0,1,0);
 	intersection.p = p.index1D;
+	intersection.reflection = 1;
 
 	if(particlePosY < floorPosY)
 	{
@@ -496,6 +497,7 @@ bool Jello::SphereIntersection(Particle& p, Intersection& intersection, glm::mat
 		intersection.p = p.index1D;
 		intersection.normal = intersectionData.normal;
 		intersection.distance = -glm::length(p.position - intersectionData.point);
+		intersection.reflection = -1;
 		intersection.type = COLLISION;
 		return true;
 	}
@@ -509,6 +511,7 @@ bool Jello::CylinderIntersection(Particle& p, Intersection& intersection, glm::m
 		intersection.p = p.index1D;
 		intersection.normal = intersectionData.normal;
 		intersection.distance = -glm::length(p.position - intersectionData.point);
+		intersection.reflection = -1;
 		intersection.type = COLLISION;
 		return true;
 	}
@@ -544,7 +547,7 @@ void Jello::resolveCollisions()
 		glm::vec3 force = this->getSpringForce(spring,particle,tempParticle);
 		particle.force -= force;
 		
-		particle.velocity *= .5f; //energy loss
+		particle.velocity *= contact.reflection*.5f; //energy loss
 	}
 }
 void Jello::computeForces(std::vector<Particle>& particleSet)

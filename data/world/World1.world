@@ -23,7 +23,7 @@ translation 0 2 0
 rotation 1 0 0 0
 scale 1 3 1
 
-//Cylinder
+Cylinder
 name sphere2
 material material2
 program Material
@@ -31,13 +31,21 @@ translation 0 1 0
 rotation 1 0 0 90
 scale 2 2 2
 
-//Sphere
+Sphere
 name sphere2
 material material2
 program Material
-translation 0 1 0
+translation -2 1 0
 rotation 1 0 0 0
-scale 5 1 5
+scale 1 1 1
+
+Sphere
+name sphere2
+material material2
+program Material
+translation 2 1 0
+rotation 1 0 0 0
+scale 1 1 1
 
 Jello
 name jelly1
