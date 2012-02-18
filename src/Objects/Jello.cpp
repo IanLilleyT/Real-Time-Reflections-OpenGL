@@ -416,6 +416,20 @@ void Jello::checkForCollisions()
 					break;
 			}
 		}
+		//Cylinder
+		if(!collisionFound)
+		{
+			World* world = Singleton<GLDisplay>::Instance()->getWorld();
+			std::vector<Object*>& objects = world->getObjectsByType("Cylinder");
+			for(unsigned int j = 0; j < objects.size(); j++)
+			{
+				Object* object = objects.at(j);
+				glm::mat4 transformation = object->getTransformationMatrix();
+				collisionFound = CylinderIntersection(p, intersection, transformation);
+				if(collisionFound) 
+					break;
+			}
+		}
 
 		if(collisionFound)
 		{
@@ -453,20 +467,29 @@ bool Jello::FloorIntersection(Particle& p, Intersection& intersection)
 }
 bool Jello::SphereIntersection(Particle& p, Intersection& intersection, glm::mat4 T)
 {
-	bool pointInSphere = IntersectionAlgorithms::PointInSphere(p.position,T);
-	if(pointInSphere)
+	IntersectionData intersectionData = IntersectionAlgorithms::PointInSphere(p.position,p.velocity,T);
+	if(intersectionData.valid)
 	{
-		Ray ray = Ray(p.position - p.velocity*100.0f, p.velocity);
-		IntersectionData intersectionData = IntersectionAlgorithms::RaySphereIntersect(ray, T);
-		if(intersectionData.t > 0)
-		{
-			intersection.p = p.index1D;
-			intersection.normal = intersectionData.normal;
-			intersection.reflection = intersectionData.reflection;
-			intersection.distance = -glm::length(p.position - intersectionData.point);
-			intersection.type = COLLISION;
-			return true;
-		}
+		intersection.p = p.index1D;
+		intersection.normal = intersectionData.normal;
+		intersection.reflection = intersectionData.reflection;
+		intersection.distance = -glm::length(p.position - intersectionData.point);
+		intersection.type = COLLISION;
+		return true;
+	}
+	return false;
+}
+bool Jello::CylinderIntersection(Particle& p, Intersection& intersection, glm::mat4 T)
+{
+	IntersectionData intersectionData = IntersectionAlgorithms::PointInCylinder(p.position,p.velocity,T);
+	if(intersectionData.valid)
+	{
+		intersection.p = p.index1D;
+		intersection.normal = intersectionData.normal;
+		intersection.reflection = intersectionData.reflection;
+		intersection.distance = -glm::length(p.position - intersectionData.point);
+		intersection.type = COLLISION;
+		return true;
 	}
 	return false;
 }

@@ -23,6 +23,7 @@
 #include "Objects/Light.h"
 #include "Objects/Jello.h"
 #include "Objects/Primitives/Sphere.h"
+#include "Objects/Primitives/Cylinder.h"
 #include "Singleton.h"
 #include "GlobalValues.h"
 #include "OpenGL/GLProgramDatabase.h"
@@ -44,6 +45,7 @@ private:
 
 	void processRenderObject(std::ifstream& file, World* world);
 	void processSphere(std::ifstream& file, World* world);
+	void processCylinder(std::ifstream& file, World* world);
 	void processJello(std::ifstream& file, World* world);
 	void processLight(std::ifstream& file, World* world);
 };

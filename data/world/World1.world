@@ -7,7 +7,7 @@ translation 0 -.5 0
 rotation 1 0 0 0
 scale 10 1 10
 
-Sphere
+//Sphere
 name sphere1
 material material2
 program Material
@@ -15,8 +15,8 @@ translation 0 2 0
 rotation 1 0 0 0
 scale 2 2 2
 
-Sphere
-name sphere1
+Cylinder
+name cyl
 material material2
 program Material
 translation 0 2 0

@@ -125,7 +125,7 @@ protected:
 	std::vector<Intersection> collisions;
 	bool FloorIntersection(Particle& p, Intersection& intersection);
 	bool SphereIntersection(Particle& p, Intersection& intersection, glm::mat4 T);
-    //virtual bool CylinderIntersection(Particle& p, World::Cylinder* cylinder, Intersection& intersection);
+    bool CylinderIntersection(Particle& p, Intersection& intersection, glm::mat4 T);
 
 	//Dimensions
 	glm::vec3 origin;
