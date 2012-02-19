@@ -1,7 +1,7 @@
 Ian Lilley - HW1 - Jello - CIS563
 
 READ THE WHOLE THING BEFORE RUNNING!!! (also read with word wrap)
--- 3 late days used
+-- 3 late days used ---
 
 For this assignment I decided to port the starter code to the openGL renderer I've been working on. Although this process was quite time consuming, it feels like time well spent because it helped me understand the starter code on a very low level (which helped with learning mass-spring systems). Some things to point out:
 1) IMPORTANT: To build the project, go into the tools folder and double click "build_automator.bat". The visual studio solution file will be generated in the "build" folder (in the root level directory)
@@ -36,7 +36,9 @@ Space - Apply upward force to the jello
 Arrows - Apply x and z forces to jello (not as good as upward force)
 
 6) I use a few fudge factors to make the jello respond to collision/contacts appropriately.
-7) I'm still working on this project (mostly the rendering system), so if there are confusing areas of code those will be fixed later.
+7) Technically the ground polygon does nothing. Only there for looks.
+8) I have a few videos included. There are three good ones and a bunch of funny bloopers (in their own folder). The most important video is the one with three jellos interacting with a cylinder and two spheres. This demonstrates nearly all of the features in my project.
+9) I'm still working on this project (mostly the rendering system), so if there are confusing areas of code those will be fixed later.
 
 Extra Credit:
 - Collision with spheres
