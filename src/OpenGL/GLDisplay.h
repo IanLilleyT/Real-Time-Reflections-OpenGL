@@ -33,6 +33,7 @@ public:
 
 	void initialize();
 	void update();
+	void resize(int width, int height);
 
 	//World
     World* getWorld();
@@ -47,7 +48,7 @@ private:
 	World* world;
 
 	//GL methods
-	void resizeGL(sf::Event sfEvent);
+	void resize(sf::Event sfEvent);
 	void keyDown(sf::Event sfEvent);
 	void initializeGL();
 	void clearGL();

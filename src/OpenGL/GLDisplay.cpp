@@ -10,7 +10,7 @@ void GLDisplay::initialize()
 
 	//Event handlers
 	Singleton<EventHandler>::Instance()->addEnterFrameEventListener(EnterFrameReceiver::from_method<GLDisplay,&GLDisplay::update>(this));
-	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::Resized, InputReceiver::from_method<GLDisplay,&GLDisplay::resizeGL>(this));
+	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::Resized, InputReceiver::from_method<GLDisplay,&GLDisplay::resize>(this));
 	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::KeyPressed, InputReceiver::from_method<GLDisplay,&GLDisplay::keyDown>(this));
 
 	//Camera
@@ -71,10 +71,14 @@ void GLDisplay::clearGL()
     glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
-void GLDisplay::resizeGL(sf::Event sfEvent)
+void GLDisplay::resize(sf::Event sfEvent)
 {
 	int width = sfEvent.Size.Width;
 	int height = sfEvent.Size.Height;
+	this->resize(width,height);
+}
+void GLDisplay::resize(int width, int height)
+{
 	Singleton<GLCamera>::Instance()->changeWindowDimensions(width,height);
 }
 void GLDisplay::keyDown(sf::Event sfEvent)
