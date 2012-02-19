@@ -6,7 +6,6 @@
 #include "GLCamera.h"
 #include "GLUniformBlockHelper.h"
 #include "GLProgramDatabase.h"
-#include "../WorldDatabase.h"
 #include "../EventHandler.h"
 #include "../Singleton.h"
 #include "../World.h"

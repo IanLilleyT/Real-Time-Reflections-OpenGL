@@ -11,9 +11,15 @@ SFMLCore::SFMLCore(void)
     window->EnableVerticalSync(true);
     window->SetFramerateLimit(60);
 
-	//Handle events
+	//Load GLDisplay
 	Singleton<GLDisplay>::Instance()->initialize();
 	Singleton<GLDisplay>::Instance()->resize(width,height);
+
+	//Set GLDisplay world
+	World* world = Singleton<WorldDatabase>::Instance()->loadWorld("World1");
+	Singleton<GLDisplay>::Instance()->setWorld(world);
+	
+	//Handle events
     bool windowClosed = false;
     while (window->IsOpen())
     {

@@ -18,28 +18,6 @@ void GLDisplay::initialize()
 	this->camera = new Camera3rdPerson();
 	this->camera->zoom(-1);
 	this->camera->rotate(0,-.4f);
-	
-	//World
-	this->world = Singleton<WorldDatabase>::Instance()->loadWorld("World1");
-
-	//Random jello
-	float spacing = .1f;
-	int numX = 0;
-	int numZ = 0;
-	for(int x = 0; x < numX; x++)
-	{
-		for(int z = 0; z < numZ; z++)
-		{
-			int index = x*z + z;
-			std::string name = "RandomJello" + index;
-			glm::vec3 origin = glm::vec3(x + x*spacing,5,z+z*spacing);
-			glm::vec3 size = glm::vec3(1,1,1);
-			glm::uvec3 divisions = glm::uvec3(6,6,6);
-
-			Jello* jello = new Jello(name,"red","Material",origin,size,divisions);
-			this->world->addObject(jello);
-		}
-	}
 }
 void GLDisplay::initializeGL()
 {
@@ -63,7 +41,8 @@ void GLDisplay::update()
 {
 	Singleton<GLUniformBlockHelper>::Instance()->update();
 	this->clearGL();
-	world->update();
+	if(this->world != 0)
+		world->update();
 }
 void GLDisplay::clearGL()
 {

@@ -7,6 +7,8 @@
 #include "Singleton.h"
 #include "EventHandler.h"
 #include "OpenGL/GLDisplay.h"
+#include "WorldDatabase.h"
+#include "World.h"
 
 /*---------------------------------------------
   SFMLCore: Controls the RenderWindow, SFML event

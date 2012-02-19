@@ -1,6 +1,7 @@
 #include "Object.h"
 
 std::string Object::className = "Object";
+
 Object::Object()
 {
 	this->type = Object::className;

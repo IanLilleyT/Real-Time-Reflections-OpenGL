@@ -22,9 +22,8 @@
 #include "Objects/RenderObject.h"
 #include "Objects/Light.h"
 #include "Objects/Jello.h"
-#include "Objects/Primitives/Sphere.h"
-#include "Objects/Primitives/Cylinder.h"
 #include "Singleton.h"
+#include "Factory.h"
 #include "GlobalPaths.h"
 #include "OpenGL/GLProgramDatabase.h"
 
