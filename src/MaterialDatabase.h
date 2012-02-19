@@ -19,7 +19,7 @@
 #include <glm/glm.hpp>
 
 #include "Material.h"
-#include "GlobalValues.h"
+#include "GlobalPaths.h"
 #include "Singleton.h"
 #include "Utils.h"
 

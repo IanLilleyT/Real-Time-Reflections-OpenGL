@@ -25,7 +25,7 @@
 #include "Objects/Primitives/Sphere.h"
 #include "Objects/Primitives/Cylinder.h"
 #include "Singleton.h"
-#include "GlobalValues.h"
+#include "GlobalPaths.h"
 #include "OpenGL/GLProgramDatabase.h"
 
 class WorldDatabase

@@ -39,7 +39,7 @@ void MeshDatabase::copyMesh(std::string meshFileName, std::string newName)
 }
 GLMesh* MeshDatabase::openMeshFile(std::string meshFileName)
 {
-	std::string meshPath = Singleton<GlobalValues>::Instance()->getMeshPath();
+	std::string meshPath = Singleton<GlobalPaths>::Instance()->getMeshPath();
 	std::string fullPath = meshPath + meshFileName;
 
 	std::string line;

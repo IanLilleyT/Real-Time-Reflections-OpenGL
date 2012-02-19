@@ -8,7 +8,7 @@
 #include "Programs/GLProgram_Material.h"
 #include "Programs/GLProgram_White.h"
 #include "Programs/GLProgram_Jello.h"
-#include "../GlobalValues.h"
+#include "../GlobalPaths.h"
 
 class GLProgramDatabase
 {

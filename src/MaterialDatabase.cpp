@@ -31,7 +31,7 @@ Material* MaterialDatabase::findMaterial(std::string materialFileName)
 }
 Material* MaterialDatabase::openMaterialFile(std::string materialFileName)
 {
-	std::string materialPath = Singleton<GlobalValues>::Instance()->getMaterialPath();
+	std::string materialPath = Singleton<GlobalPaths>::Instance()->getMaterialPath();
 	std::string fullPath = materialPath + materialFileName;
 
 	std::ifstream file;

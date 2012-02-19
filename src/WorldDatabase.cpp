@@ -31,7 +31,7 @@ World* WorldDatabase::findWorld(std::string worldFileName)
 }
 World* WorldDatabase::openWorldFile(std::string worldFileName)
 {
-	std::string worldPath = Singleton<GlobalValues>::Instance()->getWorldPath();
+	std::string worldPath = Singleton<GlobalPaths>::Instance()->getWorldPath();
 	std::string fullPath = worldPath + worldFileName;
 
 	std::string line;

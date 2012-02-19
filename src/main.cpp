@@ -5,14 +5,14 @@
 
 #include "Singleton.h"
 #include "SFMLCore.h"
-#include "GlobalValues.h"
+#include "GlobalPaths.h"
 
 int main(int argc, char **argv)
 {
 	srand((unsigned int)time(NULL));
 	std::string executablePath = std::string(argv[0]);
 	std::string dataPath = executablePath + "/../../data/";
-	Singleton<GlobalValues>::Instance()->setDataPath(dataPath);
+	Singleton<GlobalPaths>::Instance()->setDataPath(dataPath);
 	Singleton<SFMLCore>::Instance();
 	return 0;
 }

@@ -44,10 +44,10 @@ GLProgram* GLProgramDatabase::makeProgramByName(std::string name)
 	//Assembling the program
 	if(glProgram != 0)
 	{
-		GlobalValues* globalValues = Singleton<GlobalValues>::Instance();
+		GlobalPaths* globalPaths = Singleton<GlobalPaths>::Instance();
 		std::pair<std::string,std::string> shaderPair = this->getShadersByType(name);
-		std::string vertShader = globalValues->getShaderPath() + shaderPair.first;
-		std::string fragShader = globalValues->getShaderPath() + shaderPair.second;
+		std::string vertShader = globalPaths->getShaderPath() + shaderPair.first;
+		std::string fragShader = globalPaths->getShaderPath() + shaderPair.second;
 
 		std::vector<GLuint> shaderList;
 		shaderList.push_back(this->LoadShader(GL_VERTEX_SHADER, vertShader));
