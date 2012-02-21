@@ -2,36 +2,44 @@
 
 #include <string>
 
-#include "Object.h"
-#include "../OpenGL/GLMesh.h"
-#include "../Material.h"
-#include "../OpenGL/GLState.h"
-#include "../MaterialDatabase.h"
-#include "../MeshDatabase.h"
-#include "../Singleton.h"
+#include "Object.h" //Superclass
+#include "../OpenGL/GLMesh.h" //For storing mesh
+#include "../Material.h" //For storing material
+#include "../OpenGL/GLState.h" //For updating model to camera matrix and material
+#include "../MaterialDatabase.h" //For loading material based on string name
+#include "../MeshDatabase.h" //For loading mesh based on string name
+#include "../Singleton.h" //For multiple uses
 
 class RenderObject: public Object
 {
 public:
+	//Construct/Destruct
 	RenderObject();
-	RenderObject(std::string name);
-	RenderObject(std::string name, std::string mesh, std::string material, std::string program);
 	virtual ~RenderObject();
 
+	//Initialize
+	virtual void initialize(TiXmlElement* element);
+	void initialize(std::string type, std::string name, std::string mesh, 
+		std::string material, std::string program);
+
+	//Update
 	virtual void update();
 	virtual void render();
 
+	//Mesh
 	void setMesh(std::string name);
 	std::string getMesh();
 
+	//Material
 	void setMaterial(std::string name);
 	std::string getMaterial();
 
+	//Program
 	void setProgram(std::string type);
 	std::string getProgram();
 
 protected:
-	static std::string className;
+	void initialize(std::string mesh, std::string material, std::string program);
 
 	GLMesh* mesh;
 	Material* material;

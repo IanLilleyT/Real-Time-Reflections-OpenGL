@@ -1,20 +1,25 @@
 #pragma once
 
-#include <string>
+#include <string> //For various properties
 
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
+#include <glm/glm.hpp> //For math
+#include <glm/gtc/quaternion.hpp> //For rotations
+#include <tinyxml/tinyxml.h> //For parsing during initialize
 
-#include "../Utils.h"
-#include "../Singleton.h"
+#include "../Utils.h" //For parsing XML data in glm types
 
 class Object
 {
 public:
+	//Construct/Destruct
 	Object();
-	Object(std::string name);
 	virtual ~Object();
 
+	//initialize
+	virtual void initialize(TiXmlElement* element);
+	void initialize(std::string type, std::string name);
+
+	//Update
 	virtual void update();
 
 	//Name
@@ -22,6 +27,7 @@ public:
 	std::string getName();
 
 	//Type
+	void setType(std::string type);
 	std::string getType();
 
 	//Transformations
@@ -65,8 +71,6 @@ public:
 	void setRotationMatrix(glm::mat4 rotationMatrix);
 
 protected:
-	static std::string className;
-
 	std::string type;
 	std::string name;
 

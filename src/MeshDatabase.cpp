@@ -1,22 +1,26 @@
 #include "MeshDatabase.h"
 
+std::string MeshDatabase::NO_NAME = "NO_NAME";
+
 MeshDatabase::MeshDatabase(){}
 MeshDatabase::~MeshDatabase(){}
 
 GLMesh* MeshDatabase::loadMesh(std::string meshFileName)
 {
 	GLMesh* newMesh = 0;
-
-	std::string extension = ".obj";
-	if(meshFileName.find(extension) == std::string::npos)
-		meshFileName += extension;
-
-	newMesh = this->findMesh(meshFileName);
-	if(newMesh == 0) 
+	if(meshFileName != MeshDatabase::NO_NAME)
 	{
-		newMesh = this->openMeshFile(meshFileName);
-		if(newMesh != 0)
-			this->meshMap[meshFileName] = newMesh;
+		std::string extension = ".obj";
+		if(meshFileName.find(extension) == std::string::npos)
+			meshFileName += extension;
+
+		newMesh = this->findMesh(meshFileName);
+		if(newMesh == 0) 
+		{
+			newMesh = this->openMeshFile(meshFileName);
+			if(newMesh != 0)
+				this->meshMap[meshFileName] = newMesh;
+		}
 	}
 	return newMesh;
 }

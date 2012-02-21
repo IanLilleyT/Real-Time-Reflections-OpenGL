@@ -1,18 +1,52 @@
 #include "Object.h"
 
-std::string Object::className = "Object";
-
-Object::Object()
-{
-	this->type = Object::className;
-}
-Object::Object(std::string name)
-{
-	this->type = Object::className;
-	this->setName(name);
-}
+Object::Object(){}
 Object::~Object(){}
 
+//Initialize
+void Object::initialize(TiXmlElement* element)
+{
+	//Type
+	std::string type = element->Attribute("type");
+
+	//Name
+	std::string name;
+	TiXmlElement* nameElement = element->FirstChildElement("name");
+	if(nameElement != 0) name = nameElement->FirstChild()->Value();
+	else name = "NOTHING";
+	this->initialize(type,name);
+
+	//Translation
+	TiXmlElement* translationElement = element->FirstChildElement("translation");
+	if(translationElement != 0)
+	{
+		glm::vec3 translation = Utils::parseIntoVec3(translationElement->FirstChild()->Value());
+		this->setTranslation(translation);
+	}
+	//Scale
+	TiXmlElement* scaleElement = element->FirstChildElement("scale");
+	if(scaleElement != 0)
+	{
+		glm::vec3 scale = Utils::parseIntoVec3(scaleElement->FirstChild()->Value());
+		this->setScale(scale);
+	}
+	//Rotation
+	TiXmlElement* rotationElement = element->FirstChildElement("rotation");
+	if(rotationElement != 0)
+	{
+		glm::vec4 rotation = Utils::parseIntoVec4(rotationElement->FirstChild()->Value());
+		glm::vec3 axis = glm::vec3(rotation);
+		float angle = rotation.w;
+		this->setRotation(axis,angle);
+	}
+}
+void Object::initialize(std::string type, std::string name)
+{
+	this->setType(type);
+	this->setName(name);
+}
+
+//Update
 void Object::update(){}
 
 //Name
@@ -26,6 +60,10 @@ std::string Object::getName()
 }
 
 //Type
+void Object::setType(std::string type)
+{
+	this->type = type;
+}
 std::string Object::getType()
 {
 	return this->type;

@@ -4,17 +4,27 @@
 Jello::IntegrationType Jello::integrationType = RK4;
 float Jello::integrationTimestep = 0.01f;
 
-std::string Jello::className = "Jello";
-Jello::Jello()
-{
-	this->type = Jello::className;
-}
-Jello::Jello(std::string name, std::string material, std::string program,
-		glm::vec3 origin, glm::vec3 size, glm::uvec3 divisions) : RenderObject(name) 
-{
-	this->type = Jello::className;
+Jello::Jello(){}
+Jello::~Jello(){}
 
-	//Event Listeners
+//Initialize
+void Jello::initialize(TiXmlElement* element)
+{
+	glm::vec3 origin = Utils::parseIntoVec3(element->FirstChildElement("origin")->FirstChild()->Value());
+	glm::vec3 size = Utils::parseIntoVec3(element->FirstChildElement("size")->FirstChild()->Value());
+	glm::uvec3 divisions = Utils::parseIntoUVec3(element->FirstChildElement("divisions")->FirstChild()->Value());
+	
+	this->initialize(origin,size,divisions);
+	RenderObject::initialize(element);
+}
+void Jello::initialize(std::string type, std::string name, std::string material, std::string program,
+		glm::vec3 origin, glm::vec3 size, glm::uvec3 divisions)
+{
+	this->initialize(origin,size,divisions);
+	RenderObject::initialize(type,name,MeshDatabase::NO_NAME,material,program);
+}
+void Jello::initialize(glm::vec3 origin, glm::vec3 size, glm::uvec3 divisions)
+{
 	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::KeyPressed, InputReceiver::from_method<Jello,&Jello::keyDown>(this));
 	
 	//Set values
@@ -28,11 +38,7 @@ Jello::Jello(std::string name, std::string material, std::string program,
 	this->initializeParticles();
 	this->initializeSprings();
 	this->initializeMeshes();
-
-	this->setMaterial(material);
-	this->setProgram(program);
 }
-Jello::~Jello(){}
 
 void Jello::update()
 {
@@ -429,6 +435,7 @@ void Jello::checkForCollisions()
 		//Spheres
 		if(!collisionFound)
 		{
+			/*
 			World* world = Singleton<GLDisplay>::Instance()->getWorld();
 			std::vector<Object*>& objects = world->getObjectsByType("Sphere");
 			for(unsigned int j = 0; j < objects.size(); j++)
@@ -438,11 +445,12 @@ void Jello::checkForCollisions()
 				collisionFound = SphereIntersection(p, intersection, transformation);
 				if(collisionFound) 
 					break;
-			}
+			}*/
 		}
 		//Cylinder
 		if(!collisionFound)
 		{
+			/*
 			World* world = Singleton<GLDisplay>::Instance()->getWorld();
 			std::vector<Object*>& objects = world->getObjectsByType("Cylinder");
 			for(unsigned int j = 0; j < objects.size(); j++)
@@ -452,7 +460,7 @@ void Jello::checkForCollisions()
 				collisionFound = CylinderIntersection(p, intersection, transformation);
 				if(collisionFound) 
 					break;
-			}
+			}*/
 		}
 
 		if(collisionFound)

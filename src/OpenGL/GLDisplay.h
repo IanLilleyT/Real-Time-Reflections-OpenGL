@@ -5,17 +5,12 @@
 
 #include "GLCamera.h"
 #include "GLUniformBlockHelper.h"
-#include "GLProgramDatabase.h"
 #include "../EventHandler.h"
 #include "../Singleton.h"
 #include "../World.h"
 #include "../Cameras/Camera.h"
 #include "../Cameras/Camera3rdPerson.h"
 #include "../Cameras/Camera1stPerson.h"
-#include "../Objects/RenderObject.h"
-#include "../Objects/Jello.h"
-#include "../Material.h"
-#include "../MaterialDatabase.h"
 
 /*---------------------------------------------
 GLDisplay: Essentially a bridge between

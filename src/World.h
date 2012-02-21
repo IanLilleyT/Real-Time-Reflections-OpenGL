@@ -5,17 +5,21 @@
 #include <map>
 #include <string>
 
+#include <tinyxml/tinyxml.h>
+
 #include "Singleton.h"
 #include "OpenGL/GLState.h"
 #include "Objects/Object.h"
 #include "Objects/Light.h"
+#include "ObjectFactory.h"
 
 class World
 {
-friend class WorldDatabase;
 public:
 	World();
 	~World();
+
+	void initialize(TiXmlElement* element);
 
 	void update();
 

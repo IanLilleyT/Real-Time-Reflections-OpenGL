@@ -18,7 +18,7 @@ public:
 
 	GLProgram* loadProgram(std::string ProgramName);
 	
-
+	static std::string NO_NAME;
 	static std::string TYPE_WHITE;
 	static std::string TYPE_MATERIAL;
 	static std::string TYPE_JELLO;

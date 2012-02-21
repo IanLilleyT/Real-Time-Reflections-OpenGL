@@ -28,6 +28,8 @@ public:
 	GLMesh* loadMesh(std::string meshFileName);
 	void copyMesh(std::string meshFileName, std::string newName);
 
+	static std::string NO_NAME;
+
 private:
 	GLMesh* findMesh(std::string meshFileName);
 	GLMesh* openMeshFile(std::string meshFileName);

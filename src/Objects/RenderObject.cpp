@@ -1,23 +1,47 @@
 #include "RenderObject.h"
 
-std::string RenderObject::className = "RenderObject";
-RenderObject::RenderObject() : Object() 
+RenderObject::RenderObject() : Object() {}
+RenderObject::~RenderObject(){}
+
+
+//Initialize
+void RenderObject::initialize(TiXmlElement* element)
 {
-	this->type = Object::className;
+	Object::initialize(element);
+
+	//Mesh
+	std::string meshName;
+	TiXmlElement* meshElement = element->FirstChildElement("mesh");
+	if(meshElement != 0) meshName = meshElement->FirstChild()->Value();
+	else meshName = MeshDatabase::NO_NAME;
+
+	//Material
+	std::string materialName;
+	TiXmlElement* materialElement = element->FirstChildElement("material");
+	if(materialElement != 0) materialName = materialElement->FirstChild()->Value();
+	else materialName = MaterialDatabase::NO_NAME;
+
+	//Program
+	std::string programName;
+	TiXmlElement* programElement = element->FirstChildElement("program");
+	if(programElement != 0) programName = programElement->FirstChild()->Value();
+	else programName = GLProgramDatabase::NO_NAME;
+
+	this->initialize(meshName,materialName,programName);
 }
-RenderObject::RenderObject(std::string name) : Object(name)
+void RenderObject::initialize(std::string type, std::string name, std::string mesh, std::string material, std::string program)
 {
-	this->type = RenderObject::className;
+	Object::initialize(type,name);
+	this->initialize(mesh,material,program);
 }
-RenderObject::RenderObject(std::string name, std::string mesh, std::string material, std::string program) : Object(name) 
+void RenderObject::initialize(std::string mesh, std::string material, std::string program)
 {
-	this->type = RenderObject::className;
 	this->setMesh(mesh);
 	this->setMaterial(material);
 	this->setProgram(program);
 }
-RenderObject::~RenderObject(){}
 
+//Update
 void RenderObject::update()
 {
 	this->render();
@@ -33,7 +57,9 @@ void RenderObject::render()
 //Mesh
 void RenderObject::setMesh(std::string name)
 {
-	this->mesh = Singleton<MeshDatabase>::Instance()->loadMesh(name);
+	//Only set a new mesh if it is valid
+	GLMesh* newMesh = Singleton<MeshDatabase>::Instance()->loadMesh(name);
+	if(newMesh != 0) this->mesh = newMesh;
 }
 std::string RenderObject::getMesh()
 {

@@ -6,6 +6,19 @@ World::World()
 }
 World::~World(){}
 
+void World::initialize(TiXmlElement* element)
+{
+	ObjectFactory* objectFactory = Singleton<ObjectFactory>::Instance();
+	TiXmlElement* objectElement = element->FirstChildElement("object");
+	for(; objectElement != 0; objectElement = objectElement->NextSiblingElement("object"))
+	{
+		std::string objectType = objectElement->Attribute("type");
+		Object* object = (Object*)objectFactory->construct(objectType);
+		object->initialize(objectElement);
+		this->addObject(object);
+	}
+}
+
 void World::update()
 {
 	std::vector<Object*>& lights = this->getObjectsByType("Light");

@@ -8,10 +8,10 @@
 
 template <class T> void* constructor() { return (void*)new T(); }
 
-class Factory
+class ObjectFactory
 {
 public:
-	Factory()
+	ObjectFactory()
 	{
 		this->register_class<Object>("Object");
 		this->register_class<RenderObject>("RenderObject");

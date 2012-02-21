@@ -1,15 +1,19 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#include <glm/glm.hpp> //For math
 
-#include "Object.h"
+#include "Object.h" //Superclass
 
 class Light: public Object
 {
 public:
+	//Construct/Destruct
 	Light();
-	Light(std::string name, glm::vec4 intensity);
 	virtual ~Light();
+
+	//Initialize
+	virtual void initialize(TiXmlElement* element);
+	void initialize(std::string type, std::string name, glm::vec4 intensity);
 
 	//Intensity
 	void setIntensity(glm::vec4 intensity);
@@ -27,7 +31,7 @@ public:
 	static float getGamma();
 
 private:
-	static std::string className;
+	void initialize(glm::vec4 intensity);
 
 	glm::vec4 intensity;
 

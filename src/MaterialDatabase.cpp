@@ -1,5 +1,6 @@
 #include "MaterialDatabase.h"
 
+std::string MaterialDatabase::NO_NAME = "NO_NAME";
 MaterialDatabase::MaterialDatabase(){}
 MaterialDatabase::~MaterialDatabase(){}
 

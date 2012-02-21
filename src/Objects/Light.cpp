@@ -6,17 +6,28 @@ float Light::lightAttenuation = 0.1f;
 float Light::maxIntensity = 1.0f;
 float Light::gamma = 2.2f;
 
-std::string Light::className = "Light";
-Light::Light() : Object() 
+Light::Light() : Object() {}
+Light::~Light(){}
+
+//Initialize
+void Light::initialize(TiXmlElement* element)
 {
-	this->type = Object::className;
+	Object::initialize(element);
+
+	std::string intensityString = element->FirstChildElement("intensity")->FirstChild()->Value();
+	glm::vec4 intensityVal = Utils::parseIntoVec4(intensityString);
+
+	this->initialize(intensityVal);
 }
-Light::Light(std::string name, glm::vec4 intensity) : Object(name) 
+void Light::initialize(std::string type, std::string name, glm::vec4 intensity)
 {
-	this->type = Light::className;
+	Object::initialize(type,name);
+	this->initialize(intensity);
+}
+void Light::initialize(glm::vec4 intensity)
+{
 	this->setIntensity(intensity);
 }
-Light::~Light(){}
 
 //Intensity
 void Light::setIntensity(glm::vec4 intensity)

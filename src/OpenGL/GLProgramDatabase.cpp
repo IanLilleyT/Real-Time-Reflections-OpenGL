@@ -1,5 +1,6 @@
 #include "GLProgramDatabase.h"
 
+std::string GLProgramDatabase::NO_NAME = "NO_NAME";
 std::string GLProgramDatabase::TYPE_WHITE = "White";
 std::string GLProgramDatabase::TYPE_MATERIAL = "Material";
 std::string GLProgramDatabase::TYPE_JELLO = "Jello";

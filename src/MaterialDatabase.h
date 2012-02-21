@@ -31,6 +31,7 @@ public:
 
 	Material* loadMaterial(std::string materialFileName);
 	
+	static std::string NO_NAME;
 private:
 	Material* findMaterial(std::string materialFileName);
 	Material* openMaterialFile(std::string materialFileName);

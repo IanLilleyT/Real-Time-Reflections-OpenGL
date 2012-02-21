@@ -1,33 +1,32 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#include <glm/glm.hpp> //For math
 
-#include "../OpenGL/GlProgramDatabase.h"
-#include "../EventHandler.h"
-#include "RenderObject.h"
-#include "../OpenGL/GLDisplay.h"
-#include "../Singleton.h"
-#include "../Ray.h"
-#include "../IntersectionAlgorithms.h"
+#include "RenderObject.h" //Superclass
+#include "../OpenGL/GLProgramDatabase.h" //For changing shaders on lines
+#include "../EventHandler.h" //For keyboard events
+#include "../Singleton.h" //For accessing GLProgramDatabase
+#include "../Ray.h" //For setting up primitive intersections
+#include "../IntersectionAlgorithms.h" //For doing primitive intersections
 
 class Jello: public RenderObject
 {
 public:
+	//Construct/Destruct
 	Jello();
-	Jello(std::string name, std::string material, std::string program,
-		glm::vec3 origin, glm::vec3 size, glm::uvec3 divisions); 
 	virtual ~Jello();
 
+	//Initialize
+	virtual void initialize(TiXmlElement* element);
+	void initialize(std::string type, std::string name, std::string material, std::string program,
+		glm::vec3 origin, glm::vec3 size, glm::uvec3 divisions);
+
+	//Update
 	virtual void update();
 	virtual void render();
 
-	void setExternalAcceleration(glm::vec3 acceleration);
-	void addExternalAcceleration(glm::vec3 acceleration);
-	glm::vec3 getExternalAcceleration();
-
-
 protected:
-	static std::string className;
+	void initialize(glm::vec3 origin, glm::vec3 size, glm::uvec3 divisions);
 
 	//Enums
 	enum IntegrationType { EULER, MIDPOINT, RK4 };
@@ -95,13 +94,13 @@ protected:
 	void computeForces(std::vector<Particle>& particles);
 	void resolveContacts();
 	void resolveCollisions();
+	void updateJelloMesh();
+	void updateSpringMeshes();
+
 	//Integration
 	void EulerIntegrate();
 	void MidPointIntegrate();
 	void RK4Integrate();
-	/////////////
-	void updateJelloMesh();
-	void updateSpringMeshes();
 
 	//Particles
 	int convert3DTo1DIndex(int col, int row, int dep);
@@ -142,6 +141,11 @@ protected:
 	static Jello::IntegrationType integrationType;
 	static float integrationTimestep;
 	glm::vec3 externalAcceleration;
+
+	//External forces
+	void setExternalAcceleration(glm::vec3 acceleration);
+	void addExternalAcceleration(glm::vec3 acceleration);
+	glm::vec3 getExternalAcceleration();
 
 	//Events
 	void keyDown(sf::Event event);
