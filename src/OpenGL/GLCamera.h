@@ -1,11 +1,11 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <gl3w/gl3w.h>
+#include <glm/glm.hpp> //For math
+#include <gl3w/gl3w.h> //For OpenGL commans
 
-#include "GLState.h"
-#include "../Ray.h"
-#include "../Singleton.h"
+#include "GLState.h" //For setting matrices
+#include "../Ray.h" //For picking
+#include "../Singleton.h" //For accessing GLState
 
 class GLCamera
 {

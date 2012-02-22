@@ -1,12 +1,12 @@
 #include "WorldDatabase.h"
 
+std::string WorldDatabase::NO_NAME = "NO_NAME";
 WorldDatabase::WorldDatabase(){}
 WorldDatabase::~WorldDatabase(){}
 
 World* WorldDatabase::loadWorld(std::string worldFileName)
 {
 	World* newWorld = 0;
-
 	newWorld = this->findWorld(worldFileName);
 	if(newWorld == 0) 
 	{
@@ -27,11 +27,9 @@ World* WorldDatabase::findWorld(std::string worldFileName)
 }
 World* WorldDatabase::openWorldFile(std::string worldFileName)
 {
-	worldFileName += ".xml";
 	std::string worldPath = Singleton<GlobalPaths>::Instance()->getWorldPath();
-	std::string fullPath = worldPath + worldFileName;
+	std::string fullPath = worldPath + worldFileName + ".xml";
 
-	ObjectFactory* objectFactory = Singleton<ObjectFactory>::Instance();
 	World* world = new World();
 
 	//XML loading

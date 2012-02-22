@@ -1,15 +1,11 @@
 #pragma once
 
-#include <iostream>
-#include <string>
-#include <sstream>
-#include <vector>
-#include <utility>
-#include <iterator>
-#include <istream>
-#include <fstream>
+#include <string> //For text
+#include <iostream> //For splitting line into tokens
+#include <sstream> //For splitting line into tokens
+#include <vector> //For splitting line into tokens
 
-#include <glm/glm.hpp>
+#include <glm/glm.hpp> //For math
 
 class Utils
 {
@@ -29,7 +25,6 @@ public:
 
 	//Parsing and Splitting
 	static std::vector<std::string> splitByCharacter(std::string s, char delim);
-	static int getNumPartsInLine(std::string line);
 	static float parseIntoFloat(std::string line);
 	static float parseIntoFloat(std::vector<std::string>& data);
 	static int parseIntoInt(std::string line);

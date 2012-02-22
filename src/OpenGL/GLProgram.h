@@ -1,23 +1,18 @@
 #pragma once
-#include <vector>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <vector>
-#include <string>
-#include <iostream>
 
-#include <gl3w/gl3w.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include <vector> //For storing uniform blocks
+#include <string> //For program and attribute names
 
-#include "GLState.h"
-#include "GLAttribute.h"
-#include "GLVertexArrayObject.h"
-#include "GLUniformBlockHelper.h"
-#include "GLUniformBlock.h"
-#include "../Singleton.h"
-#include "../Utils.h"
+#include <gl3w/gl3w.h> //For OpenGL commands
+#include <glm/glm.hpp> //For math
+#include <glm/gtc/type_ptr.hpp> //For getting value_ptr of glm types
+
+#include "GLState.h" //Used by subclasses for getting uniform data
+#include "GLAttribute.h" //For constructing attributes
+#include "GLVertexArrayObject.h" //Used by subclasses for creating VAO's
+#include "GLUniformBlockHelper.h" //Used to find uniform blocks for binding
+#include "GLUniformBlock.h" //Used for binding uniform blocks to program
+#include "../Singleton.h" //Used with several global classes
 
 class GLProgram
 {

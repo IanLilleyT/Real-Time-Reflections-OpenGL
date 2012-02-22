@@ -1,6 +1,10 @@
 #include "RenderObject.h"
 
-RenderObject::RenderObject() : Object() {}
+RenderObject::RenderObject() : Object() 
+{
+	this->mesh = 0;
+	this->material = 0;
+}
 RenderObject::~RenderObject(){}
 
 
@@ -57,9 +61,11 @@ void RenderObject::render()
 //Mesh
 void RenderObject::setMesh(std::string name)
 {
-	//Only set a new mesh if it is valid
-	GLMesh* newMesh = Singleton<MeshDatabase>::Instance()->loadMesh(name);
-	if(newMesh != 0) this->mesh = newMesh;
+	if(this->mesh == 0)
+	{
+		GLMesh* newMesh = Singleton<MeshDatabase>::Instance()->loadMesh(name);
+		this->mesh = newMesh;
+	}
 }
 std::string RenderObject::getMesh()
 {

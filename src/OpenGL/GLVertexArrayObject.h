@@ -1,9 +1,9 @@
 #pragma once
 
-#include <vector>
-#include <gl3w/gl3w.h>
+#include <vector> //For storing Attrbiutes
+#include <gl3w/gl3w.h> //For OpenGL commands
 
-#include "GLAttribute.h"
+#include "GLAttribute.h" //For storing Attributes
 
 class GLVertexArrayObject
 {

@@ -4,13 +4,13 @@
 #include <gl3w/gl3w.h>
 
 #include "GLCamera.h"
-#include "GLUniformBlockHelper.h"
-#include "../EventHandler.h"
-#include "../Singleton.h"
-#include "../World.h"
-#include "../Cameras/Camera.h"
-#include "../Cameras/Camera3rdPerson.h"
-#include "../Cameras/Camera1stPerson.h"
+#include "GLUniformBlockHelper.h" //For calling updates to unform blocks
+#include "../EventHandler.h" //For enter frame events
+#include "../Singleton.h" //For accessing several globals
+#include "../World.h" //For storing world
+#include "../Cameras/Camera.h" //For using different camera types
+#include "../Cameras/Camera3rdPerson.h" //For using different camera types
+#include "../Cameras/Camera1stPerson.h" //For using different camera types
 
 /*---------------------------------------------
 GLDisplay: Essentially a bridge between
@@ -43,7 +43,6 @@ private:
 
 	//GL methods
 	void resize(sf::Event sfEvent);
-	void keyDown(sf::Event sfEvent);
 	void initializeGL();
 	void clearGL();
 };

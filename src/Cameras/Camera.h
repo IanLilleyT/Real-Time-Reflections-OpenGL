@@ -1,16 +1,15 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <iostream>
+#include <glm/glm.hpp> //For math
 
-#include <SFML/Window/Event.hpp>
-#include <SFML/Window/Mouse.hpp>
-#include <SFML/Window/Keyboard.hpp>
+#include <SFML/Window/Event.hpp> //For general events
+#include <SFML/Window/Mouse.hpp> //For mouse events
+#include <SFML/Window/Keyboard.hpp> //For key events
 
-#include "../Singleton.h"
-#include "../Utils.h"
-#include "../OpenGL/GLCamera.h"
-#include "../EventHandler.h"
+#include "../Singleton.h" //For GLCamera
+#include "../Utils.h" //Used by subclasses for creating rotation matrix
+#include "../OpenGL/GLCamera.h" //For sending worldToCamera matrix
+#include "../EventHandler.h" //For mouse events
 
 class Camera
 {

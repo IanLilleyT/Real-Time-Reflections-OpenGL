@@ -1,27 +1,11 @@
 #pragma once
 
-#include <iostream>
-#include <vector>
-#include <math.h>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <istream>
-#include <string>
-#include <cstdlib>
-#include <utility>
-#include <limits.h>
-#include <iterator>
-#include <map>
-#include <limits>
-#include <cfloat>
+#include <string> //For names
+#include <map> //For storing materials
 
-#include <glm/glm.hpp>
-
-#include "Material.h"
-#include "GlobalPaths.h"
-#include "Singleton.h"
-#include "Utils.h"
+#include "Material.h" //For storing materials
+#include "GlobalPaths.h" //For getting material path
+#include "Singleton.h" //For using global classes
 
 class MaterialDatabase
 {
@@ -32,10 +16,9 @@ public:
 	Material* loadMaterial(std::string materialFileName);
 	
 	static std::string NO_NAME;
+
 private:
 	Material* findMaterial(std::string materialFileName);
 	Material* openMaterialFile(std::string materialFileName);
 	std::map<std::string, Material*> materialMap;
-
-	bool isFieldValid(std::ifstream& file, std::string name, std::vector<std::string>& results);
 };

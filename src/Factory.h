@@ -1,23 +1,16 @@
+#pragma once
+
 #include <map>
 #include <string>
 
-#include "Objects/Object.h"
-#include "Objects/RenderObject.h"
-#include "Objects/Jello.h"
-#include "Objects/Light.h"
-
 template <class T> void* constructor() { return (void*)new T(); }
 
-class ObjectFactory
+class Factory
 {
 public:
-	ObjectFactory()
-	{
-		this->register_class<Object>("Object");
-		this->register_class<RenderObject>("RenderObject");
-		this->register_class<Jello>("Jello");
-		this->register_class<Light>("Light");
-	}
+	Factory(){}
+	~Factory(){}
+
 	typedef void*(*constructor_t)();
 	typedef std::map<std::string, constructor_t> map_type;
 	map_type m_classes;

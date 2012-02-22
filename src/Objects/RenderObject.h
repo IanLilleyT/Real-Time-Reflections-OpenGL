@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <string> //For various properties
 
 #include "Object.h" //Superclass
 #include "../OpenGL/GLMesh.h" //For storing mesh
@@ -8,7 +8,7 @@
 #include "../OpenGL/GLState.h" //For updating model to camera matrix and material
 #include "../MaterialDatabase.h" //For loading material based on string name
 #include "../MeshDatabase.h" //For loading mesh based on string name
-#include "../Singleton.h" //For multiple uses
+#include "../Singleton.h" //For accessing global classes
 
 class RenderObject: public Object
 {

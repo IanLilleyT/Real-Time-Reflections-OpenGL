@@ -1,15 +1,13 @@
 #pragma once
 
-#include <iostream>
-#include <map>
-#include <vector>
-#include <string>
-#include <algorithm>
+#include <map> //For storing UniformBlocks
+#include <vector> //For storage
+#include <string> //For names
 
-#include "GLUniformBlock.h"
-#include "GLState.h"
-#include "../Objects/Light.h"
-#include "../Singleton.h"
+#include "GLUniformBlock.h" //For storing UniformBlocks
+#include "GLState.h" //For getting current world values
+#include "../Objects/Light.h" //For lights
+#include "../Singleton.h" //For accessing GLState
 
 class GLUniformBlockHelper
 {

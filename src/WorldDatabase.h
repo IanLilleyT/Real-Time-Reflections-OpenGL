@@ -1,11 +1,11 @@
 #pragma once
 
-#include <string>
-#include <map>
+#include <string> //For names
+#include <map> //For storing worlds
 
-#include "World.h"
-#include "Singleton.h"
-#include "GlobalPaths.h"
+#include "World.h" //For storing worlds
+#include "GlobalPaths.h" //For getting worlds path
+#include "Singleton.h" //For using global classes
 
 class WorldDatabase
 {
@@ -14,6 +14,8 @@ public:
 	~WorldDatabase();
 
 	World* loadWorld(std::string worldFileName);
+
+	static std::string NO_NAME;
 
 private:
 	World* findWorld(std::string worldFileName);

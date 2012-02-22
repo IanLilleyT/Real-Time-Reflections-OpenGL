@@ -74,16 +74,9 @@ std::vector<std::string> Utils::splitByCharacter(std::string s, char delim)
 	std::vector<std::string> elems = std::vector<std::string>();
 	std::stringstream ss(s);
 	std::string item;
-	while(std::getline(ss, item, delim)) {
+	while(std::getline(ss, item, delim))
 		elems.push_back(item);
-	}
 	return elems;
-}
-int Utils::getNumPartsInLine(std::string line)
-{
-	std::vector<std::string> parts = Utils::splitByCharacter(line,' ');
-	int size = parts.size();
-	return size;
 }
 float Utils::parseIntoFloat(std::string line)
 {

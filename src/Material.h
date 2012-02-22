@@ -1,15 +1,21 @@
 #pragma once
 
-#include <vector>
-#include <glm/glm.hpp>
+#include <glm/glm.hpp> //For math
+
+#include <tinyxml/tinyxml.h> //For parsing material file
+
+#include "Utils.h" //For parsing glm types
 
 class Material
 {
-friend class MaterialDatabase;
 public:
+	//Construct/Destruct
 	Material();
 	~Material();
 	
+	//Initialize
+	void initialize(TiXmlElement* element);
+
 	//Diffuse Color
 	void setDiffuseColor(glm::vec4 diffuseColor);
 	glm::vec4 getDiffuseColor();

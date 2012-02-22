@@ -10,9 +10,7 @@ GLBufferObject::~GLBufferObject()
 	//Do nothing
 }
 
-//----------------
-// Setters ///////
-//----------------
+//Setters
 void GLBufferObject::setVertexBuffer(GLuint vertexBuffer)
 {
 	this->vertexBuffer = vertexBuffer;

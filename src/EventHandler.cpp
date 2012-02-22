@@ -8,9 +8,6 @@ EventHandler::~EventHandler(){}
 ---------------------------------------------*/
 void EventHandler::addInputEventListener(sf::Event::EventType eventType, InputReceiver receiverFunction)
 {
-	//Usage
-	//Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::MouseMoved, InputReceiver::from_method<World,&World::mouseMoved>(this));
-
 	InputReceiverList* inputReceivers = 0;
 	InputEventMap::iterator iter = this->inputEventMap.find(eventType);
 	if(iter == this->inputEventMap.end())
@@ -43,9 +40,6 @@ void EventHandler::removeInputEventListener(sf::Event::EventType eventType, Inpu
 ---------------------------------------------*/
 void EventHandler::addEnterFrameEventListener(EnterFrameReceiver receiverFunction)
 {
-	//Usage:
-	//Singleton<EventHandler>::Instance()->addEnterFrameEventListener(EnterFrameReceiver::from_method<GameState,&GameState::enterFrame>(this));
-	
 	enterFrameEvents.push_back(receiverFunction);
 }
 void EventHandler::removeEnterFrameListener(EnterFrameReceiver receiverFunction)
@@ -60,9 +54,17 @@ void EventHandler::removeEnterFrameListener(EnterFrameReceiver receiverFunction)
 		}
 	}
 }
+void EventHandler::enterFrame()
+{
+	for(unsigned int i = 0; i < this->enterFrameEvents.size(); i++)
+	{
+		EnterFrameReceiver receiver = this->enterFrameEvents.at(i);
+		receiver();
+	}
+}
 
 /*---------------------------------------------
-  Other
+  SFML event processing
 ---------------------------------------------*/
 void EventHandler::processEvent(sf::Event sfEvent)
 {
@@ -86,14 +88,7 @@ void EventHandler::processEvent(sf::Event sfEvent)
 		this->setMousePos(x,y);
 	}
 }
-void EventHandler::enterFrame()
-{
-	for(unsigned int i = 0; i < this->enterFrameEvents.size(); i++)
-	{
-		EnterFrameReceiver receiver = this->enterFrameEvents.at(i);
-		receiver();
-	}
-}
+
 
 /*---------------------------------------------
   Keyboard

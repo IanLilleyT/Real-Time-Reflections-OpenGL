@@ -1,39 +1,24 @@
 #pragma once
 
-#include <iostream>
-#include <vector>
-#include <math.h>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <istream>
-#include <string>
-#include <cstdlib>
-#include <utility>
-#include <limits.h>
-#include <iterator>
-#include <map>
-#include <limits>
-#include <cfloat>
+#include <string> //For names
+#include <map> //For storing meshes
 
-#include "OpenGL/GLMesh.h"
-#include "Utils.h"
+#include "OpenGL/GLMesh.h" //For storing meshes
+#include "GlobalPaths.h" //For getting mesh path
+#include "Singleton.h" //For using global classes
 
 class MeshDatabase
 {
 public:
 	MeshDatabase();
-	~MeshDatabase();
+	virtual ~MeshDatabase();
 
-	GLMesh* loadMesh(std::string meshFileName);
-	void copyMesh(std::string meshFileName, std::string newName);
+	GLMesh* loadMesh(std::string meshName);
 
 	static std::string NO_NAME;
 
 private:
-	GLMesh* findMesh(std::string meshFileName);
-	GLMesh* openMeshFile(std::string meshFileName);
+	GLMesh* findMesh(std::string meshName);
+	GLMesh* openMeshFile(std::string meshName);
 	std::map<std::string,GLMesh*> meshMap;
-
-	bool isFieldValid(std::ifstream& file, std::string name, std::vector<std::string>& results);
 };

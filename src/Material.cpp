@@ -1,13 +1,24 @@
 #include "Material.h"
 
-Material::Material()
+Material::Material(){}
+Material::~Material(){}
+
+//Initialize
+void Material::initialize(TiXmlElement* element)
 {
-	//Do nothing
+	std::string name = element->FirstChildElement("name")->FirstChild()->Value();
+	glm::vec4 diffuseColor = Utils::parseIntoVec4(element->FirstChildElement("diffuseColor")->FirstChild()->Value());
+	glm::vec4 specularColor = Utils::parseIntoVec4(element->FirstChildElement("specularColor")->FirstChild()->Value());
+	float specularShininess = Utils::parseIntoFloat(element->FirstChildElement("specularShininess")->FirstChild()->Value());
+	float reflectivity = Utils::parseIntoFloat(element->FirstChildElement("reflectivity")->FirstChild()->Value());
+	float alpha = Utils::parseIntoFloat(element->FirstChildElement("alpha")->FirstChild()->Value());
+
+	this->setName(name);
+	this->setDiffuseColor(diffuseColor);
+	this->setSpecularColor(specularColor);
+	this->setReflectivity(reflectivity);
+	this->setAlpha(alpha);
 }
-Material::~Material()
-{
-	//Do nothing
-};
 
 //Diffuse Color
 void Material::setDiffuseColor(glm::vec4 diffuseColor)

@@ -1,5 +1,7 @@
 #include "IntersectionAlgorithms.h"
 
+float IntersectionAlgorithms::EPSILON = .001f;
+
 IntersectionData IntersectionAlgorithms::PointInSphere(glm::vec3 point, glm::vec3 direction, glm::mat4 T)
 {
 	direction = glm::normalize(direction);
@@ -16,7 +18,10 @@ IntersectionData IntersectionAlgorithms::PointInSphere(glm::vec3 point, glm::vec
 		intersection1.valid = (originalDistance1 >= finalDistance1) && (originalDistance2 >= finalDistance2);
 	}
 	else
+	{
 		intersection1.valid = false;
+		intersection2.valid = false;
+	}
 	return intersection1;
 }
 IntersectionData IntersectionAlgorithms::PointInCylinder(glm::vec3 point, glm::vec3 direction, glm::mat4 T)
@@ -35,7 +40,10 @@ IntersectionData IntersectionAlgorithms::PointInCylinder(glm::vec3 point, glm::v
 		intersection1.valid = (originalDistance1 >= finalDistance1) && (originalDistance2 >= finalDistance2);
 	}
 	else
+	{
 		intersection1.valid = false;
+		intersection2.valid = false;
+	}
 	return intersection1;
 }
 IntersectionData IntersectionAlgorithms::RaySphereIntersect(Ray& ray, glm::mat4 T)
@@ -144,8 +152,6 @@ IntersectionData IntersectionAlgorithms::RayCylinderIntersect(Ray& ray, glm::mat
 	else if(IntersectionAlgorithms::equal(tMin,tSideMin))
 		intersectionNormalTransformed = glm::normalize(glm::vec4(intersectionPointTransformed.x, 0, intersectionPointTransformed.z, 0.0f));
 	glm::vec3 intersectionNormal = glm::normalize(glm::vec3(T*intersectionNormalTransformed));
-
-	//Final t distance
 	float finalPointDistance = glm::length(intersectionPoint - ray.origin);
 		
 	//Set intersection data
@@ -156,7 +162,6 @@ IntersectionData IntersectionAlgorithms::RayCylinderIntersect(Ray& ray, glm::mat
 	return intersectionData;
 }
 
-
 //Helpers
 float IntersectionAlgorithms::getMinT(bool expression1, bool expression2, float t1, float t2)
 {
@@ -164,17 +169,15 @@ float IntersectionAlgorithms::getMinT(bool expression1, bool expression2, float 
 	if(!expression1 && !expression2) return -1;
 	else if(!expression1 && expression2) tMin = t2;
 	else if(expression1 && !expression2) tMin = t1;
-	else tMin = (std::min)(t1,t2);
+	else tMin = std::min(t1,t2);
 	return tMin;
 }
 bool IntersectionAlgorithms::equal(float val1, float val2)
 {
-	float epsilon = .001f;
-	return abs(val1-val2) < epsilon;
+	return abs(val1-val2) < IntersectionAlgorithms::EPSILON;
 }
 glm::vec3 IntersectionAlgorithms::getReflection(glm::vec3 initialDir, glm::vec3 normal)
 {
-	float epsilon = .001f;
 	glm::vec3 reflectedDir = initialDir - 2.0f*normal*glm::dot(initialDir,normal);
 	reflectedDir = glm::normalize(reflectedDir);
 	return reflectedDir;

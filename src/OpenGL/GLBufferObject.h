@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
+#include <vector> //For storing vbo
 
-#include <gl3w/gl3w.h>
+#include <gl3w/gl3w.h> //For OpenGL commands
 
 class  GLBufferObject
 {

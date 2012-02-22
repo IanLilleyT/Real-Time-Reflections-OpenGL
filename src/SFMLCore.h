@@ -1,18 +1,16 @@
 #pragma once
 
-#include <iostream>
+#include <SFML/Graphics.hpp> //For displaying the screen
 
-#include <SFML/Graphics.hpp>
-
-#include "Singleton.h"
-#include "EventHandler.h"
-#include "OpenGL/GLDisplay.h"
-#include "WorldDatabase.h"
-#include "World.h"
+#include "Singleton.h" //For accessing global classes
+#include "EventHandler.h" //For sending events
+#include "OpenGL/GLDisplay.h" //For initializing GLDisplay
+#include "WorldDatabase.h" //For loading the initial world
+#include "World.h" //For loading the initial world
 
 /*---------------------------------------------
   SFMLCore: Controls the RenderWindow, SFML event
-  flow, window actions, etc
+  flow, and display
 ---------------------------------------------*/
 
 class SFMLCore

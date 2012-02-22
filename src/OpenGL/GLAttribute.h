@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gl3w/gl3w.h>
+#include <gl3w/gl3w.h> //For OpenGL commands
 
 class GLAttribute
 {

@@ -1,11 +1,11 @@
 #pragma once
 
-#include <vector>
+#include <vector> //For loading in lights
 
-#include <glm/glm.hpp>
+#include <glm/glm.hpp> //For loading in matrices
 
-#include "../Material.h"
-#include "../Objects/Object.h"
+#include "../Material.h" //For loading in materials
+#include "../Objects/Object.h" //For loading in lights
 
 class GLState
 {

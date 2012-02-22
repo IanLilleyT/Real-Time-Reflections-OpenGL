@@ -1,14 +1,14 @@
 #pragma once
 
-#include <string>
-#include <map>
-#include <gl3w/gl3w.h>
+#include <fstream> //For shader compilation
+#include <string> //For names
+#include <map> //For storing programs
+#include <gl3w/gl3w.h> //For OpenGL commands
 
-#include "GLProgram.h"
-#include "Programs/GLProgram_Material.h"
-#include "Programs/GLProgram_White.h"
-#include "Programs/GLProgram_Jello.h"
-#include "../GlobalPaths.h"
+#include "GLProgram.h" //For storing programs
+#include "../GlobalPaths.h" //For loading programs path
+#include "../Factory.h" //For creating new program classes
+#include "../Singleton.h" //For loading global classes
 
 class GLProgramDatabase
 {
@@ -19,9 +19,6 @@ public:
 	GLProgram* loadProgram(std::string ProgramName);
 	
 	static std::string NO_NAME;
-	static std::string TYPE_WHITE;
-	static std::string TYPE_MATERIAL;
-	static std::string TYPE_JELLO;
 
 private:
 	GLProgram* findProgram(std::string ProgramName);

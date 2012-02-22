@@ -1,19 +1,24 @@
 #pragma once
 
-#include <SFML/Window/Event.hpp>
-#include <SFML/Window/Mouse.hpp>
-#include <SFML/Window/Keyboard.hpp>
-#include <srutil/delegate/delegate.hpp>
-#include <glm/glm.hpp>
+#include <SFML/Window/Event.hpp> //For general events
+#include <SFML/Window/Mouse.hpp> //For mouse events
+#include <SFML/Window/Keyboard.hpp> //For key events
+#include <srutil/delegate/delegate.hpp> //For delegates
+#include <glm/glm.hpp> //For math
 
-#include <map>
-#include <utility>
-#include <vector>
+#include <map> //For mapping events to receivers
+#include <vector> //For listing receivers
 
 /*---------------------------------------------
 EventHandler: Handles enterFrame and input events.
 Also provides helpers for mouseDown, keyDown, etc
 ---------------------------------------------*/
+
+//Input usage:
+//Singleton<EventHandler>::Instance()->addEnterFrameEventListener(EnterFrameReceiver::from_method<GameState,&GameState::enterFrame>(this));
+
+//EnterFrame usage:
+//Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::MouseMoved, InputReceiver::from_method<World,&World::mouseMoved>(this));
 
 typedef srutil::delegate<void (void)> EnterFrameReceiver;
 typedef std::vector<EnterFrameReceiver> EnterFrameReceiverList;

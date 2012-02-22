@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <string> //For storing paths
 
 class GlobalPaths
 {

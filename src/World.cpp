@@ -8,12 +8,12 @@ World::~World(){}
 
 void World::initialize(TiXmlElement* element)
 {
-	ObjectFactory* objectFactory = Singleton<ObjectFactory>::Instance();
+	Factory* factory = Singleton<Factory>::Instance();
 	TiXmlElement* objectElement = element->FirstChildElement("object");
 	for(; objectElement != 0; objectElement = objectElement->NextSiblingElement("object"))
 	{
 		std::string objectType = objectElement->Attribute("type");
-		Object* object = (Object*)objectFactory->construct(objectType);
+		Object* object = (Object*)factory->construct(objectType);
 		object->initialize(objectElement);
 		this->addObject(object);
 	}
@@ -58,7 +58,6 @@ void World::removeObject(std::string name)
 {
 	this->removeObject(this->getObjectByName(name));
 }
-
 
 Object* World::getObjectByName(std::string name)
 {

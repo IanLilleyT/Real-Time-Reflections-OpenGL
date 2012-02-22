@@ -377,7 +377,7 @@ void Jello::initializeSpringMeshes()
 		for(unsigned int i = 0; i < springIBOData.size(); i++)
 			springIBOData[i] = i;
 		springMesh->setVBOData(springVBOData,springIBOData,numSprings,GL_LINES);
-		springMesh->setProgram(GLProgramDatabase::TYPE_WHITE);
+		springMesh->setProgram("White");
 		springMesh->setVisible(false);
 		this->springMeshes[type] = springMesh;
 	}
@@ -392,7 +392,7 @@ void Jello::initializeNormalMesh()
 	for(unsigned int i = 0; i < normalIBOData.size(); i++)
 		normalIBOData[i] = i;
 	this->normalMesh->setVBOData(normalVBOData,normalIBOData,normalVBOData.size(),GL_LINES);
-	this->normalMesh->setProgram(GLProgramDatabase::TYPE_WHITE);
+	this->normalMesh->setProgram("White");
 	this->normalMesh->setVisible(false);
 }
 void Jello::initializeForcesMesh()
@@ -405,7 +405,7 @@ void Jello::initializeForcesMesh()
 	for(unsigned int i = 0; i < forceIBOData.size(); i++)
 		forceIBOData[i] = i;
 	this->forcesMesh->setVBOData(forceVBOData,forceIBOData,forceVBOData.size(),GL_LINES);
-	this->forcesMesh->setProgram(GLProgramDatabase::TYPE_WHITE);
+	this->forcesMesh->setProgram("White");
 	this->forcesMesh->setVisible(false);
 }
 void Jello::initializeCollisionNormalsMesh()

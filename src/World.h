@@ -1,17 +1,17 @@
 #pragma once
 
-#include <algorithm>
-#include <vector>
-#include <map>
-#include <string>
+#include <algorithm> //For finding object in array
+#include <vector> //For storing objects
+#include <map> //For storing object
+#include <string> //For object names
 
-#include <tinyxml/tinyxml.h>
+#include <tinyxml/tinyxml.h> //For parsing world xml file
 
-#include "Singleton.h"
-#include "OpenGL/GLState.h"
-#include "Objects/Object.h"
-#include "Objects/Light.h"
-#include "ObjectFactory.h"
+#include "Singleton.h" //For using global classes
+#include "Objects/Object.h" //Storage type
+#include "OpenGL/GLState.h" //Takes the world's lights
+#include "Objects/Light.h" //For sending lights to GLState
+#include "Factory.h" //For constructing new objects during initialization
 
 class World
 {
@@ -32,6 +32,5 @@ public:
 	Object* getObjectByName(std::string name);
 	
 private:
-	
 	std::map<std::string,std::vector<Object*>> objectMap;
 };

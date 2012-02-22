@@ -1,11 +1,10 @@
 #pragma once
 
-#include <math.h>
-#include <algorithm>
+#include <algorithm> //For min/max
 
-#include <glm/glm.hpp>
+#include <glm/glm.hpp> //For math
 
-#include "Ray.h"
+#include "Ray.h" //For intersection calculations
 
 struct IntersectionData
 {
@@ -29,4 +28,6 @@ private:
 	static float IntersectionAlgorithms::getMinT(bool expression1, bool expression2, float t1, float t2);
 	static bool IntersectionAlgorithms::equal(float val1, float val2);
 	static glm::vec3 IntersectionAlgorithms::getReflection(glm::vec3 initialDir, glm::vec3 normal);
+
+	static float EPSILON;
 };

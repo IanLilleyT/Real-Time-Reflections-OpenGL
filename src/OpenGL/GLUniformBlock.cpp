@@ -1,13 +1,7 @@
 #include "GLUniformBlock.h"
 
-GLUniformBlock::GLUniformBlock()
-{
-	//Do nothing
-}
-GLUniformBlock::~GLUniformBlock()
-{
-	//Do nothing
-}
+GLUniformBlock::GLUniformBlock(){}
+GLUniformBlock::~GLUniformBlock(){}
 
 //Other
 void GLUniformBlock::bindToProgram(GLuint program)
@@ -22,9 +16,6 @@ void GLUniformBlock::setName(std::string name)
 }
 void GLUniformBlock::createUBO()
 {
-	//Make sure to set the binding index before calling this!
-	//Make sure to set the size before calling this!
-	//(Done in the GLUniformHelper)
 	GLuint ubo;
 	glGenBuffers(1, &ubo);
 	glBindBuffer(GL_UNIFORM_BUFFER, ubo);

@@ -1,9 +1,6 @@
 #include "GLProgramDatabase.h"
 
 std::string GLProgramDatabase::NO_NAME = "NO_NAME";
-std::string GLProgramDatabase::TYPE_WHITE = "White";
-std::string GLProgramDatabase::TYPE_MATERIAL = "Material";
-std::string GLProgramDatabase::TYPE_JELLO = "Jello";
 
 GLProgramDatabase::GLProgramDatabase(){}
 GLProgramDatabase::~GLProgramDatabase(){}
@@ -32,15 +29,8 @@ GLProgram* GLProgramDatabase::findProgram(std::string ProgramName)
 GLProgram* GLProgramDatabase::makeProgramByName(std::string name)
 {
 	//Given a program name, this assembles a new program object
-	GLProgram* glProgram = 0;
-
-	//CUSTOMIZE
-	if(name == GLProgramDatabase::TYPE_WHITE)
-		glProgram = new GLProgram_White();
-	else if(name == GLProgramDatabase::TYPE_MATERIAL)
-		glProgram = new GLProgram_Material();
-	else if(name == GLProgramDatabase::TYPE_JELLO)
-		glProgram = new GLProgram_Jello();
+	std::string fullName = "GLProgram_" + name;
+	GLProgram* glProgram = (GLProgram*)Singleton<Factory>::Instance()->construct(fullName);
 
 	//Assembling the program
 	if(glProgram != 0)

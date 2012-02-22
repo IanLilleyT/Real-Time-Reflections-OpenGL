@@ -1,7 +1,7 @@
 <world>
 	<object type="RenderObject">
 		<name>floor</name>
-		<material>purple</material>
+		<material>blue</material>
 		<mesh>cube</mesh>
 		<program>Material</program>
 		<translation>0 -.5 0</translation>
@@ -13,14 +13,14 @@
 	<object type="Light">
 		<name>light1</name>
 		<intensity>1 1 1 1</intensity>
-		<translation>0 2 0</translation>
+		<translation>0 .2 0</translation>
 	</object>
-	<object type="Jello">
+	<!--<object type="Jello">
 		<name>jelly</name>
 		<origin>0 3 0</origin>
 		<size>1 1 1</size>
 		<divisions>6 6 6</divisions>
-		<material>red</material>
+		<material>blue</material>
 		<program>Material</program>
-	</object>
+	</object>-->
 </world>

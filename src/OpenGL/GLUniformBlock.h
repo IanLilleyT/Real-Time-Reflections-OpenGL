@@ -1,9 +1,9 @@
 #pragma once
 
-#include <string>
+#include <string> //For names
 
-#include <glm/glm.hpp>
-#include <gl3w/gl3w.h>
+#include <glm/glm.hpp> //For math
+#include <gl3w/gl3w.h> //For OpenGL commands
 
 class GLUniformBlock
 {

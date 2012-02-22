@@ -52,7 +52,7 @@ void GLUniformBlockHelper::update()
 	GLUniformBlock* lightsUniformBlock = this->findUniformBlock(TYPE_LIGHTS);
 	LightsBlock lightsBlock = LightsBlock();
 	std::vector<Object*>& lights = glState->getLights();
-	int numLights = (std::min)((int)lights.size(), (int)MAX_NUMBER_OF_LIGHTS);
+	int numLights = std::min((int)lights.size(), (int)MAX_NUMBER_OF_LIGHTS);
 	for(int i = 0; i < numLights; i++)
 	{
 		Light* light = dynamic_cast<Light*>(lights.at(i));

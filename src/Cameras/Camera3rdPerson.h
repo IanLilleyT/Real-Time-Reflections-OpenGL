@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Camera.h"
+#include "Camera.h" //Superclass
 
 class Camera3rdPerson : public Camera
 {
