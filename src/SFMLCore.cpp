@@ -3,8 +3,8 @@
 SFMLCore::SFMLCore(void)
 {
 	//Create the window
-	int width = 1280;
-	int height = 720;
+	int width = 1024;
+	int height = 768;
 	sf::RenderWindow* window = new sf::RenderWindow();
     window->Create(sf::VideoMode(width, height, 32), "OpenGLApplication");
     window->SetActive();

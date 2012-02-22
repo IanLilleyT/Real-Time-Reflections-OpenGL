@@ -61,11 +61,8 @@ void RenderObject::render()
 //Mesh
 void RenderObject::setMesh(std::string name)
 {
-	if(this->mesh == 0)
-	{
-		GLMesh* newMesh = Singleton<MeshDatabase>::Instance()->loadMesh(name);
-		this->mesh = newMesh;
-	}
+	GLMesh* newMesh = Singleton<MeshDatabase>::Instance()->loadMesh(name);
+	if(newMesh != 0) this->mesh = newMesh;
 }
 std::string RenderObject::getMesh()
 {

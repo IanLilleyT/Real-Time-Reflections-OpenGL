@@ -27,4 +27,6 @@ TODO:
 -COLLADA mesh loading
 -Hierarchical world storage
 -Set name for world,meshes,materials
+-Put all materials in one file
+-Archetypes
 */

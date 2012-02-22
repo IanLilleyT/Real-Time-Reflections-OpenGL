@@ -1,6 +1,6 @@
 <material>
 	<name>blue</name>
-	<diffuseColor>0 0 1 1</diffuseColor>
+	<diffuseColor>.5 .5 .5 1</diffuseColor>
 	<specularColor>1 1 1 1</specularColor>
 	<specularShininess>.3</specularShininess>
 	<reflectivity>0</reflectivity>

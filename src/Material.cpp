@@ -16,6 +16,7 @@ void Material::initialize(TiXmlElement* element)
 	this->setName(name);
 	this->setDiffuseColor(diffuseColor);
 	this->setSpecularColor(specularColor);
+	this->setSpecularShininess(specularShininess);
 	this->setReflectivity(reflectivity);
 	this->setAlpha(alpha);
 }
