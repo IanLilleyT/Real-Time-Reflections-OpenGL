@@ -1,12 +1,10 @@
-#include "../GLProgram.h"
+#pragma once
 
-class GLProgram_Jello: public GLProgram
+#include "GLProgram_Material.h"
+
+class GLProgram_Jello: public GLProgram_Material
 {
 public:
 	GLProgram_Jello();
 	virtual ~GLProgram_Jello();
-	virtual void createVAO();
-protected:
-	virtual void bindUniformBlocks();
-	virtual void fillUniforms();
 };

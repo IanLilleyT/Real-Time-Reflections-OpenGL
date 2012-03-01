@@ -29,4 +29,7 @@ TODO:
 -Set name for world,meshes,materials
 -Put all materials in one file
 -Archetypes
+-Better error handling (especially for XML loading)
+-Allow adding to database
+-Copying/ deep copying objects
 */

@@ -10,6 +10,7 @@
 #include "OpenGL/Programs/GLProgram_Jello.h"
 #include "OpenGL/Programs/GLProgram_Material.h"
 #include "OpenGL/Programs/GLProgram_White.h"
+#include "OpenGL/Programs/GLProgram_Silhouette.h"
 
 #include "Singleton.h" //For accessing Factory
 #include "Factory.h" //For registration
@@ -31,6 +32,7 @@ public:
 		factory->register_class<GLProgram_Jello>("GLProgram_Jello");
 		factory->register_class<GLProgram_Material>("GLProgram_Material");
 		factory->register_class<GLProgram_White>("GLProgram_White");
+		factory->register_class<GLProgram_Silhouette>("GLProgram_Silhouette");
 	}
 	~FactoryRegister(){}
 };

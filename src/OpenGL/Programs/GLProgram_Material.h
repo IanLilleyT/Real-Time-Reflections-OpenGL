@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../GLProgram.h"
 
 class GLProgram_Material: public GLProgram
