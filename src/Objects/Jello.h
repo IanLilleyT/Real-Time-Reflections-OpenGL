@@ -26,10 +26,11 @@ public:
 	virtual void render();
 
 protected:
+
 	void initialize(glm::vec3 origin, glm::vec3 size, glm::uvec3 divisions);
 
 	//Enums
-	enum IntegrationType { EULER, MIDPOINT, RK4 };
+	enum IntegrationType { RK4 };
 	enum SpringType { STRUCTURAL, SHEAR, BEND, PENALTY }; 
 	enum IntersectionType { CONTACT, COLLISION };
 	enum FaceType { LEFT, RIGHT, TOP, BOTTOM, FRONT, BACK };
@@ -87,7 +88,6 @@ protected:
 	void initializeSpringMeshes();
 	void initializeNormalMesh();
 	void initializeForcesMesh();
-	void initializeCollisionNormalsMesh();
 
 	//Updaters
 	void checkForCollisions();
@@ -98,8 +98,6 @@ protected:
 	void updateSpringMeshes();
 
 	//Integration
-	void EulerIntegrate();
-	void MidPointIntegrate();
 	void RK4Integrate();
 
 	//Particles

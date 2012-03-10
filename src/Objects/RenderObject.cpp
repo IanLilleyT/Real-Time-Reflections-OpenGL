@@ -54,7 +54,7 @@ void RenderObject::render()
 {
 	Singleton<GLState>::Instance()->setModelToWorldMatrix(this->transformationMatrix);
 	Singleton<GLState>::Instance()->setMaterial(this->material);
-	if(this->mesh->isVisible())
+	if(this->isVisible())
 		this->mesh->Render();
 }
 
@@ -87,4 +87,14 @@ void RenderObject::setProgram(std::string programName)
 std::string RenderObject::getProgram()
 {
 	return this->mesh->getProgram();
+}
+
+//Visible
+void RenderObject::setVibisle(bool visible)
+{
+	this->mesh->setVisible(visible);
+}
+bool RenderObject::isVisible()
+{
+	return this->mesh->isVisible();
 }

@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <gl3w/gl3w.h>
 
-#include "GLCamera.h"
+#include "GLCamera.h" //For handling camera
 #include "GLUniformBlockHelper.h" //For calling updates to unform blocks
 #include "../EventHandler.h" //For enter frame events
 #include "../Singleton.h" //For accessing several globals

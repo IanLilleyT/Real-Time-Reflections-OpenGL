@@ -22,7 +22,6 @@
 
 #include <gl3w/gl3w.h> //For GL commands
 
-#include "GLBufferObject.h" //For storing VBO/IBO
 #include "GLVertexArrayObject.h" //For loading attributes
 #include "GLAttribute.h" //For loading attributes
 #include "GLProgramDatabase.h" //For loading the program
@@ -53,15 +52,15 @@ public:
 	void setVBOData(std::vector<GLfloat> vboData, std::vector<GLushort> iboData, GLuint numElements, GLenum drawType);
 	std::vector<GLfloat>& getVBOData();
 	std::vector<GLushort>& getIBOData();
-    
-	//Other
-	void setVisible(bool visible);
-	bool isVisible();
 	int getNumElements();
 
 	//name
 	void setName(std::string name);
 	std::string getName();
+
+	//Visible
+	void setVisible(bool visible);
+	bool isVisible();
 
 	//Render
     void Render();
@@ -70,9 +69,17 @@ private:
 
     void Generate();
 
+	//Buffer object
+    GLuint vertexBuffer;
+    GLuint indexBuffer;
+    GLenum drawType;
+    std::vector<GLfloat> vertexBufferData;
+    std::vector<GLushort> indexBufferData;
+	GLuint numElements;
+
     GLVertexArrayObject* vertexArrayObject;
-    GLBufferObject* bufferObject;
-    GLProgram* program;
-	bool visible;
+	GLProgram* program;
+
 	std::string name;
+	bool visible;
 };

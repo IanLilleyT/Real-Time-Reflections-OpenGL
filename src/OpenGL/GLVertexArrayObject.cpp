@@ -5,10 +5,7 @@ GLVertexArrayObject::GLVertexArrayObject()
 	this->vertexArrayObject = 0;
 	this->attributes = std::vector<GLAttribute*>();
 }
-GLVertexArrayObject::~GLVertexArrayObject()
-{
-	//Do nothing
-}
+GLVertexArrayObject::~GLVertexArrayObject(){}
 
 //Setters
 void GLVertexArrayObject::setVertexArrayObject(GLuint vertexArrayObject)

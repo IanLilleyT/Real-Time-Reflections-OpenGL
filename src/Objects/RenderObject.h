@@ -38,6 +38,10 @@ public:
 	void setProgram(std::string type);
 	std::string getProgram();
 
+	//Visible
+	void setVibisle(bool visible);
+	bool isVisible();
+
 protected:
 	void initialize(std::string mesh, std::string material, std::string program);
 

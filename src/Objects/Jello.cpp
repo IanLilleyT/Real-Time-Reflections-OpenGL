@@ -48,8 +48,6 @@ void Jello::update()
 	this->resolveCollisions();
 	switch (this->integrationType)
     {
-		case EULER: EulerIntegrate(); break;
-		case MIDPOINT: MidPointIntegrate(); break;
 		case RK4: RK4Integrate(); break;
     }
 	this->updateJelloMesh();
@@ -59,10 +57,9 @@ void Jello::update()
 void Jello::render()
 {
 	RenderObject::render();
-	if(this->normalMesh->isVisible())
-		this->normalMesh->Render();
-	if(this->forcesMesh->isVisible())
-		this->forcesMesh->Render();
+	this->normalMesh->Render();
+	this->normalMesh->Render();
+	this->forcesMesh->Render();
 	this->renderSprings();
 }
 void Jello::renderSprings()
@@ -159,26 +156,6 @@ void Jello::initializeSpringConstants()
 		std::pair<float,float>(3000.0f,2.0f);
 	this->springConstants[std::pair<SpringType,IntegrationType>(PENALTY,RK4)] = 
 		std::pair<float,float>(2000.0f,1.0f);
-
-	//Euler
-	this->springConstants[std::pair<SpringType,IntegrationType>(STRUCTURAL,EULER)] = 
-		std::pair<float,float>(1500.0f,2.0f);
-	this->springConstants[std::pair<SpringType,IntegrationType>(SHEAR,EULER)] = 
-		std::pair<float,float>(500.0f,2.0f);
-	this->springConstants[std::pair<SpringType,IntegrationType>(BEND,EULER)] = 
-		std::pair<float,float>(500.0f,1.0f);
-	this->springConstants[std::pair<SpringType,IntegrationType>(PENALTY,EULER)] = 
-		std::pair<float,float>(400.0f,1.0f);
-
-	//Midpoint
-	this->springConstants[std::pair<SpringType,IntegrationType>(STRUCTURAL,MIDPOINT)] = 
-		std::pair<float,float>(1500.0f,2.0f);
-	this->springConstants[std::pair<SpringType,IntegrationType>(SHEAR,MIDPOINT)] = 
-		std::pair<float,float>(1000.0f,2.0f);
-	this->springConstants[std::pair<SpringType,IntegrationType>(BEND,MIDPOINT)] = 
-		std::pair<float,float>(500.0f,1.0f);
-	this->springConstants[std::pair<SpringType,IntegrationType>(PENALTY,MIDPOINT)] = 
-		std::pair<float,float>(400.0f,1.0f);
 }
 void Jello::initializeMeshes()
 {
@@ -186,7 +163,6 @@ void Jello::initializeMeshes()
 	this->initializeSpringMeshes();
 	this->initializeNormalMesh();
 	this->initializeForcesMesh();
-	this->initializeCollisionNormalsMesh();
 }
 void Jello::initializeJelloMesh()
 {
@@ -407,10 +383,6 @@ void Jello::initializeForcesMesh()
 	this->forcesMesh->setVBOData(forceVBOData,forceIBOData,forceVBOData.size(),GL_LINES);
 	this->forcesMesh->setProgram("White");
 	this->forcesMesh->setVisible(false);
-}
-void Jello::initializeCollisionNormalsMesh()
-{
-
 }
 
 /*---------------------------------------------
@@ -700,34 +672,7 @@ void Jello::updateSpringMeshes()
 /*---------------------------------------------
   Integration Methods
 ---------------------------------------------*/
-void Jello::EulerIntegrate()
-{
-	for(unsigned int i = 0; i < this->particles.size(); i++)
-	{
-		Particle& s = this->getParticle(i);
-		Particle t = this->getParticle(i);
-		t.force /= s.mass;
-		s.velocity += t.force * this->integrationTimestep;
-		s.position += this->integrationTimestep*(s.velocity + .5f*t.force*this->integrationTimestep);
-	}
-}
-void Jello::MidPointIntegrate()
-{
-	for(unsigned int i = 0; i < this->particles.size(); i++)
-	{
-		Particle& s = this->getParticle(i);
-		Particle t = this->getParticle(i);
-		float halfT = this->integrationTimestep/2.0f;
 
-		//Get position at half timestep
-		t.force /= 0.5f*s.mass;
-		t.velocity += t.force * this->integrationTimestep;
-		t.position += this->integrationTimestep*(t.velocity + .5f*t.force*this->integrationTimestep);
-
-		s.velocity += t.force * halfT;
-		s.position += halfT*(t.velocity + .5f*t.force*halfT);
-	}
-}
 void Jello::RK4Integrate()
 {
 	std::vector<Particle> target = this->particles;
@@ -866,10 +811,6 @@ void Jello::keyDown(sf::Event sfEvent)
 	}
 	else if(key == sf::Keyboard::Num7) //Toggle normals
 		this->normalMesh->setVisible(!this->normalMesh->isVisible());
-	else if(key == sf::Keyboard::Num8) //Set Euler
-		Jello::integrationType = EULER;
-	else if(key == sf::Keyboard::Num9) //Set Midpoint
-		Jello::integrationType = MIDPOINT;
 	else if(key == sf::Keyboard::Num0) //Set RK4
 		Jello::integrationType = RK4;
 

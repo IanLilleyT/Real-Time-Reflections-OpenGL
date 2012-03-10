@@ -13,7 +13,10 @@ void GLDisplay::initialize()
 	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::Resized,InputReceiver::from_method<GLDisplay,&GLDisplay::resize>(this));
 
 	//Camera
-	Singleton<GLCamera>::Instance()->calcCameraToClipMatrix(45.0f,1.0f,100.0f);
+	float fov = 45.0f;
+	float nearPlane = 0.1f;
+	float farPlane = 1000.0f;
+	Singleton<GLCamera>::Instance()->calcCameraToClipMatrix(fov,nearPlane,farPlane);
 	this->camera = new Camera3rdPerson();
 	this->camera->zoom(-1);
 	this->camera->rotate(0,-.4f);
