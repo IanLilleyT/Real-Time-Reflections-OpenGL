@@ -1,6 +1,6 @@
 #include "WorldDatabase.h"
 
-std::string WorldDatabase::NO_NAME = "NO_NAME";
+std::string WorldDatabase::NONE = "NONE";
 WorldDatabase::WorldDatabase(){}
 WorldDatabase::~WorldDatabase(){}
 

@@ -15,7 +15,7 @@ public:
 
 	World* loadWorld(std::string worldFileName);
 
-	static std::string NO_NAME;
+	static std::string NONE;
 
 private:
 	World* findWorld(std::string worldFileName);

@@ -1,6 +1,6 @@
 #include "GLProgramDatabase.h"
 
-std::string GLProgramDatabase::NO_NAME = "NO_NAME";
+std::string GLProgramDatabase::NONE = "NONE";
 
 GLProgramDatabase::GLProgramDatabase(){}
 GLProgramDatabase::~GLProgramDatabase(){}

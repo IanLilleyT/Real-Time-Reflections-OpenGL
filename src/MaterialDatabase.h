@@ -15,7 +15,7 @@ public:
 
 	Material* loadMaterial(std::string materialFileName);
 	
-	static std::string NO_NAME;
+	static std::string NONE;
 
 private:
 	Material* findMaterial(std::string materialFileName);

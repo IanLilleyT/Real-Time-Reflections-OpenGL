@@ -17,21 +17,30 @@ void RenderObject::initialize(TiXmlElement* element)
 	std::string meshName;
 	TiXmlElement* meshElement = element->FirstChildElement("mesh");
 	if(meshElement != 0) meshName = meshElement->FirstChild()->Value();
-	else meshName = MeshDatabase::NO_NAME;
+	else meshName = MeshDatabase::NONE;
 
 	//Material
 	std::string materialName;
 	TiXmlElement* materialElement = element->FirstChildElement("material");
 	if(materialElement != 0) materialName = materialElement->FirstChild()->Value();
-	else materialName = MaterialDatabase::NO_NAME;
+	else materialName = MaterialDatabase::NONE;
 
 	//Program
 	std::string programName;
 	TiXmlElement* programElement = element->FirstChildElement("program");
 	if(programElement != 0) programName = programElement->FirstChild()->Value();
-	else programName = GLProgramDatabase::NO_NAME;
+	else programName = GLProgramDatabase::NONE;
 
 	this->initialize(meshName,materialName,programName);
+
+	//Optional
+	//Color
+	TiXmlElement* diffuseColorElement = element->FirstChildElement("diffuseColor");
+	if(diffuseColorElement != 0)
+	{
+		glm::vec4 color = Utils::parseIntoVec4(diffuseColorElement->FirstChild()->Value());
+		this->material->setDiffuseColor(color);
+	}
 }
 void RenderObject::initialize(std::string type, std::string name, std::string mesh, std::string material, std::string program)
 {
@@ -72,7 +81,8 @@ std::string RenderObject::getMesh()
 //Material
 void RenderObject::setMaterial(std::string material)
 {
-	this->material = Singleton<MaterialDatabase>::Instance()->loadMaterial(material);
+	Material* databaseMaterial = Singleton<MaterialDatabase>::Instance()->loadMaterial(material);
+	this->material = new Material(*databaseMaterial);
 }
 std::string RenderObject::getMaterial()
 {

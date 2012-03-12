@@ -18,7 +18,7 @@ public:
 
 	GLProgram* loadProgram(std::string ProgramName);
 	
-	static std::string NO_NAME;
+	static std::string NONE;
 
 private:
 	GLProgram* findProgram(std::string ProgramName);

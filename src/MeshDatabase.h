@@ -15,7 +15,7 @@ public:
 
 	GLMesh* loadMesh(std::string meshName);
 
-	static std::string NO_NAME;
+	static std::string NONE;
 
 private:
 	GLMesh* findMesh(std::string meshName);

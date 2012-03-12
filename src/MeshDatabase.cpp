@@ -1,6 +1,6 @@
 #include "MeshDatabase.h"
 
-std::string MeshDatabase::NO_NAME = "NO_NAME";
+std::string MeshDatabase::NONE = "NONE";
 
 MeshDatabase::MeshDatabase(){}
 MeshDatabase::~MeshDatabase(){}

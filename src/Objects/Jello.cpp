@@ -21,7 +21,7 @@ void Jello::initialize(std::string type, std::string name, std::string material,
 		glm::vec3 origin, glm::vec3 size, glm::uvec3 divisions)
 {
 	this->initialize(origin,size,divisions);
-	RenderObject::initialize(type,name,MeshDatabase::NO_NAME,material,program);
+	RenderObject::initialize(type,name,MeshDatabase::NONE,material,program);
 }
 void Jello::initialize(glm::vec3 origin, glm::vec3 size, glm::uvec3 divisions)
 {

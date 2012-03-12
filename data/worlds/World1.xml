@@ -1,14 +1,20 @@
 <world>
 	<object type="RenderObject">
 		<name>floor</name>
-		<material>blue</material>
+		<material>red</material>
+		<mesh>cube</mesh>
+		<program>Material</program>
+		<translation>0 0 0</translation>
+		<scale>10 1 10</scale>
+	</object>
+	<object type="RenderObject">
+		<name>ball</name>
+		<material>red</material>
+		<diffuseColor>0 1 1 1</diffuseColor>
 		<mesh>sphere</mesh>
 		<program>Material</program>
-		<translation>0 -.5 0</translation>
-		<scale>10 3 10</scale>
-	</object>
-	<object type="Object">
-		<name>bob</name>
+		<translation>0 2 0</translation>
+		<scale>1 1 1</scale>
 	</object>
 	<object type="Light">
 		<name>light1</name>
