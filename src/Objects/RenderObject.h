@@ -8,7 +8,7 @@
 #include "../OpenGL/GLState.h" //For updating model to camera matrix and material
 #include "../MaterialDatabase.h" //For loading material based on string name
 #include "../MeshDatabase.h" //For loading mesh based on string name
-#include "../Singleton.h" //For accessing global classes
+#include "../Utils/Singleton.h" //For accessing global classes
 
 class RenderObject: public Object
 {

@@ -4,8 +4,8 @@
 #include <gl3w/gl3w.h> //For OpenGL commans
 
 #include "GLState.h" //For setting matrices
-#include "../Ray.h" //For picking
-#include "../Singleton.h" //For accessing GLState
+#include "../Utils/Ray.h" //For picking
+#include "../Utils/Singleton.h" //For accessing GLState
 
 class GLCamera
 {

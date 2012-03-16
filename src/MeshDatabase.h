@@ -5,7 +5,7 @@
 
 #include "OpenGL/GLMesh.h" //For storing meshes
 #include "GlobalPaths.h" //For getting mesh path
-#include "Singleton.h" //For using global classes
+#include "Utils/Singleton.h" //For using global classes
 
 class MeshDatabase
 {
@@ -18,7 +18,7 @@ public:
 	static std::string NONE;
 
 private:
-	GLMesh* findMesh(std::string meshName);
-	GLMesh* openMeshFile(std::string meshName);
-	std::map<std::string,GLMesh*> meshMap;
+	GLMeshData* findMesh(std::string meshName);
+	GLMeshData* openMeshFile(std::string meshName);
+	std::map<std::string,GLMeshData*> meshMap;
 };

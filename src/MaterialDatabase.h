@@ -5,7 +5,7 @@
 
 #include "Material.h" //For storing materials
 #include "GlobalPaths.h" //For getting material path
-#include "Singleton.h" //For using global classes
+#include "Utils/Singleton.h" //For using global classes
 
 class MaterialDatabase
 {

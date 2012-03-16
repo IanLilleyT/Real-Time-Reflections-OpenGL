@@ -6,9 +6,9 @@
 #include <gl3w/gl3w.h> //For OpenGL commands
 
 #include "GLProgram.h" //For storing programs
-#include "../GlobalPaths.h" //For loading programs path
-#include "../Factory.h" //For creating new program classes
-#include "../Singleton.h" //For loading global classes
+#include "../../GlobalPaths.h" //For loading programs path
+#include "../../Utils/Factory.h" //For creating new program classes
+#include "../../Utils/Singleton.h" //For loading global classes
 
 class GLProgramDatabase
 {

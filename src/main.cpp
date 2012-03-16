@@ -3,8 +3,8 @@
 #include <gl3w/gl3w.h> //Must be included before SFML
 #include <time.h> //For setting up random
 
-#include "FactoryRegister.h" //For initializing factory classes
-#include "Singleton.h" //For accessing global classes
+#include "Utils/FactoryRegister.h" //For initializing factory classes
+#include "Utils/Singleton.h" //For accessing global classes
 #include "SFMLCore.h" //For initializing the program
 #include "GlobalPaths.h" //For setting data path
 

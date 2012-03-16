@@ -193,7 +193,7 @@ void Jello::initializeJelloMesh()
 	std::vector<GLfloat> vboData = std::vector<GLfloat>(vboCount*3*2,(GLfloat)0); // x3 for components, x2 for normals
 	int numTriangles = 4*((numCols-1)*(numRows-1) + (numRows-1)*(numDeps-1) + (numCols-1)*(numDeps-1));
 	std::vector<GLushort> iboData = std::vector<GLushort>(numTriangles*3,(GLushort)0); // x3 for three points in triangle
-	this->mesh->setVBOData(vboData,iboData,vboCount,GL_TRIANGLES);
+	this->mesh->setGLMeshData(vboData,iboData,vboCount,GL_TRIANGLES);
 
 	this->initializeJelloMeshIBO();
 	this->initializeJelloMeshNeighbors();
@@ -352,7 +352,7 @@ void Jello::initializeSpringMeshes()
 		std::vector<GLushort> springIBOData = std::vector<GLushort>(numSprings*3*2,(GLushort)0); // x3 for components, two points per line
 		for(unsigned int i = 0; i < springIBOData.size(); i++)
 			springIBOData[i] = i;
-		springMesh->setVBOData(springVBOData,springIBOData,numSprings,GL_LINES);
+		springMesh->setGLMeshData(springVBOData,springIBOData,numSprings,GL_LINES);
 		springMesh->setProgram("White");
 		springMesh->setVisible(false);
 		this->springMeshes[type] = springMesh;
@@ -367,7 +367,7 @@ void Jello::initializeNormalMesh()
 	std::vector<GLushort> normalIBOData = std::vector<GLushort>(numElements*3*2,(GLushort)0); // x3 for components, two points per line
 	for(unsigned int i = 0; i < normalIBOData.size(); i++)
 		normalIBOData[i] = i;
-	this->normalMesh->setVBOData(normalVBOData,normalIBOData,normalVBOData.size(),GL_LINES);
+	this->normalMesh->setGLMeshData(normalVBOData,normalIBOData,normalVBOData.size(),GL_LINES);
 	this->normalMesh->setProgram("White");
 	this->normalMesh->setVisible(false);
 }
@@ -380,7 +380,7 @@ void Jello::initializeForcesMesh()
 	std::vector<GLushort> forceIBOData = std::vector<GLushort>(numElements*3*2,(GLushort)0); // x3 for components, two points per line
 	for(unsigned int i = 0; i < forceIBOData.size(); i++)
 		forceIBOData[i] = i;
-	this->forcesMesh->setVBOData(forceVBOData,forceIBOData,forceVBOData.size(),GL_LINES);
+	this->forcesMesh->setGLMeshData(forceVBOData,forceIBOData,forceVBOData.size(),GL_LINES);
 	this->forcesMesh->setProgram("White");
 	this->forcesMesh->setVisible(false);
 }

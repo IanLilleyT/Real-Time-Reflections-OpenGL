@@ -6,10 +6,10 @@
 #include <SFML/Window/Mouse.hpp> //For mouse events
 #include <SFML/Window/Keyboard.hpp> //For key events
 
-#include "../Singleton.h" //For GLCamera
-#include "../Utils.h" //Used by subclasses for creating rotation matrix
+#include "../Utils/Singleton.h" //For GLCamera
+#include "../Utils/Utils.h" //Used by subclasses for creating rotation matrix
 #include "../OpenGL/GLCamera.h" //For sending worldToCamera matrix
-#include "../EventHandler.h" //For mouse events
+#include "../Utils/EventHandler.h" //For mouse events
 
 class Camera
 {

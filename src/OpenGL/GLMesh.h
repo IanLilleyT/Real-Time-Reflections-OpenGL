@@ -24,17 +24,30 @@
 
 #include "GLVertexArrayObject.h" //For loading attributes
 #include "GLAttribute.h" //For loading attributes
-#include "GLProgramDatabase.h" //For loading the program
-#include "GLProgram.h" //For storing the program
-#include "../Singleton.h" //For different global classes
+#include "Programs/GLProgramDatabase.h" //For loading the program
+#include "Programs/GLProgram.h" //For storing the program
+#include "../Utils/Singleton.h" //For different global classes
 
 /*---------------------------------------------
   GLMesh: Contains all the information needed
   to render objects.
-
-  Usage (call methods in this order):
-  setVBOData, setProgram, render
 ---------------------------------------------*/
+
+struct GLMeshData
+{
+	GLMeshData();
+	GLMeshData(std::vector<GLfloat> vboData, std::vector<GLushort> iboData, 
+		GLuint numElements, GLenum drawType);
+	~GLMeshData();
+	
+    GLenum drawType;
+    std::vector<GLfloat> vertexBufferData;
+    std::vector<GLushort> indexBufferData;
+	GLuint numElements;
+	std::string name;
+
+	static GLMeshData* initialize(std::string filename);
+};
 
 class GLMesh
 {
@@ -49,7 +62,9 @@ public:
 	std::string getProgram();
 
 	//VBO/IBO
-	void setVBOData(std::vector<GLfloat> vboData, std::vector<GLushort> iboData, GLuint numElements, GLenum drawType);
+	void setGLMeshData(std::vector<GLfloat> vboData, std::vector<GLushort> iboData, GLuint numElements, GLenum drawType);
+	void setGLMeshData(GLMeshData* meshData);
+	GLMeshData* getGLMeshData();
 	std::vector<GLfloat>& getVBOData();
 	std::vector<GLushort>& getIBOData();
 	int getNumElements();
@@ -70,15 +85,11 @@ private:
     void Generate();
 
 	//Buffer object
-    GLuint vertexBuffer;
-    GLuint indexBuffer;
-    GLenum drawType;
-    std::vector<GLfloat> vertexBufferData;
-    std::vector<GLushort> indexBufferData;
-	GLuint numElements;
-
+    GLMeshData* meshData;
     GLVertexArrayObject* vertexArrayObject;
 	GLProgram* program;
+	GLuint vertexBuffer;
+    GLuint indexBuffer;
 
 	std::string name;
 	bool visible;

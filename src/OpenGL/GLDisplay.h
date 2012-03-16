@@ -5,8 +5,8 @@
 
 #include "GLCamera.h" //For handling camera
 #include "GLUniformBlockHelper.h" //For calling updates to unform blocks
-#include "../EventHandler.h" //For enter frame events
-#include "../Singleton.h" //For accessing several globals
+#include "../Utils/EventHandler.h" //For enter frame events
+#include "../Utils/Singleton.h" //For accessing several globals
 #include "../World.h" //For storing world
 #include "../Cameras/Camera.h" //For using different camera types
 #include "../Cameras/Camera3rdPerson.h" //For using different camera types

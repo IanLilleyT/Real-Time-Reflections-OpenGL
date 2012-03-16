@@ -17,6 +17,7 @@ public:
     //Getters
     GLuint getVertexArrayObject();
     std::vector<GLAttribute*> getAttributes();
+	void addAttribute(GLAttribute* attribute);
 	void setAttributes(std::vector<GLAttribute*> attributes);
 
 private:

@@ -7,11 +7,11 @@
 
 #include <tinyxml/tinyxml.h> //For parsing world xml file
 
-#include "Singleton.h" //For using global classes
+#include "Utils/Singleton.h" //For using global classes
 #include "Objects/Object.h" //Storage type
 #include "OpenGL/GLState.h" //Takes the world's lights
 #include "Objects/Light.h" //For sending lights to GLState
-#include "Factory.h" //For constructing new objects during initialization
+#include "Utils/Factory.h" //For constructing new objects during initialization
 
 class World
 {

@@ -7,7 +7,7 @@
 #include "GLUniformBlock.h" //For storing UniformBlocks
 #include "GLState.h" //For getting current world values
 #include "../Objects/Light.h" //For lights
-#include "../Singleton.h" //For accessing GLState
+#include "../Utils/Singleton.h" //For accessing GLState
 
 class GLUniformBlockHelper
 {

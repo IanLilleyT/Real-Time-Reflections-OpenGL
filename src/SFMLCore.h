@@ -2,8 +2,8 @@
 
 #include <SFML/Graphics.hpp> //For displaying the screen
 
-#include "Singleton.h" //For accessing global classes
-#include "EventHandler.h" //For sending events
+#include "Utils/Singleton.h" //For accessing global classes
+#include "Utils/EventHandler.h" //For sending events
 #include "OpenGL/GLDisplay.h" //For initializing GLDisplay
 #include "WorldDatabase.h" //For loading the initial world
 #include "World.h" //For loading the initial world

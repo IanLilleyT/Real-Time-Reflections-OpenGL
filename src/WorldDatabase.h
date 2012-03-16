@@ -5,7 +5,7 @@
 
 #include "World.h" //For storing worlds
 #include "GlobalPaths.h" //For getting worlds path
-#include "Singleton.h" //For using global classes
+#include "Utils/Singleton.h" //For using global classes
 
 class WorldDatabase
 {

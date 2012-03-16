@@ -22,6 +22,10 @@ std::vector<GLAttribute*> GLVertexArrayObject::getAttributes()
 {
 	return this->attributes;
 }
+void GLVertexArrayObject::addAttribute(GLAttribute* attribute)
+{
+	this->attributes.push_back(attribute);
+}
 void GLVertexArrayObject::setAttributes(std::vector<GLAttribute*> attributes)
 {
 	this->attributes = attributes;

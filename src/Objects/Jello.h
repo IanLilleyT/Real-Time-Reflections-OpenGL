@@ -3,11 +3,11 @@
 #include <glm/glm.hpp> //For math
 
 #include "RenderObject.h" //Superclass
-#include "../OpenGL/GLProgramDatabase.h" //For changing shaders on lines
-#include "../EventHandler.h" //For keyboard events
-#include "../Singleton.h" //For accessing GLProgramDatabase
-#include "../Ray.h" //For setting up primitive intersections
-#include "../IntersectionAlgorithms.h" //For doing primitive intersections
+#include "../OpenGL/Programs/GLProgramDatabase.h" //For changing shaders on lines
+#include "../Utils/EventHandler.h" //For keyboard events
+#include "../Utils/Singleton.h" //For accessing GLProgramDatabase
+#include "../Utils/Ray.h" //For setting up primitive intersections
+#include "../Utils/IntersectionAlgorithms.h" //For doing primitive intersections
 
 class Jello: public RenderObject
 {

@@ -4,7 +4,7 @@
 
 #include <tinyxml/tinyxml.h> //For parsing material file
 
-#include "Utils.h" //For parsing glm types
+#include "Utils/Utils.h" //For parsing glm types
 
 class Material
 {

@@ -5,6 +5,6 @@
 class GLProgram_Jello: public GLProgram_Material
 {
 public:
-	GLProgram_Jello();
-	virtual ~GLProgram_Jello();
+	GLProgram_Jello() : GLProgram_Material(){}
+	virtual ~GLProgram_Jello(){}
 };

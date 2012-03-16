@@ -16,6 +16,7 @@ void Object::initialize(TiXmlElement* element)
 	else name = "NOTHING";
 	this->initialize(type,name);
 
+	//Optional settings
 	//Translation
 	TiXmlElement* translationElement = element->FirstChildElement("translation");
 	if(translationElement != 0)

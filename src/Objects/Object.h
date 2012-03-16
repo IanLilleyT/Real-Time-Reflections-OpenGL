@@ -6,7 +6,8 @@
 #include <glm/gtc/quaternion.hpp> //For rotations
 #include <tinyxml/tinyxml.h> //For parsing during initialize
 
-#include "../Utils.h" //For parsing XML data in glm types
+#include "../Utils/Utils.h" //For parsing XML data in glm types
+#include "../Utils/tree.h" //For class type hierarchy
 
 class Object
 {

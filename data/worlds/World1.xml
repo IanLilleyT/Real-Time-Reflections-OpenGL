@@ -3,18 +3,27 @@
 		<name>floor</name>
 		<material>red</material>
 		<mesh>cube</mesh>
-		<program>Material</program>
+		<program>Reflection</program>
 		<translation>0 0 0</translation>
 		<scale>10 1 10</scale>
 	</object>
 	<object type="RenderObject">
-		<name>ball</name>
+		<name>ball1</name>
 		<material>red</material>
 		<diffuseColor>0 1 1 1</diffuseColor>
 		<mesh>sphere</mesh>
 		<program>Material</program>
 		<translation>0 2 0</translation>
 		<scale>1 1 1</scale>
+	</object>
+	<object type="RenderObject">
+		<name>ball2</name>
+		<material>red</material>
+		<diffuseColor>0 1 1 1</diffuseColor>
+		<mesh>sphere</mesh>
+		<program>White</program>
+		<translation>2 2 0</translation>
+		<scale>1 2 1</scale>
 	</object>
 	<object type="Light">
 		<name>light1</name>

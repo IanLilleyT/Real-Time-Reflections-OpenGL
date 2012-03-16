@@ -1,9 +1,6 @@
 #include "GLProgram.h"
 
-GLProgram::GLProgram()
-{
-	this->uniformBlocks = std::vector<std::string>();
-}
+GLProgram::GLProgram(){}
 GLProgram::~GLProgram(){}
 
 GLAttribute* GLProgram::getAttribute(std::string name, GLushort size, GLenum type)
@@ -14,35 +11,30 @@ GLAttribute* GLProgram::getAttribute(std::string name, GLushort size, GLenum typ
     attribute->setType(type);
     return attribute;
 }
-void GLProgram::bindUniformBlocks()
+void GLProgram::bindUniformBlock(std::string uniformBlockName)
 {
 	GLUniformBlockHelper* glUniformBlockHelper = Singleton<GLUniformBlockHelper>::Instance();
-	for(unsigned int i = 0; i < this->uniformBlocks.size(); i++)
-	{
-		std::string uniformBlockName = this->uniformBlocks.at(i);
-		GLUniformBlock* uniformBlock = glUniformBlockHelper->findUniformBlock(uniformBlockName);
-		uniformBlock->bindToProgram(this->program);
-	}
+	GLUniformBlock* uniformBlock = glUniformBlockHelper->findUniformBlock(uniformBlockName);
+	uniformBlock->bindToProgram(this->program);
 }
+void GLProgram::bindUniformBlocks(){}
 void GLProgram::fillUniforms(){}
 void GLProgram::createVAO(){}
 
 //Setters
-void GLProgram::setProgram(GLuint program)
+void GLProgram::setProgram(GLuint program) //called from GLProgramDatabase
 {
     this->program = program;
 	this->bindUniformBlocks();
+	this->vao = new GLVertexArrayObject();
+	this->createVAO();
 }
-void GLProgram::setName(std::string name)
+void GLProgram::setName(std::string name) //called from GLProgramDatabase
 {
     this->name = name;
 }
 
 //Getters
-GLVertexArrayObject* GLProgram::getVAO()
-{
-	return this->vao;
-}
 GLuint GLProgram::getProgram()
 {
     return this->program;
@@ -50,4 +42,8 @@ GLuint GLProgram::getProgram()
 std::string GLProgram::getName()
 {
     return this->name;
+}
+GLVertexArrayObject* GLProgram::getVAO()
+{
+	return this->vao;
 }
