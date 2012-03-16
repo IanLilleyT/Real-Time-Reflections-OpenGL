@@ -14,12 +14,14 @@ class GLUniformBlockHelper
 public:
 	GLUniformBlockHelper();
 	~GLUniformBlockHelper();
+
 	void initialize();
 	void update();
 	GLUniformBlock* findUniformBlock(std::string name);
 
 	static std::string TYPE_PROJECTION;
 	static std::string TYPE_LIGHTS;
+
 private:
 	std::map<std::string, GLUniformBlock*> uniformBlockMap;
 };

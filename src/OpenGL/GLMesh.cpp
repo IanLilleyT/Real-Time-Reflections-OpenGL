@@ -12,12 +12,58 @@ void GLMesh::setProgram(std::string programName)
 {
 	//Make sure to call setGLMeshData first!
 	this->program = Singleton<GLProgramDatabase>::Instance()->loadProgram(programName);
-	this->vertexArrayObject = this->program->getVAO();
-    this->Generate();
+    
+	//Generate and bind the array buffer
+    glGenBuffers(1, &this->vertexBuffer); //generate vertex buffer
+	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer); //bind vertex buffer
+	glGenBuffers(1, &this->indexBuffer); //generate index buffer
+
+    //Vertex array object setup
+	GLuint vao = this->program->getVAO()->getVertexArrayObject();
+    glGenVertexArrays(1, &vao);
+    this->program->getVAO()->setVertexArrayObject(vao);
+    glBindVertexArray(this->program->getVAO()->getVertexArrayObject()); //bind vao
+
+    //Enable attributes
+	size_t offset = 0;
+	std::vector<GLAttribute*> attributes = this->program->getVAO()->getAttributes();
+    for(unsigned int i = 0; i < attributes.size(); i++)
+    {
+        GLAttribute* attribute = attributes.at(i);
+        glEnableVertexAttribArray(attribute->getAttributePos()); //enable attribute
+        glVertexAttribPointer(attribute->getAttributePos(), attribute->getSize(), attribute->getType(), GL_FALSE, 0, (void*) offset);
+		offset += this->meshData->numElements*attribute->getSize()*sizeof(GLfloat);
+    }
+
+    //Unbind
+    glBindVertexArray(0); //unbind vao
 }
 std::string GLMesh::getProgram()
 {
 	return this->program->getName();
+}
+void GLMesh::Render()
+{
+	//Put data in VERTEX buffer
+	glUseProgram(this->program->getProgram()); //bind program
+	glBindVertexArray(this->program->getVAO()->getVertexArrayObject()); //bind vao
+	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer); //bind vertex buffer
+	glBufferData(GL_ARRAY_BUFFER, this->meshData->vertexBufferData.size()*sizeof(GLfloat),
+		&(this->meshData->vertexBufferData.at(0)), GL_DYNAMIC_DRAW); //put vertex array data in vertex buffer
+
+	//Fill uniforms
+	this->program->fillUniforms();
+
+	//Draw the mesh
+	//Put data in INDEX buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBuffer); //bind index buffer
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->meshData->indexBufferData.size()*sizeof(GLushort),
+		&(this->meshData->indexBufferData.at(0)), GL_DYNAMIC_DRAW); //put index array data in the index buffer
+	glDrawElements(this->meshData->drawType, this->meshData->indexBufferData.size(), GL_UNSIGNED_SHORT, 0); //Draw on the screen
+
+	//Unbind
+	glBindVertexArray(0); //unbind vao
+	glUseProgram(0); //unbind program
 }
 
 //GLMeshData
@@ -66,63 +112,6 @@ bool GLMesh::isVisible()
 {
 	return this->visible;
 }
-
-/*---------------------------------------------
-  Other
----------------------------------------------*/
-void GLMesh::Generate()
-{
-    //Generate and bind the array buffer
-    glGenBuffers(1, &this->vertexBuffer); //generate vertex buffer
-	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer); //bind vertex buffer
-
-    //Vertex array object setup
-    GLuint vao = this->vertexArrayObject->getVertexArrayObject();
-    glGenVertexArrays(1, &vao);
-    this->vertexArrayObject->setVertexArrayObject(vao);
-    glBindVertexArray(this->vertexArrayObject->getVertexArrayObject()); //bind vao
-
-    //Enable attributes
-	size_t offset = 0;
-	std::vector<GLAttribute*> attributes = this->vertexArrayObject->getAttributes();
-    for(unsigned int i = 0; i < attributes.size(); i++)
-    {
-        GLAttribute* attribute = attributes.at(i);
-        glEnableVertexAttribArray(attribute->getAttributePos()); //enable attribute
-        glVertexAttribPointer(attribute->getAttributePos(), attribute->getSize(), attribute->getType(), GL_FALSE, 0, (void*) offset);
-		offset += this->meshData->numElements*attribute->getSize()*sizeof(GLfloat);
-    }
-
-    //Set up element buffer
-    glGenBuffers(1, &this->indexBuffer); //generate index buffer
-
-    //Unbind
-    glBindVertexArray(0); //unbind vao
-}
-void GLMesh::Render()
-{
-	//Put data in VERTEX buffer
-	glUseProgram(this->program->getProgram()); //bind program
-	glBindVertexArray(this->vertexArrayObject->getVertexArrayObject()); //bind vao
-	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer); //bind vertex buffer
-	glBufferData(GL_ARRAY_BUFFER, this->meshData->vertexBufferData.size()*sizeof(GLfloat),
-		&(this->meshData->vertexBufferData.at(0)), GL_DYNAMIC_DRAW); //put vertex array data in vertex buffer
-
-	//Fill uniforms
-	this->program->fillUniforms();
-
-	//Draw the mesh
-	//Put data in INDEX buffer
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBuffer); //bind index buffer
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->meshData->indexBufferData.size()*sizeof(GLushort),
-		&(this->meshData->indexBufferData.at(0)), GL_DYNAMIC_DRAW); //put index array data in the index buffer
-	glDrawElements(this->meshData->drawType, this->meshData->indexBufferData.size(), GL_UNSIGNED_SHORT, 0); //Draw on the screen
-
-	//Unbind
-	glBindVertexArray(0); //unbind vao
-	glUseProgram(0); //unbind program
-}
-
 
 /*-----------------------------------------------------------------------------
 //// GLMeshData ///////////////////////////////////////////////////////////////

@@ -19,6 +19,7 @@ GLMesh* MeshDatabase::loadMesh(std::string meshName)
 	{
 		mesh = new GLMesh();
 		mesh->setGLMeshData(meshData);
+		mesh->setName(meshName);
 	}
 	return mesh;
 }

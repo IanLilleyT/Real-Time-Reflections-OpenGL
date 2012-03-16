@@ -86,7 +86,6 @@ private:
 
 	//Buffer object
     GLMeshData* meshData;
-    GLVertexArrayObject* vertexArrayObject;
 	GLProgram* program;
 	GLuint vertexBuffer;
     GLuint indexBuffer;
