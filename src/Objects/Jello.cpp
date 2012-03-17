@@ -1,6 +1,8 @@
 #include "Jello.h"
 
-//Static variables
+//Static vars
+std::string Jello::className = "Jello";
+
 Jello::IntegrationType Jello::integrationType = RK4;
 float Jello::integrationTimestep = 0.01f;
 
@@ -17,11 +19,11 @@ void Jello::initialize(TiXmlElement* element)
 	this->initialize(origin,size,divisions);
 	RenderObject::initialize(element);
 }
-void Jello::initialize(std::string type, std::string name, std::string material, std::string program,
+void Jello::initialize(std::string name, std::string material, std::string program,
 		glm::vec3 origin, glm::vec3 size, glm::uvec3 divisions)
 {
 	this->initialize(origin,size,divisions);
-	RenderObject::initialize(type,name,MeshDatabase::NONE,material,program);
+	RenderObject::initialize(name,MeshDatabase::NONE,material,program);
 }
 void Jello::initialize(glm::vec3 origin, glm::vec3 size, glm::uvec3 divisions)
 {
@@ -38,6 +40,12 @@ void Jello::initialize(glm::vec3 origin, glm::vec3 size, glm::uvec3 divisions)
 	this->initializeParticles();
 	this->initializeSprings();
 	this->initializeMeshes();
+}
+
+//Type
+std::string Jello::getType()
+{
+	return Jello::className;
 }
 
 void Jello::update()

@@ -12,14 +12,20 @@
 class Jello: public RenderObject
 {
 public:
+	//Class
+	static std::string className;
+
 	//Construct/Destruct
 	Jello();
 	virtual ~Jello();
 
 	//Initialize
 	virtual void initialize(TiXmlElement* element);
-	void initialize(std::string type, std::string name, std::string material, std::string program,
+	void initialize(std::string name, std::string material, std::string program,
 		glm::vec3 origin, glm::vec3 size, glm::uvec3 divisions);
+
+	//Type
+	virtual std::string getType();
 
 	//Update
 	virtual void update();

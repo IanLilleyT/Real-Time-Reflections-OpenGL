@@ -13,14 +13,20 @@
 class RenderObject: public Object
 {
 public:
+	//Class
+	static std::string className;
+
 	//Construct/Destruct
 	RenderObject();
 	virtual ~RenderObject();
 
 	//Initialize
 	virtual void initialize(TiXmlElement* element);
-	void initialize(std::string type, std::string name, std::string mesh, 
+	void initialize(std::string name, std::string mesh, 
 		std::string material, std::string program);
+
+	//Type
+	virtual std::string getType();
 
 	//Update
 	virtual void update();
@@ -35,7 +41,7 @@ public:
 	std::string getMaterial();
 
 	//Program
-	void setProgram(std::string type);
+	void setProgram(std::string program);
 	std::string getProgram();
 
 	//Visible

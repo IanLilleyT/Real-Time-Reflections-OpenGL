@@ -1,22 +1,23 @@
 #include "Object.h"
 
+//Static vars
+tree<std::string> Object::classHierarchy;
+std::string Object::className = "Object";
+
 Object::Object(){}
 Object::~Object(){}
 
 //Initialize
 void Object::initialize(TiXmlElement* element)
 {
-	//Type
-	std::string type = element->Attribute("type");
-
 	//Name
 	std::string name;
 	TiXmlElement* nameElement = element->FirstChildElement("name");
 	if(nameElement != 0) name = nameElement->FirstChild()->Value();
-	else name = "NOTHING";
-	this->initialize(type,name);
+	this->initialize(name);
 
 	//Optional settings
+
 	//Translation
 	TiXmlElement* translationElement = element->FirstChildElement("translation");
 	if(translationElement != 0)
@@ -41,10 +42,15 @@ void Object::initialize(TiXmlElement* element)
 		this->setRotation(axis,angle);
 	}
 }
-void Object::initialize(std::string type, std::string name)
+void Object::initialize(std::string name)
 {
-	this->setType(type);
 	this->setName(name);
+}
+
+//Type
+std::string Object::getType()
+{
+	return Object::className;
 }
 
 //Update
@@ -58,16 +64,6 @@ void Object::setName(std::string name)
 std::string Object::getName()
 {
 	return this->name;
-}
-
-//Type
-void Object::setType(std::string type)
-{
-	this->type = type;
-}
-std::string Object::getType()
-{
-	return this->type;
 }
 
 /*---------------------------------------------
@@ -87,9 +83,7 @@ void Object::setTransformationMatrix(glm::mat4 transformationMatrix)
 	this->updateTransformations();
 }
 
-/*---------------------------------------------
-  Translation
----------------------------------------------*/
+//Translation
 void Object::translateX(float amount)
 {
     this->translationMatrix[3].x += amount;
@@ -147,6 +141,7 @@ void Object::setTranslationMatrix(glm::mat4 translationMatrix)
 	this->translationMatrix = translationMatrix;
 	this->updateTransformations();
 }
+
 //Scale
 void Object::scaleX(float amount)
 {
@@ -215,6 +210,7 @@ void Object::setScaleMatrix(glm::mat4 scaleMatrix)
 	this->scaleMatrix = scaleMatrix;
 	this->updateTransformations();
 }
+
 //Rotation
 void Object::yaw(float angle)
 {

@@ -27,10 +27,11 @@ public:
 	void removeObject(Object* object);
 	void removeObject(std::string name);
 
-	std::vector<Object*>& getObjectsByType(std::string type);
-	Object* getObjectByTypeAndName(std::string type, std::string name);
+	std::vector<Object*> getObjectsByType(std::string type, bool exclusive);
 	Object* getObjectByName(std::string name);
+	Object* getObjectByNameAndType(std::string type, std::string name);
 	
 private:
+
 	std::map<std::string,std::vector<Object*>> objectMap;
 };

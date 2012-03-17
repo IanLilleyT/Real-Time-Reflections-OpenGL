@@ -1,12 +1,10 @@
 #include "RenderObject.h"
 
-RenderObject::RenderObject() : Object() 
-{
-	this->mesh = 0;
-	this->material = 0;
-}
-RenderObject::~RenderObject(){}
+//Static vars
+std::string RenderObject::className = "RenderObject";
 
+RenderObject::RenderObject() : Object(){}
+RenderObject::~RenderObject(){}
 
 //Initialize
 void RenderObject::initialize(TiXmlElement* element)
@@ -33,7 +31,8 @@ void RenderObject::initialize(TiXmlElement* element)
 
 	this->initialize(meshName,materialName,programName);
 
-	//Optional
+	//Optional settings
+
 	//Color
 	TiXmlElement* diffuseColorElement = element->FirstChildElement("diffuseColor");
 	if(diffuseColorElement != 0)
@@ -42,9 +41,9 @@ void RenderObject::initialize(TiXmlElement* element)
 		this->material->setDiffuseColor(color);
 	}
 }
-void RenderObject::initialize(std::string type, std::string name, std::string mesh, std::string material, std::string program)
+void RenderObject::initialize(std::string name, std::string mesh, std::string material, std::string program)
 {
-	Object::initialize(type,name);
+	Object::initialize(name);
 	this->initialize(mesh,material,program);
 }
 void RenderObject::initialize(std::string mesh, std::string material, std::string program)
@@ -52,6 +51,12 @@ void RenderObject::initialize(std::string mesh, std::string material, std::strin
 	this->setMesh(mesh);
 	this->setMaterial(material);
 	this->setProgram(program);
+}
+
+//Type
+std::string RenderObject::getType()
+{
+	return RenderObject::className;
 }
 
 //Update

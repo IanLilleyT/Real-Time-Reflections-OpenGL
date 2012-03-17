@@ -12,13 +12,20 @@
 class Object
 {
 public:
+	//Class
+	static tree<std::string> classHierarchy;
+	static std::string className;
+
 	//Construct/Destruct
 	Object();
 	virtual ~Object();
 
 	//initialize
 	virtual void initialize(TiXmlElement* element);
-	void initialize(std::string type, std::string name);
+	void initialize(std::string name);
+
+	//Type
+	virtual std::string getType();
 
 	//Update
 	virtual void update();
@@ -26,10 +33,6 @@ public:
 	//Name
 	void setName(std::string name);
 	std::string getName();
-
-	//Type
-	void setType(std::string type);
-	std::string getType();
 
 	//Transformations
 	glm::mat4 getTransformationMatrix();
@@ -72,7 +75,6 @@ public:
 	void setRotationMatrix(glm::mat4 rotationMatrix);
 
 protected:
-	std::string type;
 	std::string name;
 
 	void updateTransformations();

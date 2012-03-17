@@ -1,9 +1,6 @@
 #include "World.h"
 
-World::World()
-{
-	this->objectMap["None"] = std::vector<Object*>();
-}
+World::World(){}
 World::~World(){}
 
 void World::initialize(TiXmlElement* element)
@@ -21,7 +18,8 @@ void World::initialize(TiXmlElement* element)
 
 void World::update()
 {
-	std::vector<Object*>& lights = this->getObjectsByType("Light");
+	//Update lights to GLState
+	std::vector<Object*>& lights = this->getObjectsByType("Light", true);
 	Singleton<GLState>::Instance()->setLights(lights);
 
 	//Update all objects
@@ -29,7 +27,7 @@ void World::update()
 	for(iter = this->objectMap.begin(); iter != this->objectMap.end(); ++iter)
 	{
 		std::string type = iter->first;
-		std::vector<Object*>& objects = this->getObjectsByType(type);
+		std::vector<Object*>& objects = this->getObjectsByType(type, true);
 		for(unsigned int i = 0; i < objects.size(); i++)
 		{
 			Object* object = objects.at(i);
@@ -48,7 +46,7 @@ void World::removeObject(Object* object)
 {
 	if(object != 0)
 	{
-		std::vector<Object*>& objects = this->getObjectsByType(object->getType());
+		std::vector<Object*>& objects = this->getObjectsByType(object->getType(),true);
 		std::vector<Object*>::iterator iter = std::find(objects.begin(),objects.end(),object);
 		if(iter != objects.end())
 			objects.erase(iter);
@@ -65,15 +63,15 @@ Object* World::getObjectByName(std::string name)
 	for(iter = this->objectMap.begin(); iter != this->objectMap.end(); ++iter)
 	{
 		std::string type = iter->first;
-		Object* object = this->getObjectByTypeAndName(type, name);
+		Object* object = this->getObjectByNameAndType(type, name);
 		if(object != 0)
 			return object;
 	}
 	return 0;
 }
-Object* World::getObjectByTypeAndName(std::string type, std::string name)
+Object* World::getObjectByNameAndType(std::string type, std::string name)
 {
-	std::vector<Object*> objects = this->getObjectsByType(type);
+	std::vector<Object*> objects = this->getObjectsByType(type,true);
 	for(unsigned int i = 0; i < objects.size(); i++)
 	{
 		Object* object = objects.at(i);
@@ -83,12 +81,43 @@ Object* World::getObjectByTypeAndName(std::string type, std::string name)
 	}
 	return 0;
 }
-std::vector<Object*>& World::getObjectsByType(std::string type)
+std::vector<Object*> World::getObjectsByType(std::string type, bool exclusive)
 {
-	std::map<std::string,std::vector<Object*>>::iterator iter;
-	iter = this->objectMap.find(type);
-	if(iter != this->objectMap.end())
-		return iter->second;
+	std::vector<Object*> objects;
+
+	if(exclusive)
+	{
+		std::map<std::string,std::vector<Object*>>::iterator iter;
+		iter = this->objectMap.find(type);
+		if(iter != this->objectMap.end())
+			objects = iter->second;
+	}
 	else
-		return this->objectMap["None"];
+	{
+		//Loop over class hierarchy and accumulate objects from the subtree of type
+		tree<std::string>::iterator iter = Object::classHierarchy.begin();
+		int typeDepth = -1;
+
+		while(iter != Object::classHierarchy.end())
+		{
+			int nodeDepth = tree<std::string>::depth(iter);
+			std::string nodeName = *iter;
+			++iter;
+
+			if(nodeName == type)
+				typeDepth = nodeDepth;
+
+			if(typeDepth >= 0)
+			{
+				//Only use nodes that are in the subtree of type
+				if(nodeDepth > typeDepth || nodeName == type)
+				{
+					std::vector<Object*> typeObjects = this->getObjectsByType(nodeName,true);
+					objects.insert(objects.end(),typeObjects.begin(),typeObjects.end());
+				}
+				else break;
+			}
+		}
+	}
+	return objects;
 }

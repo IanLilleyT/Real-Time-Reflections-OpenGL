@@ -7,13 +7,19 @@
 class Light: public Object
 {
 public:
+	//Class
+	static std::string className;
+
 	//Construct/Destruct
 	Light();
 	virtual ~Light();
 
 	//Initialize
 	virtual void initialize(TiXmlElement* element);
-	void initialize(std::string type, std::string name, glm::vec4 intensity);
+	void initialize(std::string name, glm::vec4 intensity);
+	
+	//Type
+	virtual std::string getType();
 
 	//Intensity
 	void setIntensity(glm::vec4 intensity);

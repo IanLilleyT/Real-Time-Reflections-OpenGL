@@ -1,6 +1,8 @@
 #include "Light.h"
 
-//Default static values
+//Static vars
+std::string Light::className = "Light";
+
 glm::vec4 Light::ambientIntensity = glm::vec4(0.2f,0.2f,0.2f,1.0f);
 float Light::lightAttenuation = 0.1f;
 float Light::maxIntensity = 1.0f;
@@ -19,14 +21,20 @@ void Light::initialize(TiXmlElement* element)
 
 	this->initialize(intensityVal);
 }
-void Light::initialize(std::string type, std::string name, glm::vec4 intensity)
+void Light::initialize(std::string name, glm::vec4 intensity)
 {
-	Object::initialize(type,name);
+	Object::initialize(name);
 	this->initialize(intensity);
 }
 void Light::initialize(glm::vec4 intensity)
 {
 	this->setIntensity(intensity);
+}
+
+//Type
+std::string Light::getType()
+{
+	return Light::className;
 }
 
 //Intensity
