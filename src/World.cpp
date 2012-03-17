@@ -5,6 +5,7 @@ World::~World(){}
 
 void World::initialize(TiXmlElement* element)
 {
+	this->setName(element->FirstChildElement("name")->FirstChild()->Value());
 	Factory* factory = Singleton<Factory>::Instance();
 	TiXmlElement* objectElement = element->FirstChildElement("object");
 	for(; objectElement != 0; objectElement = objectElement->NextSiblingElement("object"))
@@ -19,7 +20,7 @@ void World::initialize(TiXmlElement* element)
 void World::update()
 {
 	//Update lights to GLState
-	std::vector<Object*>& lights = this->getObjectsByType("Light", true);
+	std::vector<Object*>& lights = this->getObjectsByType("Light");
 	Singleton<GLState>::Instance()->setLights(lights);
 
 	//Update all objects
@@ -27,7 +28,7 @@ void World::update()
 	for(iter = this->objectMap.begin(); iter != this->objectMap.end(); ++iter)
 	{
 		std::string type = iter->first;
-		std::vector<Object*>& objects = this->getObjectsByType(type, true);
+		std::vector<Object*>& objects = this->getObjectsByType(type);
 		for(unsigned int i = 0; i < objects.size(); i++)
 		{
 			Object* object = objects.at(i);
@@ -46,7 +47,7 @@ void World::removeObject(Object* object)
 {
 	if(object != 0)
 	{
-		std::vector<Object*>& objects = this->getObjectsByType(object->getType(),true);
+		std::vector<Object*>& objects = this->getObjectsByType(object->getType());
 		std::vector<Object*>::iterator iter = std::find(objects.begin(),objects.end(),object);
 		if(iter != objects.end())
 			objects.erase(iter);
@@ -71,7 +72,7 @@ Object* World::getObjectByName(std::string name)
 }
 Object* World::getObjectByNameAndType(std::string type, std::string name)
 {
-	std::vector<Object*> objects = this->getObjectsByType(type,true);
+	std::vector<Object*> objects = this->getObjectsByType(type);
 	for(unsigned int i = 0; i < objects.size(); i++)
 	{
 		Object* object = objects.at(i);
@@ -107,12 +108,12 @@ std::vector<Object*> World::getObjectsByType(std::string type, bool exclusive)
 			if(nodeName == type)
 				typeDepth = nodeDepth;
 
+			//Only use nodes that are in the subtree of type
 			if(typeDepth >= 0)
 			{
-				//Only use nodes that are in the subtree of type
 				if(nodeDepth > typeDepth || nodeName == type)
 				{
-					std::vector<Object*> typeObjects = this->getObjectsByType(nodeName,true);
+					std::vector<Object*> typeObjects = this->getObjectsByType(nodeName);
 					objects.insert(objects.end(),typeObjects.begin(),typeObjects.end());
 				}
 				else break;
@@ -120,4 +121,14 @@ std::vector<Object*> World::getObjectsByType(std::string type, bool exclusive)
 		}
 	}
 	return objects;
+}
+
+//Name
+void World::setName(std::string name)
+{
+	this->name = name;
+}
+std::string World::getName()
+{
+	return this->name;
 }

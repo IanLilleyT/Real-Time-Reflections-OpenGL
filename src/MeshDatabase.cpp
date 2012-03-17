@@ -19,7 +19,7 @@ GLMesh* MeshDatabase::loadMesh(std::string meshName)
 	{
 		mesh = new GLMesh();
 		mesh->setGLMeshData(meshData);
-		mesh->setName(meshName);
+		mesh->setName(meshName); //By default GLMesh given same name as GLMeshData
 	}
 	return mesh;
 }
@@ -39,5 +39,6 @@ GLMeshData* MeshDatabase::openMeshFile(std::string meshName)
 
 	GLMeshData* meshData = GLMeshData::initialize(fullPath);
 	meshData->name = meshName;
+
 	return meshData;
 }

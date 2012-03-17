@@ -1,4 +1,5 @@
 <world>
+	<name> World1 </name>
 	<object type="RenderObject">
 		<name>floor</name>
 		<material>red</material>

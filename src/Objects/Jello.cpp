@@ -218,66 +218,33 @@ void Jello::initializeJelloMeshIBO()
 
 		if(dep == (numDeps-1) && col > 0 && row > 0) //front
 		{
-			this->initializeFaceAtIndex(iboCounter,FRONT,  
-				glm::uvec3(col,row,dep),  
-				glm::uvec3(col-1,row,dep),  
-				glm::uvec3(col,row-1,dep));
-			this->initializeFaceAtIndex(iboCounter,FRONT,  
-				glm::uvec3(col,row-1,dep),  
-				glm::uvec3(col-1,row,dep),
-				glm::uvec3(col-1,row-1,dep));
+			this->initializeFaceAtIndex(iboCounter,FRONT, glm::uvec3(col,row,dep), glm::uvec3(col-1,row,dep), glm::uvec3(col,row-1,dep));
+			this->initializeFaceAtIndex(iboCounter,FRONT, glm::uvec3(col,row-1,dep), glm::uvec3(col-1,row,dep), glm::uvec3(col-1,row-1,dep));
 		}
 		if(dep == 0 && col > 0 && row > 0) //back
 		{
-			this->initializeFaceAtIndex(iboCounter,BACK,  
-				glm::uvec3(col,row,dep),  
-				glm::uvec3(col,row-1,dep),
-				glm::uvec3(col-1,row,dep));
-			this->initializeFaceAtIndex(iboCounter,BACK,  glm::uvec3(col,row-1,dep),
-				glm::uvec3(col-1,row-1,dep),
-				glm::uvec3(col-1,row,dep));
+			this->initializeFaceAtIndex(iboCounter,BACK,glm::uvec3(col,row,dep),glm::uvec3(col,row-1,dep),glm::uvec3(col-1,row,dep));
+			this->initializeFaceAtIndex(iboCounter,BACK,  glm::uvec3(col,row-1,dep),glm::uvec3(col-1,row-1,dep),glm::uvec3(col-1,row,dep));
 		}
 		if(col == (numCols-1) && dep > 0 && row > 0) //right
 		{
-			this->initializeFaceAtIndex(iboCounter,RIGHT,  
-				glm::uvec3(col,row,dep), 
-				glm::uvec3(col,row-1,dep),  
-				glm::uvec3(col,row,dep-1));
-			this->initializeFaceAtIndex(iboCounter,RIGHT,  
-				glm::uvec3(col,row-1,dep),  
-				glm::uvec3(col,row-1,dep-1),  
-				glm::uvec3(col,row,dep-1));
+			this->initializeFaceAtIndex(iboCounter,RIGHT,  glm::uvec3(col,row,dep), glm::uvec3(col,row-1,dep), glm::uvec3(col,row,dep-1));
+			this->initializeFaceAtIndex(iboCounter,RIGHT,  glm::uvec3(col,row-1,dep),glm::uvec3(col,row-1,dep-1),glm::uvec3(col,row,dep-1));
 		}
 		if(col == 0 && dep > 0 && row > 0) //left
 		{
-			this->initializeFaceAtIndex(iboCounter,LEFT,  
-				glm::uvec3(col,row,dep),  
-				glm::uvec3(col,row,dep-1),  
-				glm::uvec3(col,row-1,dep));
-			this->initializeFaceAtIndex(iboCounter,LEFT,  
-				glm::uvec3(col,row-1,dep),
-				glm::uvec3(col,row,dep-1),
-				glm::uvec3(col,row-1,dep-1));
+			this->initializeFaceAtIndex(iboCounter,LEFT,glm::uvec3(col,row,dep), glm::uvec3(col,row,dep-1), glm::uvec3(col,row-1,dep));
+			this->initializeFaceAtIndex(iboCounter,LEFT,glm::uvec3(col,row-1,dep),glm::uvec3(col,row,dep-1),glm::uvec3(col,row-1,dep-1));
 		}
 		if(row == (numRows-1) && dep > 0 && col > 0) //top
 		{
-			this->initializeFaceAtIndex(iboCounter,TOP,  glm::uvec3(col,row,dep), 
-				glm::uvec3(col,row,dep-1),  
-				glm::uvec3(col-1,row,dep));
-			this->initializeFaceAtIndex(iboCounter,TOP,  glm::uvec3(col,row,dep-1),  
-				glm::uvec3(col-1,row,dep-1),  
-				glm::uvec3(col-1,row,dep));
+			this->initializeFaceAtIndex(iboCounter,TOP,  glm::uvec3(col,row,dep), glm::uvec3(col,row,dep-1),  glm::uvec3(col-1,row,dep));
+			this->initializeFaceAtIndex(iboCounter,TOP,  glm::uvec3(col,row,dep-1), glm::uvec3(col-1,row,dep-1),  glm::uvec3(col-1,row,dep));
 		}
 		if(row == 0 && dep > 0 && col > 0) //bottom
 		{
-			this->initializeFaceAtIndex(iboCounter,BOTTOM,  
-				glm::uvec3(col,row,dep),
-				glm::uvec3(col-1,row,dep),  
-				glm::uvec3(col,row,dep-1));
-			this->initializeFaceAtIndex(iboCounter,BOTTOM,  
-				glm::uvec3(col,row,dep-1),
-				glm::uvec3(col-1,row,dep),  
-				glm::uvec3(col-1,row,dep-1));
+			this->initializeFaceAtIndex(iboCounter,BOTTOM, glm::uvec3(col,row,dep),glm::uvec3(col-1,row,dep), glm::uvec3(col,row,dep-1));
+			this->initializeFaceAtIndex(iboCounter,BOTTOM, glm::uvec3(col,row,dep-1),glm::uvec3(col-1,row,dep),glm::uvec3(col-1,row,dep-1));
 		}
 	}
 }
