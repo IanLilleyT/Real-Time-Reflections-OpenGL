@@ -11,7 +11,7 @@ void GLDisplay::initialize()
 	//Event handlers
 	Singleton<EventHandler>::Instance()->addEnterFrameEventListener(EnterFrameReceiver::from_method<GLDisplay,&GLDisplay::update>(this));
 	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::Resized,InputReceiver::from_method<GLDisplay,&GLDisplay::resize>(this));
-
+	
 	//Camera
 	float fov = 45.0f;
 	float nearPlane = 0.1f;

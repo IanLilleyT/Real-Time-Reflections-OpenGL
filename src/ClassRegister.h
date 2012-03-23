@@ -13,6 +13,7 @@
 #include "OpenGL/Programs/GLProgram_Material.h"
 #include "OpenGL/Programs/GLProgram_White.h"
 #include "OpenGL/Programs/GLProgram_Reflection.h"
+#include "OpenGL/Programs/GLProgram_Depth.h"
 
 #include "Utils/Singleton.h" //For accessing Factory
 #include "Utils/Factory.h" //For registration
@@ -44,6 +45,7 @@ public:
 		factory->register_class<GLProgram_Material>("GLProgram_Material");
 		factory->register_class<GLProgram_White>("GLProgram_White");
 		factory->register_class<GLProgram_Reflection>("GLProgram_Reflection");
+		factory->register_class<GLProgram_Depth>("GLProgram_Depth");
 
 		/*-------------------------------------------
 		//// Class Hierarchy ////////////////////////

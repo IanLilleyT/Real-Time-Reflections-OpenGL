@@ -22,7 +22,7 @@
 		<material>red</material>
 		<diffuseColor>0 1 1 1</diffuseColor>
 		<mesh>sphere</mesh>
-		<program>White</program>
+		<program>Depth</program>
 		<translation>2 2 0</translation>
 		<scale>1 2 1</scale>
 	</object>

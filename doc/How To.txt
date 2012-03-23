@@ -1,0 +1,8 @@
+How to create a new shader:
+
+1) Create NameFrag.frag and NameVert.vert
+2) Add GLProgram_Name.h to "Programs" folder
+3) Add code (base off another shader file)
+4) Register in ClassRegister
+
+How to create a new Object class:

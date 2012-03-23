@@ -22,7 +22,6 @@ int main(int argc, char **argv)
 /* 
 TODO:
 -COLLADA mesh loading
--Set name for world,meshes,materials
 -Put all materials in one file
 -Archetypes
 -Better error handling (especially for XML loading)

@@ -1,7 +1,7 @@
 <material>
 	<name>red</name>
 	<diffuseColor>1 0 0 1</diffuseColor>
-	<specularColor>1 1 1 1</specularColor>
+	<specularColor>0 1 .5 1</specularColor>
 	<specularShininess>.3</specularShininess>
 	<reflectivity>0</reflectivity>
 	<alpha>1</alpha>
