@@ -60,15 +60,17 @@ void Jello::update()
     }
 	this->updateJelloMesh();
 	this->updateSpringMeshes();
+
 	RenderObject::update();
 }
 void Jello::render()
 {
-	RenderObject::render();
 	this->normalMesh->Render();
 	this->normalMesh->Render();
 	this->forcesMesh->Render();
 	this->renderSprings();
+
+	RenderObject::render();
 }
 void Jello::renderSprings()
 {

@@ -7,11 +7,11 @@ local name = "OpenGLApplication"
 --Directory stuff
 local cwd = os.getcwd() .. "/"
 local project_location_rel = "../"
-local root_location_rel = "../"
 local build_location_rel =   project_location_rel .. "build/"        -- Build
 local source_location_rel =  project_location_rel .. "src/"          -- Source
-local headers_location_rel = root_location_rel .. "include/"         -- Headers
-local libs_location_rel =    root_location_rel .. "libs/"            -- Libraries
+local data_location_rel =    project_location_rel .. "data/"         -- Data
+local headers_location_rel = project_location_rel .. "include/"      -- Headers
+local libs_location_rel =    project_location_rel .. "libs/"         -- Libraries
 
 --SFML
 local lib_sfml = libs_location_rel      .. "SFML_2.0/"
@@ -50,15 +50,16 @@ solution ( name )
 project ( name )
 	kind ("ConsoleApp")
 	language ("C++")
-	files { source_location_rel .. "**"}           --include all of our source code (resursive)
+	files { source_location_rel  .. "**"}          --include all of our source code (resursive)
+	files { data_location_rel    .. "**"}          --include all of the data files
 	files { headers_location_rel .. "gl3w/**" }    --include GL3W
 	files { headers_location_rel .. "tinyxml/**" } --include tinyxml
 	includedirs { headers_location_rel }           --this accounts for all library headers
 	location ( build_location_rel )                --this is where the project is built
-	debugdir ( root_location_rel )                 --this is where the IDE-generated-exe accesses data and other folders
+	debugdir ( project_location_rel )              --this is where the IDE-generated-exe accesses data and other folders
 	targetdir ( build_location_rel )               --this is where the exe gets built
-	targetextension ( ".exe" )
-	links( "opengl32" )
+	targetextension ( ".exe" )                     --Windows executable type
+	links( "opengl32" )                            --finds the opengl lib file
 
 	--Debug-----------------------------------
 	configuration "Debug"

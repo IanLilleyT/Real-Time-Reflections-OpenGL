@@ -29,7 +29,6 @@ public:
 	virtual std::string getType();
 
 	//Update
-	virtual void update();
 	virtual void render();
 
 	//Mesh

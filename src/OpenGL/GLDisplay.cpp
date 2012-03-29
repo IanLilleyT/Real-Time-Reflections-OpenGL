@@ -5,21 +5,14 @@ GLDisplay::~GLDisplay(){}
 
 void GLDisplay::initialize()
 {
-	//Init GL
+	//Initializers
 	this->initializeGL();
+	this->initializeCamera();
+	this->initializeFramebuffers();
 
 	//Event handlers
 	Singleton<EventHandler>::Instance()->addEnterFrameEventListener(EnterFrameReceiver::from_method<GLDisplay,&GLDisplay::update>(this));
 	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::Resized,InputReceiver::from_method<GLDisplay,&GLDisplay::resize>(this));
-	
-	//Camera
-	float fov = 45.0f;
-	float nearPlane = 0.1f;
-	float farPlane = 1000.0f;
-	Singleton<GLCamera>::Instance()->calcCameraToClipMatrix(fov,nearPlane,farPlane);
-	this->camera = new Camera3rdPerson();
-	this->camera->zoom(-1);
-	this->camera->rotate(0,-.4f);
 }
 void GLDisplay::initializeGL()
 {
@@ -41,12 +34,37 @@ void GLDisplay::initializeGL()
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glPolygonOffset(10.0f,10.0f);
 }
+void GLDisplay::initializeCamera()
+{
+	//Camera
+	float fov = 45.0f;
+	float nearPlane = 0.1f;
+	float farPlane = 1000.0f;
+
+	this->camera = new Camera3rdPerson();
+	this->camera->zoom(-1);
+	this->camera->rotate(0,-.4f);
+
+	Singleton<GLCamera>::Instance()->calcCameraToClipMatrix(fov,nearPlane,farPlane);
+}
+void GLDisplay::initializeFramebuffers()
+{
+	//this->depthBuffer = new GLFramebuffer_Depth();
+	//this->depthBuffer->initialize();
+	
+	//this->colorBuffer = new GLFramebuffer_Color();
+	//this->colorBuffer->initialize();
+}
 void GLDisplay::update()
 {
 	Singleton<GLUniformBlockHelper>::Instance()->update();
 	this->clearGL();
+	
 	if(this->world != 0)
+	{
 		world->update();
+		world->render();
+	}
 }
 void GLDisplay::clearGL()
 {
@@ -62,7 +80,7 @@ void GLDisplay::resize(sf::Event sfEvent)
 }
 void GLDisplay::resize(int width, int height)
 {
-	Singleton<GLCamera>::Instance()->changeWindowDimensions(width,height);
+	Singleton<GLCamera>::Instance()->setWindowDimensions(width,height);
 }
 
 //World

@@ -4,7 +4,7 @@
 		<name>floor</name>
 		<material>red</material>
 		<mesh>cube</mesh>
-		<program>Reflection</program>
+		<program>Material</program>
 		<translation>0 0 0</translation>
 		<scale>10 1 10</scale>
 	</object>
@@ -17,26 +17,9 @@
 		<translation>0 2 0</translation>
 		<scale>1 1 1</scale>
 	</object>
-	<object type="RenderObject">
-		<name>ball2</name>
-		<material>red</material>
-		<diffuseColor>0 1 1 1</diffuseColor>
-		<mesh>sphere</mesh>
-		<program>Depth</program>
-		<translation>2 2 0</translation>
-		<scale>1 2 1</scale>
-	</object>
 	<object type="Light">
 		<name>light1</name>
 		<intensity>1 1 1 1</intensity>
 		<translation>0 3 0</translation>
 	</object>
-	<!--<object type="Jello">
-		<name>jelly</name>
-		<origin>0 3 0</origin>
-		<size>1 1 1</size>
-		<divisions>6 6 6</divisions>
-		<material>blue</material>
-		<program>Material</program>
-	</object>-->
 </world>

@@ -1,19 +1,27 @@
 #pragma once
 
+#include <iostream>
+
 #include <glm/glm.hpp>
 #include <gl3w/gl3w.h>
 
-class GLFrameBuffer
+#include "../../Utils/Singleton.h"
+#include "../GLCamera.h"
+
+class GLFramebuffer
 {
 public:
-	GLFrameBuffer();
-	virtual ~GLFrameBuffer();
+	GLFramebuffer(){}
+	virtual ~GLFramebuffer(){}
 
-	virtual void initialize();
-	void bindForWriting();
-	void bindForReading(GLenum textureUnit);
+	virtual void initialize(){}
+	virtual void bindForReading(GLenum textureUnit){}
+	virtual void bindForWriting()
+	{
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+	}
 
-private:
+protected:
 	GLuint fbo;
 	GLuint texture;
 };

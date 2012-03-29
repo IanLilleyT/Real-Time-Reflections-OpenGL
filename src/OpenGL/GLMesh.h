@@ -82,8 +82,6 @@ public:
 
 private:
 
-    void Generate();
-
 	//Buffer object
     GLMeshData* meshData;
 	GLProgram* program;

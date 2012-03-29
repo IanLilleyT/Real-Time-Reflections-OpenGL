@@ -59,13 +59,10 @@ std::string RenderObject::getType()
 	return RenderObject::className;
 }
 
-//Update
-void RenderObject::update()
-{
-	this->render();
-}
+//Render
 void RenderObject::render()
 {
+	Object::render();
 	Singleton<GLState>::Instance()->setModelToWorldMatrix(this->transformationMatrix);
 	Singleton<GLState>::Instance()->setMaterial(this->material);
 	if(this->isVisible())

@@ -44,8 +44,10 @@ std::string GLMesh::getProgram()
 }
 void GLMesh::Render()
 {
+	//Use program
+	glUseProgram(this->program->getProgram());
+
 	//Put data in VERTEX buffer
-	glUseProgram(this->program->getProgram()); //bind program
 	glBindVertexArray(this->program->getVAO()->getVertexArrayObject()); //bind vao
 	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer); //bind vertex buffer
 	glBufferData(GL_ARRAY_BUFFER, this->meshData->vertexBufferData.size()*sizeof(GLfloat),

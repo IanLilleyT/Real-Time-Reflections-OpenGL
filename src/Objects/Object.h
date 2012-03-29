@@ -30,6 +30,9 @@ public:
 	//Update
 	virtual void update();
 
+	//Render
+	virtual void render();
+
 	//Name
 	void setName(std::string name);
 	std::string getName();

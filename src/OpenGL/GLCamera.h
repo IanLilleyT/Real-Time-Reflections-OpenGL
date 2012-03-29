@@ -21,7 +21,8 @@ public:
 	glm::mat4 getWorldToCameraMatrix();
 
 	Ray getPickingRay(int x, int y, int width, int height);
-	void changeWindowDimensions(int w, int h);
+	void setWindowDimensions(int w, int h);
+	glm::ivec2 getWindowDimensions();
 
 	float getViewAngle();
 	float getFrustumNear();

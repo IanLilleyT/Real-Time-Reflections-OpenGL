@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector> //For loading in lights
+#include <string> //For program names
 
 #include <glm/glm.hpp> //For loading in matrices
 

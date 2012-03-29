@@ -56,6 +56,9 @@ std::string Object::getType()
 //Update
 void Object::update(){}
 
+//Render
+void Object::render(){}
+
 //Name
 void Object::setName(std::string name)
 {

@@ -19,10 +19,6 @@ void World::initialize(TiXmlElement* element)
 
 void World::update()
 {
-	//Update lights to GLState
-	std::vector<Object*>& lights = this->getObjectsByType("Light");
-	Singleton<GLState>::Instance()->setLights(lights);
-
 	//Update all objects
 	std::map<std::string,std::vector<Object*>>::iterator iter;
 	for(iter = this->objectMap.begin(); iter != this->objectMap.end(); ++iter)
@@ -33,6 +29,25 @@ void World::update()
 		{
 			Object* object = objects.at(i);
 			object->update();
+		}
+	}
+}
+void World::render()
+{
+	//Update lights to GLState
+	std::vector<Object*>& lights = this->getObjectsByType("Light");
+	Singleton<GLState>::Instance()->setLights(lights);
+
+	//Render all objects
+	std::map<std::string,std::vector<Object*>>::iterator iter;
+	for(iter = this->objectMap.begin(); iter != this->objectMap.end(); ++iter)
+	{
+		std::string type = iter->first;
+		std::vector<Object*>& objects = this->getObjectsByType(type);
+		for(unsigned int i = 0; i < objects.size(); i++)
+		{
+			Object* object = objects.at(i);
+			object->render();
 		}
 	}
 }

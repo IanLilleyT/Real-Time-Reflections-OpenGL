@@ -48,13 +48,20 @@ glm::mat4 GLCamera::getWorldToCameraMatrix()
 }
 
 //Other
-void GLCamera::changeWindowDimensions(int width, int height)
+void GLCamera::setWindowDimensions(int width, int height)
 {
 	glViewport(0, 0, (GLsizei) width, (GLsizei) height);
 	this->cameraToClipMatrix[0].x = frustumScale * (height/ (float)width);
 	this->cameraToClipMatrix[1].y = frustumScale;
 	this->update();
 }
+glm::ivec2 GLCamera::getWindowDimensions()
+{
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT,viewport);
+	return glm::ivec2((int)viewport[2],(int)viewport[3]);
+}
+
 void GLCamera::update()
 {
 	Singleton<GLState>::Instance()->setWorldToCameraMatrix(this->worldToCameraMatrix);

@@ -22,6 +22,7 @@ public:
 	void initialize(TiXmlElement* element);
 
 	void update();
+	void render();
 
 	void addObject(Object* object);
 	void removeObject(Object* object);
