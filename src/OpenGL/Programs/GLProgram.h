@@ -9,7 +9,6 @@
 
 #include "../GLState.h" //Used by subclasses for getting uniform data
 #include "../GLAttribute.h" //For constructing attributes
-#include "../GLVertexArrayObject.h" //Used by subclasses for creating VAO's
 #include "../GLUniformBlockHelper.h" //Used to find uniform blocks for binding
 #include "../GLUniformBlock.h" //Used for binding uniform blocks to program
 #include "../../Utils/Singleton.h" //Used with several global classes
@@ -25,7 +24,7 @@ public:
     void setName(std::string name);  //set from GLProgramDatabase
 
     //Getters
-	GLVertexArrayObject* getVAO();
+	std::vector<GLAttribute*>& getAttributes();
     GLuint getProgram();
     std::string getName();
 
@@ -33,12 +32,16 @@ public:
 	virtual void fillUniforms();
 	
 protected:
-	GLAttribute* getAttribute(std::string name, GLushort size, GLenum type);
-	virtual void bindUniformBlocks();
-	virtual void bindUniformBlock(std::string uniformBlockName);
-	virtual void createVAO();
 
-	GLVertexArrayObject* vao;
+	//Attributes
+	virtual void createAttributes(); //set from subclasses
+	virtual void addAttribute(std::string name, GLushort size, GLenum type);
+
+	//Uniform Blocks
+	virtual void bindUniformBlocks(); //set from subclasses
+	virtual void bindUniformBlock(std::string uniformBlockName);
+	
+	std::vector<GLAttribute*> attributes;
     GLuint program;
     std::string name;
 };

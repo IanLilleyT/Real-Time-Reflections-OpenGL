@@ -3,13 +3,13 @@
 GLProgram::GLProgram(){}
 GLProgram::~GLProgram(){}
 
-GLAttribute* GLProgram::getAttribute(std::string name, GLushort size, GLenum type)
+void GLProgram::addAttribute(std::string name, GLushort size, GLenum type)
 {
     GLAttribute* attribute = new GLAttribute();
     attribute->setAttributePos(glGetAttribLocation(this->program, name.c_str()));
     attribute->setSize(size);
     attribute->setType(type);
-    return attribute;
+	this->attributes.push_back(attribute);
 }
 void GLProgram::bindUniformBlock(std::string uniformBlockName)
 {
@@ -19,15 +19,14 @@ void GLProgram::bindUniformBlock(std::string uniformBlockName)
 }
 void GLProgram::bindUniformBlocks(){}
 void GLProgram::fillUniforms(){}
-void GLProgram::createVAO(){}
+void GLProgram::createAttributes(){}
 
 //Setters
 void GLProgram::setProgram(GLuint program) //called from GLProgramDatabase
 {
     this->program = program;
 	this->bindUniformBlocks();
-	this->vao = new GLVertexArrayObject();
-	this->createVAO();
+	this->createAttributes();
 }
 void GLProgram::setName(std::string name) //called from GLProgramDatabase
 {
@@ -43,7 +42,7 @@ std::string GLProgram::getName()
 {
     return this->name;
 }
-GLVertexArrayObject* GLProgram::getVAO()
+std::vector<GLAttribute*>& GLProgram::getAttributes()
 {
-	return this->vao;
+	return this->attributes;
 }

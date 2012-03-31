@@ -22,7 +22,6 @@
 
 #include <gl3w/gl3w.h> //For GL commands
 
-#include "GLVertexArrayObject.h" //For loading attributes
 #include "GLAttribute.h" //For loading attributes
 #include "Programs/GLProgramDatabase.h" //For loading the program
 #include "Programs/GLProgram.h" //For storing the program
@@ -73,7 +72,7 @@ public:
 	void setName(std::string name);
 	std::string getName();
 
-	//Visible
+	//Visible - TODO: remove later
 	void setVisible(bool visible);
 	bool isVisible();
 
@@ -82,11 +81,12 @@ public:
 
 private:
 
-	//Buffer object
+	//GLData
     GLMeshData* meshData;
 	GLProgram* program;
 	GLuint vertexBuffer;
     GLuint indexBuffer;
+	GLuint vao;
 
 	std::string name;
 	bool visible;

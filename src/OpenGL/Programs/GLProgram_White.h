@@ -7,10 +7,10 @@ class GLProgram_White: public GLProgram
 public:
 	GLProgram_White() : GLProgram(){}
 	virtual ~GLProgram_White(){}
-	virtual void createVAO()
+	virtual void createAttributes()
 	{
-		GLProgram::createVAO();
-		vao->addAttribute(this->getAttribute("position", 3, GL_FLOAT));
+		GLProgram::createAttributes();
+		this->addAttribute("position", 3, GL_FLOAT);
 	}
 
 protected:

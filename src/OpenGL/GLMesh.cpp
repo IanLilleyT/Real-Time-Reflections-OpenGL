@@ -19,14 +19,12 @@ void GLMesh::setProgram(std::string programName)
 	glGenBuffers(1, &this->indexBuffer); //generate index buffer
 
     //Vertex array object setup
-	GLuint vao = this->program->getVAO()->getVertexArrayObject();
-    glGenVertexArrays(1, &vao);
-    this->program->getVAO()->setVertexArrayObject(vao);
-    glBindVertexArray(this->program->getVAO()->getVertexArrayObject()); //bind vao
+    glGenVertexArrays(1, &this->vao);
+    glBindVertexArray(this->vao); //bind vao
 
     //Enable attributes
 	size_t offset = 0;
-	std::vector<GLAttribute*> attributes = this->program->getVAO()->getAttributes();
+	std::vector<GLAttribute*> attributes = this->program->getAttributes();
     for(unsigned int i = 0; i < attributes.size(); i++)
     {
         GLAttribute* attribute = attributes.at(i);
@@ -48,7 +46,7 @@ void GLMesh::Render()
 	glUseProgram(this->program->getProgram());
 
 	//Put data in VERTEX buffer
-	glBindVertexArray(this->program->getVAO()->getVertexArrayObject()); //bind vao
+	glBindVertexArray(this->vao); //bind vao
 	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer); //bind vertex buffer
 	glBufferData(GL_ARRAY_BUFFER, this->meshData->vertexBufferData.size()*sizeof(GLfloat),
 		&(this->meshData->vertexBufferData.at(0)), GL_DYNAMIC_DRAW); //put vertex array data in vertex buffer

@@ -7,11 +7,11 @@ class GLProgram_Material: public GLProgram
 public:
 	GLProgram_Material() : GLProgram(){}
 	virtual ~GLProgram_Material(){}
-	virtual void createVAO()
+	virtual void createAttributes()
 	{
-		GLProgram::createVAO();
-		this->vao->addAttribute(this->getAttribute("position", 3, GL_FLOAT));
-		this->vao->addAttribute(this->getAttribute("normal", 3, GL_FLOAT));
+		GLProgram::createAttributes();
+		this->addAttribute("position", 3, GL_FLOAT);
+		this->addAttribute("normal", 3, GL_FLOAT);
 	}
 
 protected:
