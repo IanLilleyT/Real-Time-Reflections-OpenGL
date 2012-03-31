@@ -2,6 +2,7 @@
 
 std::string GLUniformBlockHelper::TYPE_PROJECTION = "ProjectionBlock";
 std::string GLUniformBlockHelper::TYPE_LIGHTS = "LightsBlock";
+std::string GLUniformBlockHelper::TYPE_REFLECTION_TOGGLE = "ReflectionToggleBlock";
 
 GLUniformBlockHelper::GLUniformBlockHelper(){}
 GLUniformBlockHelper::~GLUniformBlockHelper(){}
@@ -11,12 +12,11 @@ void GLUniformBlockHelper::initialize()
 	std::vector<std::string> allUniformBlockNames = std::vector<std::string>();
 	allUniformBlockNames.push_back(TYPE_PROJECTION);
 	allUniformBlockNames.push_back(TYPE_LIGHTS);
+	allUniformBlockNames.push_back(TYPE_REFLECTION_TOGGLE);
 
 	int bindingIndex = 0;
-	std::string uniformBlockName;
 	int uniformBlockSize = 0;
-	GLUniformBlock* uniformBlock;
-
+	std::string uniformBlockName;
 	for(unsigned int i = 0; i < allUniformBlockNames.size(); i++)
 	{
 		uniformBlockName = allUniformBlockNames.at(i);
@@ -25,8 +25,10 @@ void GLUniformBlockHelper::initialize()
 			uniformBlockSize = sizeof(ProjectionBlock);
 		else if(uniformBlockName == TYPE_LIGHTS)
 			uniformBlockSize = sizeof(LightsBlock);
+		else if(uniformBlockName == TYPE_REFLECTION_TOGGLE)
+			uniformBlockSize = sizeof(ReflectionToggleBlock);
 
-		uniformBlock = new GLUniformBlock();
+		GLUniformBlock* uniformBlock = new GLUniformBlock();
 		uniformBlock->setName(uniformBlockName);
 		uniformBlock->setBindingIndex(bindingIndex);
 		uniformBlock->setSize(uniformBlockSize);
@@ -36,36 +38,52 @@ void GLUniformBlockHelper::initialize()
 	}
 }
 
-void GLUniformBlockHelper::update()
+void GLUniformBlockHelper::update(std::string name)
 {
 	GLState* glState = Singleton<GLState>::Instance();
 	glm::mat4 worldToCameraMatrix = glState->getWorldToCameraMatrix();
 	glm::mat4 cameraToClipMatrix = glState->getCameraToClipMatrix();
-	
-	//Projection Block
-	GLUniformBlock* projectionUniformBlock = this->findUniformBlock(TYPE_PROJECTION);
-	ProjectionBlock projectionBlock = ProjectionBlock();
-	projectionBlock.cameraToClipMatrix = cameraToClipMatrix;
-	projectionUniformBlock->setData(&projectionBlock);
 
-	//Lights Block
-	GLUniformBlock* lightsUniformBlock = this->findUniformBlock(TYPE_LIGHTS);
-	LightsBlock lightsBlock = LightsBlock();
-	std::vector<Object*>& lights = glState->getLights();
-	int numLights = std::min((int)lights.size(), (int)MAX_NUMBER_OF_LIGHTS);
-	for(int i = 0; i < numLights; i++)
+	if(name == TYPE_PROJECTION)
 	{
-		Light* light = dynamic_cast<Light*>(lights.at(i));
-		glm::vec4 lightPos = glm::vec4(light->getPosition(), 1.0f);
-		glm::vec4 lightPosCameraSpace = glm::vec4(glm::vec3(worldToCameraMatrix * lightPos),1.0f);
-		lightsBlock.lights[i].cameraSpaceLightPos = lightPosCameraSpace;
-		lightsBlock.lights[i].lightIntensity = light->getIntensity();
+		GLUniformBlock* projectionUniformBlock = this->findUniformBlock(TYPE_PROJECTION);
+		ProjectionBlock projectionBlock = ProjectionBlock();
+		projectionBlock.cameraToClipMatrix = cameraToClipMatrix;
+		projectionUniformBlock->setData(&projectionBlock);
 	}
-	lightsBlock.ambientIntensity = Light::getAmbientIntensity();
-	lightsBlock.gamma = Light::getGamma();
-	lightsBlock.lightAttenuation = Light::getLightAttenuation();
-	lightsBlock.maxIntensity = Light::getMaxIntensity();
-	lightsUniformBlock->setData(&lightsBlock);
+	else if(name == TYPE_LIGHTS)
+	{
+		GLUniformBlock* lightsUniformBlock = this->findUniformBlock(TYPE_LIGHTS);
+		LightsBlock lightsBlock = LightsBlock();
+		std::vector<Object*>& lights = glState->getLights();
+		int numLights = std::min((int)lights.size(), (int)MAX_NUMBER_OF_LIGHTS);
+		for(int i = 0; i < numLights; i++)
+		{
+			Light* light = dynamic_cast<Light*>(lights.at(i));
+			glm::vec4 lightPos = glm::vec4(light->getPosition(), 1.0f);
+			glm::vec4 lightPosCameraSpace = glm::vec4(glm::vec3(worldToCameraMatrix * lightPos),1.0f);
+			lightsBlock.lights[i].cameraSpaceLightPos = lightPosCameraSpace;
+			lightsBlock.lights[i].lightIntensity = light->getIntensity();
+		}
+		lightsBlock.ambientIntensity = Light::getAmbientIntensity();
+		lightsBlock.gamma = Light::getGamma();
+		lightsBlock.lightAttenuation = Light::getLightAttenuation();
+		lightsBlock.maxIntensity = Light::getMaxIntensity();
+		lightsUniformBlock->setData(&lightsBlock);
+	}
+	else if(name == TYPE_REFLECTION_TOGGLE)
+	{
+		GLUniformBlock* reflectionToggleUniformBlock = this->findUniformBlock(TYPE_REFLECTION_TOGGLE);
+		ReflectionToggleBlock reflectionToggleBlock = ReflectionToggleBlock();
+		reflectionToggleBlock.value = glState->getReflectionToggle();
+		reflectionToggleUniformBlock->setData(&reflectionToggleBlock);
+	}
+}
+void GLUniformBlockHelper::updateAll()
+{
+	this->update(TYPE_PROJECTION);
+	this->update(TYPE_LIGHTS);
+	this->update(TYPE_REFLECTION_TOGGLE);
 }
 
 GLUniformBlock* GLUniformBlockHelper::findUniformBlock(std::string name)

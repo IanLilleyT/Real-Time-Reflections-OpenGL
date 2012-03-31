@@ -5,8 +5,7 @@
 
 #include "GLCamera.h" //For handling camera
 #include "GLUniformBlockHelper.h" //For calling updates to unform blocks
-#include "Framebuffers/GLFramebuffer_Depth.h" //For depth buffer drawing
-#include "Framebuffers/GLFramebuffer_Color.h" //For color buffer drawing
+#include "Framebuffers/GLFramebuffer_Reflection.h" //For color buffer drawing
 #include "../Utils/EventHandler.h" //For enter frame events
 #include "../Utils/Singleton.h" //For accessing several globals
 #include "../World.h" //For storing world
@@ -42,8 +41,7 @@ public:
 private:
 	Camera* camera;
 	World* world;
-	GLFramebuffer* depthBuffer;
-	GLFramebuffer* colorBuffer;
+	GLFramebuffer* reflectionBuffer;
 
 	void initializeGL();
 	void initializeCamera();

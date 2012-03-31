@@ -20,6 +20,7 @@ protected:
 		GLProgram::bindUniformBlocks();
 		this->bindUniformBlock(GLUniformBlockHelper::TYPE_PROJECTION);
 		this->bindUniformBlock(GLUniformBlockHelper::TYPE_LIGHTS);
+		this->bindUniformBlock(GLUniformBlockHelper::TYPE_REFLECTION_TOGGLE);
 	}
 	virtual void fillUniforms()
 	{
@@ -58,6 +59,19 @@ protected:
 		float alpha = material->getAlpha();
 		GLuint alphaUniform = glGetUniformLocation(this->program, "alpha");
 		glUniform1f(alphaUniform,alpha);
+
+		//Reflectivity
+		float reflectivity = material->getReflectivity();
+		GLuint reflectivityUniform = glGetUniformLocation(this->program, "reflectivity");
+		glUniform1f(reflectivityUniform,reflectivity);
+
+		//Color buffer texture
+		GLuint colorTextureUniform = glGetUniformLocation(this->program, "colorTexture");
+		glUniform1i(colorTextureUniform, 0);
+
+		//Depth buffer texture
+		GLuint depthTextureUniform = glGetUniformLocation(this->program, "depthTexture");
+		glUniform1i(depthTextureUniform, 1);
 
 		//Num Lights
 		int numLights = glState->getLights().size();

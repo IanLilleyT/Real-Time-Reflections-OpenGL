@@ -1,4 +1,4 @@
-#version 330
+#version 420
 layout(std140) uniform;
 
 in vec3 vertexNormal;
@@ -9,6 +9,10 @@ uniform vec4 diffuseColor;
 uniform vec4 specularColor;
 uniform float specularShininess;
 uniform float alpha;
+uniform float reflectivity;
+
+uniform sampler2D colorTexture;
+uniform sampler2D depthTexture;
 
 uniform int numLights;
 
@@ -28,6 +32,10 @@ uniform LightsBlock
 	PerLight lights[maxNumberOfLights];
 } LightsBlck;
 
+uniform ReflectionToggleBlock
+{
+	int reflectionToggle;
+} ReflectionToggleBlck;
 
 float CalcAttenuation(in vec3 cameraSpacePosition,
 	in vec3 cameraSpaceLightPos,
@@ -76,17 +84,31 @@ vec4 ComputeLighting(in PerLight lightData)
 	return lighting;
 }
 
+vec4 ComputeReflection()
+{
+	return vec4(1,1,1,1);
+}
+
 void main()
 {
+	//Calculate 
 	vec4 accumLighting = diffuseColor * LightsBlck.ambientIntensity;
 	for(int light = 0; light < numLights; light++)
-	{
 		accumLighting += ComputeLighting(LightsBlck.lights[light]);
-	}
-	
 	accumLighting = accumLighting / LightsBlck.maxIntensity;
 	vec4 gamma = vec4(1.0 / LightsBlck.gamma);
 	gamma.w = 1.0;
-	outputColor = pow(accumLighting, gamma);
+	accumLighting = pow(accumLighting, gamma);
+
+	vec4 reflectionColor = vec4(0,0,0,0);
+	if(ReflectionToggleBlck.reflectionToggle == 1 && reflectivity > .01)
+	{
+		reflectionColor = ComputeReflection();
+		outputColor = reflectivity*reflectionColor + (1-reflectivity)*accumLighting;
+	}
+	else
+	{
+		outputColor = accumLighting;
+	}
 	outputColor.w = alpha;
 }

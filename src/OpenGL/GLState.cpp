@@ -52,3 +52,13 @@ std::vector<Object*>& GLState::getLights()
 {
 	return this->lights;
 }
+
+//Reflection toggle
+void GLState::setReflectionToggle(int reflectionToggle)
+{
+	this->reflectionToggle = reflectionToggle;
+}
+int GLState::getReflectionToggle()
+{
+	return this->reflectionToggle;
+}

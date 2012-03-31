@@ -29,10 +29,14 @@ public:
 	void setLights(std::vector<Object*>& lights);
 	std::vector<Object*>& getLights();
 
+	void setReflectionToggle(int reflectionToggle);
+	int getReflectionToggle();
+
 private:
 	glm::mat4 modelToWorldMatrix;
 	glm::mat4 worldToCameraMatrix;
 	glm::mat4 cameraToClipMatrix;
 	Material* material;
 	std::vector<Object*> lights;
+	int reflectionToggle;
 };

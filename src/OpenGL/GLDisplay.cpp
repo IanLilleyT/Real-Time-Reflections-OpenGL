@@ -49,20 +49,35 @@ void GLDisplay::initializeCamera()
 }
 void GLDisplay::initializeFramebuffers()
 {
-	//this->depthBuffer = new GLFramebuffer_Depth();
-	//this->depthBuffer->initialize();
-	
-	//this->colorBuffer = new GLFramebuffer_Color();
-	//this->colorBuffer->initialize();
+	this->reflectionBuffer = new GLFramebuffer();
+	this->reflectionBuffer->initialize();
 }
 void GLDisplay::update()
 {
-	Singleton<GLUniformBlockHelper>::Instance()->update();
-	this->clearGL();
+	
+	
+	
 	
 	if(this->world != 0)
 	{
+		GLState* glState = Singleton<GLState>::Instance();
+		GLUniformBlockHelper* uniformBlockHelper = Singleton<GLUniformBlockHelper>::Instance();
+
 		world->update();
+
+		//Render to framebuffer
+		this->clearGL();
+		this->reflectionBuffer->bindForWriting();
+		glState->setReflectionToggle(0);
+		uniformBlockHelper->updateAll();
+		world->render();
+
+		//Render for real
+		this->clearGL();
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		this->reflectionBuffer->bindForReading();
+		glState->setReflectionToggle(1);
+		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_REFLECTION_TOGGLE);
 		world->render();
 	}
 }

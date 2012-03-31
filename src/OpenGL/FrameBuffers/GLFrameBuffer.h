@@ -1,6 +1,6 @@
 #pragma once
 
-#include <iostream>
+#include <vector>
 
 #include <glm/glm.hpp>
 #include <gl3w/gl3w.h>
@@ -15,7 +15,7 @@ public:
 	virtual ~GLFramebuffer(){}
 
 	virtual void initialize(){}
-	virtual void bindForReading(GLenum textureUnit){}
+	virtual void bindForReading(){}
 	virtual void bindForWriting()
 	{
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
@@ -23,5 +23,4 @@ public:
 
 protected:
 	GLuint fbo;
-	GLuint texture;
 };

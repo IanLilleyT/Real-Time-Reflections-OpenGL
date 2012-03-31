@@ -16,11 +16,13 @@ public:
 	~GLUniformBlockHelper();
 
 	void initialize();
-	void update();
+	void updateAll();
+	void update(std::string name);
 	GLUniformBlock* findUniformBlock(std::string name);
 
 	static std::string TYPE_PROJECTION;
 	static std::string TYPE_LIGHTS;
+	static std::string TYPE_REFLECTION_TOGGLE;
 
 private:
 	std::map<std::string, GLUniformBlock*> uniformBlockMap;
@@ -47,4 +49,8 @@ struct LightsBlock
 	float gamma;
 	float padding;
 	PerLight lights[MAX_NUMBER_OF_LIGHTS];
+};
+struct ReflectionToggleBlock
+{
+	int value;
 };
