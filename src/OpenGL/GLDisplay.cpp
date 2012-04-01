@@ -61,18 +61,16 @@ void GLDisplay::update()
 
 		world->update();
 
-		//Render to framebuffer
+		//Render to framebuffer without reflections
 		this->clearGL();
 		this->reflectionBuffer->bindForWriting();
-		///////glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glState->setReflectionToggle(0);
 		uniformBlockHelper->updateAll();
 		world->render();
-
-		//Render for real
-		this->clearGL();
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		
+		//Render for real with reflections
 		this->reflectionBuffer->bindForReading();
+		this->clearGL();
 		glState->setReflectionToggle(1);
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_REFLECTION_TOGGLE);
 		world->render();
@@ -80,7 +78,7 @@ void GLDisplay::update()
 }
 void GLDisplay::clearGL()
 {
-	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
+	glClearColor(0.3f, 0.1f, 0.1f, 0.0f);
     glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
