@@ -91,15 +91,19 @@ vec4 ComputeLighting(in PerLight lightData)
 
 vec4 ComputeReflection()
 {
-	vec4 clipSpace = ProjectionBlck.cameraToClipMatrix * vec4(cameraSpacePosition,1.0);
-	vec3 projCoords = clipSpace.xyz / clipSpace.w;
-	vec2 UVCoords;
-	UVCoords.x = 0.5 * projCoords.x + 0.5;
-	UVCoords.y = 0.5 * projCoords.y + 0.5;
-	float depth = texture(depthTexture, UVCoords).x;
-	depth = 1.0 - (1.0 - depth) * 40.0;
-	vec4 color = vec4(depth, depth, depth, 1);
-	//vec4 color = texture(colorTexture, UVCoords) + 0;
+	vec3 viewDirection = normalize(-cameraSpacePosition);
+	vec3 surfaceNormal = normalize(vertexNormal);
+	vec3 cameraSpaceReflectionVector = normalize(reflect(viewDirection,surfaceNormal));
+
+
+	vec3 cameraSpaceReflectionPos = cameraSpacePosition + cameraSpaceReflectionVector;
+	vec4 clipSpaceReflectionPos = ProjectionBlck.cameraToClipMatrix * vec4(cameraSpaceReflectionPos, 1);
+	vec3 screenSpaceReflectionPos = 0.5 * (clipSpaceReflectionPos.xyz / clipSpaceReflectionPos.w) + 0.5;
+	vec2 textureSpaceReflectionPos = vec2(screenSpaceReflectionPos);
+	float depth = screenSpaceReflectionPos.z;//texture(depthTexture, textureSpaceReflectionPos).x;
+	depth = 1.0 - (1.0 - depth) * 25.0;
+	vec4 color = vec4(vec3(depth),1);
+	//vec4 color = texture(colorTexture, textureSpacePos.xy) + 0;
 	return color;
 }
 
