@@ -12,7 +12,7 @@ uniform float alpha;
 uniform float reflectivity;
 
 uniform sampler2D colorTexture;
-//uniform sampler2D depthTexture;
+uniform sampler2D depthTexture;
 
 uniform int numLights;
 
@@ -96,9 +96,10 @@ vec4 ComputeReflection()
 	vec2 UVCoords;
 	UVCoords.x = 0.5 * projCoords.x + 0.5;
 	UVCoords.y = 0.5 * projCoords.y + 0.5;
-	//float depth = texture(depthTexture, UVCoords).x;
-	//vec4 color = vec4(depth, depth, depth, 1);
-	vec4 color = texture(colorTexture, UVCoords) + 0;
+	float depth = texture(depthTexture, UVCoords).x;
+	depth = 1.0 - (1.0 - depth) * 40.0;
+	vec4 color = vec4(depth, depth, depth, 1);
+	//vec4 color = texture(colorTexture, UVCoords) + 0;
 	return color;
 }
 

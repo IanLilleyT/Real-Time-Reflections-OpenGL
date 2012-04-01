@@ -27,10 +27,10 @@ void GLDisplay::initializeGL()
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LEQUAL);
     glDepthRange(0.0f, 1.0f);
-    glPointSize(10);
-	glLineWidth(2);
-	glEnable (GL_BLEND); 
-	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glPointSize(10);
+	//glLineWidth(2);
+	//glEnable (GL_BLEND); 
+	//glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glPolygonOffset(10.0f,10.0f);
 }
@@ -62,8 +62,8 @@ void GLDisplay::update()
 		world->update();
 
 		//Render to framebuffer without reflections
-		this->clearGL();
 		this->reflectionBuffer->bindForWriting();
+		this->clearGL();
 		glState->setReflectionToggle(0);
 		uniformBlockHelper->updateAll();
 		world->render();
@@ -78,7 +78,7 @@ void GLDisplay::update()
 }
 void GLDisplay::clearGL()
 {
-	glClearColor(0.3f, 0.1f, 0.1f, 0.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
     glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

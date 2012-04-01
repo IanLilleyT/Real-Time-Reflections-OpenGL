@@ -71,7 +71,7 @@ protected:
 
 		//Depth buffer texture
 		GLuint depthTextureUniform = glGetUniformLocation(this->program, "depthTexture");
-		//glUniform1i(depthTextureUniform, 1);
+		glUniform1i(depthTextureUniform, 1);
 
 		//Num Lights
 		int numLights = glState->getLights().size();
