@@ -1,4 +1,4 @@
-#version 420
+#version 330
 layout(std140) uniform;
 
 in vec3 vertexNormal;
@@ -91,19 +91,32 @@ vec4 ComputeLighting(in PerLight lightData)
 
 vec4 ComputeReflection()
 {
-	vec3 viewDirection = normalize(-cameraSpacePosition);
-	vec3 surfaceNormal = normalize(vertexNormal);
-	vec3 cameraSpaceReflectionVector = normalize(reflect(viewDirection,surfaceNormal));
+	vec4 clipSpacePosition = ProjectionBlck.cameraToClipMatrix * vec4(cameraSpacePosition, 1);
+	vec3 screenSpacePosition = 0.5 * (clipSpacePosition.xyz / clipSpacePosition.w) + 0.5;
 
+	vec3 cameraSpaceViewDirection = normalize(-cameraSpacePosition);
+	vec3 cameraSpaceSurfaceNormal = normalize(vertexNormal);
+	vec3 cameraSpaceReflectionVector = normalize(reflect(cameraSpaceViewDirection,cameraSpaceSurfaceNormal));
+	vec4 clipSpaceReflectionVector = ProjectionBlck.cameraToClipMatrix * vec4(cameraSpaceReflectionVector, 0);
+	vec3 screenSpaceReflectionVector = 0.5 * (cameraSpaceReflectionVector.xyz / clipSpaceReflectionVector.w) + 0.5;
+	//screenSpaceReflectionVector = screenSpaceReflectionVector / screenSpaceReflectionVector.z;
 
-	vec3 cameraSpaceReflectionPos = cameraSpacePosition + cameraSpaceReflectionVector;
-	vec4 clipSpaceReflectionPos = ProjectionBlck.cameraToClipMatrix * vec4(cameraSpaceReflectionPos, 1);
-	vec3 screenSpaceReflectionPos = 0.5 * (clipSpaceReflectionPos.xyz / clipSpaceReflectionPos.w) + 0.5;
-	vec2 textureSpaceReflectionPos = vec2(screenSpaceReflectionPos);
-	float depth = screenSpaceReflectionPos.z;//texture(depthTexture, textureSpaceReflectionPos).x;
-	depth = 1.0 - (1.0 - depth) * 25.0;
-	vec4 color = vec4(vec3(depth),1);
-	//vec4 color = texture(colorTexture, textureSpacePos.xy) + 0;
+	vec3 screenSpaceReflectionPosition = screenSpacePosition + screenSpaceReflectionVector*.01;
+	vec2 textureSpacePosition = screenSpaceReflectionPosition.xy;
+
+	vec4 color = vec4(0,0,0,0);
+	int drawDepth = 0;
+	if(drawDepth == 1)
+	{
+		float depth = texture(depthTexture, textureSpacePosition).x;
+		depth = 1.0 - (1.0 - depth) * 25.0;
+		color = vec4(vec3(depth),1);
+	}
+	else
+	{
+		color = texture(colorTexture, textureSpacePosition);
+	}
+
 	return color;
 }
 
