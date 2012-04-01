@@ -2,11 +2,11 @@
 
 #include "GLFramebuffer.h"
 
-class GLFramebuffer_Color : public GLFramebuffer
+class GLFramebuffer_Reflection : public GLFramebuffer
 {
 public:
-	GLFramebuffer_Color() : GLFramebuffer(){}
-	virtual ~GLFramebuffer_Color(){}
+	GLFramebuffer_Reflection() : GLFramebuffer(){}
+	virtual ~GLFramebuffer_Reflection(){}
 
 	virtual void initialize()
 	{
@@ -48,22 +48,28 @@ public:
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,  GL_TEXTURE_2D, depthTexture, 0);
 
 		//Disable drawing to regular color buffer
-		glDrawBuffer(GL_NONE);
+		//glDrawBuffer(GL_NONE);
 		
 		//Error checking
-		GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+		GLenum status = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
 		if (status != GL_FRAMEBUFFER_COMPLETE)
 			printf("FB error, status: 0x%x\n", status);
+
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); //unbind
 	}
 	virtual void bindForReading()
 	{
 		//Bind color
-		glActiveTexture(0);
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, colorTexture);
 
 		//Bind depth
-		glActiveTexture(1);
+		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, depthTexture);
+	}
+	virtual void bindForWriting()
+	{
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	}
 
 private:

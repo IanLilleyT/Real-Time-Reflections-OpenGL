@@ -16,6 +16,11 @@ uniform sampler2D depthTexture;
 
 uniform int numLights;
 
+uniform ProjectionBlock
+{
+	mat4 cameraToClipMatrix;
+} ProjectionBlck;
+
 struct PerLight
 {
 	vec4 cameraSpaceLightPos;
@@ -86,7 +91,15 @@ vec4 ComputeLighting(in PerLight lightData)
 
 vec4 ComputeReflection()
 {
-	return vec4(1,1,1,1);
+	vec4 clipSpace = ProjectionBlck.cameraToClipMatrix * vec4(cameraSpacePosition,1.0);
+	vec3 projCoords = clipSpace.xyz / clipSpace.w;
+	vec2 UVCoords;
+	UVCoords.x = 0.5 * projCoords.x + 0.5;
+	UVCoords.y = 0.5 * projCoords.y + 0.5;
+	float depth = texture(depthTexture, UVCoords).x;
+	//vec4 color = vec4(depth, depth, depth, 1);
+	vec4 color = texture(colorTexture, UVCoords) + .2;
+	return color;
 }
 
 void main()

@@ -49,15 +49,11 @@ void GLDisplay::initializeCamera()
 }
 void GLDisplay::initializeFramebuffers()
 {
-	this->reflectionBuffer = new GLFramebuffer();
+	this->reflectionBuffer = new GLFramebuffer_Reflection();
 	this->reflectionBuffer->initialize();
 }
 void GLDisplay::update()
 {
-	
-	
-	
-	
 	if(this->world != 0)
 	{
 		GLState* glState = Singleton<GLState>::Instance();
@@ -68,13 +64,14 @@ void GLDisplay::update()
 		//Render to framebuffer
 		this->clearGL();
 		this->reflectionBuffer->bindForWriting();
+		///////glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glState->setReflectionToggle(0);
 		uniformBlockHelper->updateAll();
 		world->render();
 
 		//Render for real
 		this->clearGL();
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		this->reflectionBuffer->bindForReading();
 		glState->setReflectionToggle(1);
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_REFLECTION_TOGGLE);
@@ -83,7 +80,7 @@ void GLDisplay::update()
 }
 void GLDisplay::clearGL()
 {
-	glClearColor(0.1f, 0.1f, 0.3f, 0.0f);
+	glClearColor(0.1f, 0.1f, 0.1f, 0.0f);
     glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

@@ -16,10 +16,7 @@ public:
 
 	virtual void initialize(){}
 	virtual void bindForReading(){}
-	virtual void bindForWriting()
-	{
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
-	}
+	virtual void bindForWriting(){}
 
 protected:
 	GLuint fbo;
