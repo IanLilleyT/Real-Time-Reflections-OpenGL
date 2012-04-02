@@ -24,27 +24,32 @@
     <translation>-5.5 2 0</translation>
     <scale>1 5 10</scale>
   </object>
-	<object type="RenderObject">
-		<name>ball1</name>
-		<material>blue</material>
-		<mesh>sphere</mesh>
-		<program>Material</program>
-		<translation>0 2 0</translation>
-		<scale>2 2 2</scale>
-    <diffuseColor>1 0 0 1</diffuseColor>
-	</object>
   <object type="RenderObject">
-    <name>ball2</name>
+    <name>cow2</name>
     <material>red</material>
-    <mesh>sphere</mesh>
+    <mesh>cow</mesh>
     <program>Material</program>
-    <translation>2 2 0</translation>
-    <scale>1 2 1</scale>
-    <diffuseColor>1 0 1 1</diffuseColor>
+    <translation>0 2.5 2</translation>
+    <scale>.5 .5 .5</scale>
+    <diffuseColor>1 0 0 1</diffuseColor>
+  </object>
+  <object type="RenderObject">
+    <name>cow</name>
+    <material>reflective</material>
+    <mesh>cow</mesh>
+    <program>Material</program>
+    <translation>0 2.5 0</translation>
+    <scale>.5 .5 .5</scale>
+    <diffuseColor>1 0 0 1</diffuseColor>
   </object>
 	<object type="Light">
 		<name>light1</name>
 		<intensity>1 1 1 1</intensity>
 		<translation>0 3 0</translation>
 	</object>
+  <object type="Light">
+    <name>light2</name>
+    <intensity>1 .5 0 1</intensity>
+    <translation>-1 3 4</translation>
+  </object>
 </world>

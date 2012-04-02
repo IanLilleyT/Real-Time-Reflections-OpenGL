@@ -108,10 +108,11 @@ vec4 ComputeReflection()
 	float oldDepth = oldScreenSpaceReflectionPosition.z;
 	float currDepth = screenSpaceReflectionPosition.z;
 
+	bool valid = true;
 	int count = 0;
-	while(count < 20 && oldDepth > 0 && oldDepth < 1 && currDepth > 0 && currDepth < 1)
+	while(count < 200 && valid)
 	{
-		cameraSpaceReflectionPosition = oldCameraSpaceReflectionPosition + cameraSpaceReflectionVector*.5;
+		cameraSpaceReflectionPosition = oldCameraSpaceReflectionPosition + cameraSpaceReflectionVector*.05;
 		clipSpaceReflectionPosition = ProjectionBlck.cameraToClipMatrix * vec4(cameraSpaceReflectionPosition, 1);
 		NDCSpaceReflectionPosition = clipSpaceReflectionPosition.xyz / clipSpaceReflectionPosition.w;
 		screenSpaceReflectionPosition = 0.5 * NDCSpaceReflectionPosition + 0.5;
@@ -127,6 +128,10 @@ vec4 ComputeReflection()
 		oldCameraSpaceReflectionPosition = cameraSpaceReflectionPosition;
 		oldScreenSpaceReflectionPosition = screenSpaceReflectionPosition;
 		count++;
+
+		valid = screenSpaceReflectionPosition.x > 0 && screenSpaceReflectionPosition.x < 1 &&
+			    screenSpaceReflectionPosition.y > 0 && screenSpaceReflectionPosition.y < 1 &&
+				screenSpaceReflectionPosition.z > 0 && screenSpaceReflectionPosition.z < 1;
 	}
 
 	return color;
