@@ -91,30 +91,42 @@ vec4 ComputeLighting(in PerLight lightData)
 
 vec4 ComputeReflection()
 {
-	vec4 clipSpacePosition = ProjectionBlck.cameraToClipMatrix * vec4(cameraSpacePosition, 1);
-	vec3 screenSpacePosition = 0.5 * (clipSpacePosition.xyz / clipSpacePosition.w) + 0.5;
-
-	vec3 cameraSpaceViewDirection = normalize(-cameraSpacePosition);
+	//Camera space reflection vector
+	vec3 cameraSpaceViewDirection = normalize(cameraSpacePosition);
 	vec3 cameraSpaceSurfaceNormal = normalize(vertexNormal);
 	vec3 cameraSpaceReflectionVector = normalize(reflect(cameraSpaceViewDirection,cameraSpaceSurfaceNormal));
-	vec4 clipSpaceReflectionVector = ProjectionBlck.cameraToClipMatrix * vec4(cameraSpaceReflectionVector, 0);
-	vec3 screenSpaceReflectionVector = 0.5 * (cameraSpaceReflectionVector.xyz / clipSpaceReflectionVector.w) + 0.5;
-	//screenSpaceReflectionVector = screenSpaceReflectionVector / screenSpaceReflectionVector.z;
 
-	vec3 screenSpaceReflectionPosition = screenSpacePosition + screenSpaceReflectionVector*.01;
-	vec2 textureSpacePosition = screenSpaceReflectionPosition.xy;
+	vec3 cameraSpaceReflectionPosition = cameraSpacePosition + cameraSpaceReflectionVector*.1;
+	vec4 clipSpaceReflectionPosition = ProjectionBlck.cameraToClipMatrix * vec4(cameraSpaceReflectionPosition, 1);
+	vec3 NDCSpaceReflectionPosition = clipSpaceReflectionPosition.xyz / clipSpaceReflectionPosition.w;
+	vec3 screenSpaceReflectionPosition = 0.5 * NDCSpaceReflectionPosition + 0.5;
+	
+	vec3 oldCameraSpaceReflectionPosition = cameraSpacePosition;
+	vec3 oldScreenSpaceReflectionPosition = screenSpaceReflectionPosition;
+	vec4 color = vec4(0,0,0,1);
 
-	vec4 color = vec4(0,0,0,0);
-	int drawDepth = 0;
-	if(drawDepth == 1)
+	float oldDepth = oldScreenSpaceReflectionPosition.z;
+	float currDepth = screenSpaceReflectionPosition.z;
+
+	int count = 0;
+	while(count < 20 && oldDepth > 0 && oldDepth < 1 && currDepth > 0 && currDepth < 1)
 	{
-		float depth = texture(depthTexture, textureSpacePosition).x;
-		depth = 1.0 - (1.0 - depth) * 25.0;
-		color = vec4(vec3(depth),1);
-	}
-	else
-	{
-		color = texture(colorTexture, textureSpacePosition);
+		cameraSpaceReflectionPosition = oldCameraSpaceReflectionPosition + cameraSpaceReflectionVector*.5;
+		clipSpaceReflectionPosition = ProjectionBlck.cameraToClipMatrix * vec4(cameraSpaceReflectionPosition, 1);
+		NDCSpaceReflectionPosition = clipSpaceReflectionPosition.xyz / clipSpaceReflectionPosition.w;
+		screenSpaceReflectionPosition = 0.5 * NDCSpaceReflectionPosition + 0.5;
+		oldDepth = oldScreenSpaceReflectionPosition.z;
+		currDepth = screenSpaceReflectionPosition.z;
+		float sampleDepth = texture(depthTexture, screenSpaceReflectionPosition.xy).x; 
+		if((oldDepth <= sampleDepth && currDepth >= sampleDepth) || (oldDepth >= sampleDepth && currDepth <= sampleDepth))
+		{
+			color = texture(colorTexture, screenSpaceReflectionPosition.xy);
+			break;
+		}
+
+		oldCameraSpaceReflectionPosition = cameraSpaceReflectionPosition;
+		oldScreenSpaceReflectionPosition = screenSpaceReflectionPosition;
+		count++;
 	}
 
 	return color;

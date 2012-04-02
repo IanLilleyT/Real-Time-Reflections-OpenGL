@@ -8,14 +8,40 @@
 		<translation>0 0 0</translation>
 		<scale>10 1 10</scale>
 	</object>
+  <object type="RenderObject">
+    <name>wall</name>
+    <material>blue</material>
+    <mesh>cube</mesh>
+    <program>Material</program>
+    <translation>0 2 -5.5</translation>
+    <scale>10 5 1</scale>
+  </object>
+  <object type="RenderObject">
+    <name>wall</name>
+    <material>blue</material>
+    <mesh>cube</mesh>
+    <program>Material</program>
+    <translation>-5.5 2 0</translation>
+    <scale>1 5 10</scale>
+  </object>
 	<object type="RenderObject">
 		<name>ball1</name>
-		<material>red</material>
+		<material>blue</material>
 		<mesh>sphere</mesh>
 		<program>Material</program>
 		<translation>0 2 0</translation>
-		<scale>1 1 1</scale>
+		<scale>2 2 2</scale>
+    <diffuseColor>1 0 0 1</diffuseColor>
 	</object>
+  <object type="RenderObject">
+    <name>ball2</name>
+    <material>red</material>
+    <mesh>sphere</mesh>
+    <program>Material</program>
+    <translation>2 2 0</translation>
+    <scale>1 2 1</scale>
+    <diffuseColor>1 0 1 1</diffuseColor>
+  </object>
 	<object type="Light">
 		<name>light1</name>
 		<intensity>1 1 1 1</intensity>
