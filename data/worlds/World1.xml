@@ -44,7 +44,7 @@
   </object>
 	<object type="Light">
 		<name>light1</name>
-		<intensity>1 1 1 1</intensity>
+		<intensity>0 1 0 1</intensity>
 		<translation>0 3 0</translation>
 	</object>
   <object type="Light">
