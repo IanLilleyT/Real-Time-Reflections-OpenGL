@@ -55,23 +55,36 @@ protected:
 		GLuint shininessFactorUniform = glGetUniformLocation(this->program, "specularShininess");
 		glUniform1f(shininessFactorUniform, shininessFactor);
 
-		//Alpha
-		float alpha = material->getAlpha();
-		GLuint alphaUniform = glGetUniformLocation(this->program, "alpha");
-		glUniform1f(alphaUniform,alpha);
+		//Transparency
+		float transparency = material->getTransparency();
+		GLuint transparencyUniform = glGetUniformLocation(this->program, "transparency");
+		glUniform1f(transparencyUniform,transparency);
 
 		//Reflectivity
 		float reflectivity = material->getReflectivity();
 		GLuint reflectivityUniform = glGetUniformLocation(this->program, "reflectivity");
 		glUniform1f(reflectivityUniform,reflectivity);
 
-		//Color buffer texture
-		GLuint colorTextureUniform = glGetUniformLocation(this->program, "colorTexture");
-		glUniform1i(colorTextureUniform, 0);
+		//Refractivity
+		float refractivity = material->getRefractivity();
+		GLuint refractivityUniform = glGetUniformLocation(this->program, "refractivity");
+		glUniform1f(refractivityUniform, refractivity);
 
-		//Depth buffer texture
-		GLuint depthTextureUniform = glGetUniformLocation(this->program, "depthTexture");
-		glUniform1i(depthTextureUniform, 1);
+		//Color texture front
+		GLuint colorTextureFrontUniform = glGetUniformLocation(this->program, "colorTextureFront");
+		glUniform1i(colorTextureFrontUniform, 0);
+
+		//Depth texture front
+		GLuint depthTextureFrontUniform = glGetUniformLocation(this->program, "depthTextureFront");
+		glUniform1i(depthTextureFrontUniform, 1);
+
+		//Color texture back
+		GLuint colorTextureBackUniform = glGetUniformLocation(this->program, "colorTextureBack");
+		glUniform1i(colorTextureBackUniform, 2);
+
+		//Depth texture back
+		GLuint depthTextureBackUniform = glGetUniformLocation(this->program, "depthTextureBack");
+		glUniform1i(depthTextureBackUniform, 3);
 
 		//Num Lights
 		int numLights = glState->getLights().size();

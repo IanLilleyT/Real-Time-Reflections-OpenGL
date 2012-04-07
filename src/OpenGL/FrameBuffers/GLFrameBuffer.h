@@ -15,7 +15,7 @@ public:
 	virtual ~GLFramebuffer(){}
 
 	virtual void initialize(){}
-	virtual void bindForReading(){}
+	virtual void bindForReading(GLenum* textureUnits){}
 	virtual void bindForWriting(){}
 
 protected:

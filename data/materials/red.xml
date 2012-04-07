@@ -4,5 +4,4 @@
 	<specularColor>1 1 1 1</specularColor>
 	<specularShininess>.3</specularShininess>
 	<reflectivity>0</reflectivity>
-	<alpha>1</alpha>
 </material>

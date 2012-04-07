@@ -4,4 +4,6 @@
 	<specularColor>1 1 1 1</specularColor>
 	<specularShininess>.1</specularShininess>
 	<reflectivity>0</reflectivity>
+  <refractivity>1</refractivity>
+	<transparency>1</transparency>
 </material>

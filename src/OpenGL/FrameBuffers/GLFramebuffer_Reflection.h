@@ -58,16 +58,16 @@ public:
 		//Unbind buffer
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); 
 	}
-	virtual void bindForReading()
+	virtual void bindForReading(GLenum* textureUnits)
 	{
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
 		//Bind color
-		glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(textureUnits[0]);
 		glBindTexture(GL_TEXTURE_2D, colorTexture);
 
 		//Bind depth
-		glActiveTexture(GL_TEXTURE1);
+		glActiveTexture(textureUnits[1]);
 		glBindTexture(GL_TEXTURE_2D, depthTexture);
 	}
 	virtual void bindForWriting()

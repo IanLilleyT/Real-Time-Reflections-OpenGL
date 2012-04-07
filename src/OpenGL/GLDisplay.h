@@ -41,7 +41,8 @@ public:
 private:
 	Camera* camera;
 	World* world;
-	GLFramebuffer* reflectionBuffer;
+	GLFramebuffer* reflectionBufferFront;
+	GLFramebuffer* reflectionBufferBack;
 
 	void initializeGL();
 	void initializeCamera();

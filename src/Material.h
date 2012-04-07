@@ -32,9 +32,13 @@ public:
 	void setReflectivity(float reflectivity);
 	float getReflectivity();
 
-	//Alpha
-	void setAlpha(float alpha);
-	float getAlpha();
+	//Refractiviy
+	void setRefractivity(float refractivity);
+	float getRefractivity();
+
+	//Transparency
+	void setTransparency(float transparency);
+	float getTransparency();
 
 	//Name
 	void setName(std::string name);
@@ -45,6 +49,7 @@ private:
 	glm::vec4 specularColor;
 	float specularShininess;
 	float reflectivity;
-	float alpha;
+	float refractivity;
+	float transparency;
 	std::string name;
 };

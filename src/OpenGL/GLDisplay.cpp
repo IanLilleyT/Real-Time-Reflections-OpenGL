@@ -49,8 +49,11 @@ void GLDisplay::initializeCamera()
 }
 void GLDisplay::initializeFramebuffers()
 {
-	this->reflectionBuffer = new GLFramebuffer_Reflection();
-	this->reflectionBuffer->initialize();
+	this->reflectionBufferFront = new GLFramebuffer_Reflection();
+	this->reflectionBufferFront->initialize();
+
+	this->reflectionBufferBack = new GLFramebuffer_Reflection();
+	this->reflectionBufferBack->initialize();
 }
 void GLDisplay::update()
 {
@@ -62,23 +65,36 @@ void GLDisplay::update()
 		world->update();
 
 		//Render to framebuffer without reflections
-		this->reflectionBuffer->bindForWriting();
-		this->clearGL();
 		glState->setReflectionToggle(0);
 		uniformBlockHelper->updateAll();
+
+		//Front face render
+		glCullFace(GL_BACK);
+		this->reflectionBufferFront->bindForWriting();
+		this->clearGL();
 		world->render();
 		
-		//Render for real with reflections
-		this->reflectionBuffer->bindForReading();
+		//Back face render
+		glCullFace(GL_FRONT);
+		this->reflectionBufferBack->bindForWriting();
 		this->clearGL();
+		world->render();
+
+		//Render for real with reflections
+		glCullFace(GL_BACK);
 		glState->setReflectionToggle(1);
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_REFLECTION_TOGGLE);
+		GLenum textureUnitsFront[2] = {GL_TEXTURE0, GL_TEXTURE1};
+		GLenum textureUnitsBack[2] =  {GL_TEXTURE2, GL_TEXTURE3};
+		this->reflectionBufferFront->bindForReading(textureUnitsFront);
+		this->reflectionBufferBack->bindForReading(textureUnitsBack);
+		this->clearGL();
 		world->render();
 	}
 }
 void GLDisplay::clearGL()
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
     glClearDepth(1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

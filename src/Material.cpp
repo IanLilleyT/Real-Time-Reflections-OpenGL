@@ -1,24 +1,46 @@
 #include "Material.h"
 
-Material::Material(){}
+Material::Material()
+{
+	this->diffuseColor = glm::vec4(1,1,1,1);
+	this->specularColor = glm::vec4(1,1,1,1);
+	this->specularShininess = .1f;
+	this->reflectivity = 0.0f;
+	this->refractivity = 1.0f;
+	this->transparency = 0.0f;
+}
 Material::~Material(){}
 
 //Initialize
 void Material::initialize(TiXmlElement* element)
 {
-	std::string name = element->FirstChildElement("name")->FirstChild()->Value();
-	glm::vec4 diffuseColor = Utils::parseIntoVec4(element->FirstChildElement("diffuseColor")->FirstChild()->Value());
-	glm::vec4 specularColor = Utils::parseIntoVec4(element->FirstChildElement("specularColor")->FirstChild()->Value());
-	float specularShininess = Utils::parseIntoFloat(element->FirstChildElement("specularShininess")->FirstChild()->Value());
-	float reflectivity = Utils::parseIntoFloat(element->FirstChildElement("reflectivity")->FirstChild()->Value());
-	float alpha = Utils::parseIntoFloat(element->FirstChildElement("alpha")->FirstChild()->Value());
+	//name
+	TiXmlElement* nameElement = element->FirstChildElement("name");
+	if(nameElement) this->setName(nameElement->FirstChild()->Value());
 
-	this->setName(name);
-	this->setDiffuseColor(diffuseColor);
-	this->setSpecularColor(specularColor);
-	this->setSpecularShininess(specularShininess);
-	this->setReflectivity(reflectivity);
-	this->setAlpha(alpha);
+	//diffuse color
+	TiXmlElement* diffuseColorElement = element->FirstChildElement("diffuseColor");
+	if(diffuseColorElement) this->setDiffuseColor(Utils::parseIntoVec4(diffuseColorElement->FirstChild()->Value()));
+
+	//specular color
+	TiXmlElement* specularColorElement = element->FirstChildElement("specularColor");
+	if(specularColorElement) this->setSpecularColor(Utils::parseIntoVec4(specularColorElement->FirstChild()->Value()));
+
+	//specular shininess
+	TiXmlElement* specularShininessElement = element->FirstChildElement("specularShininess");
+	if(specularShininessElement) this->setSpecularShininess(Utils::parseIntoFloat(specularShininessElement->FirstChild()->Value()));
+
+	//reflectivity
+	TiXmlElement* reflectivityElement = element->FirstChildElement("reflectivity");
+	if(reflectivityElement) this->setReflectivity(Utils::parseIntoFloat(reflectivityElement->FirstChild()->Value()));
+
+	//refractivity
+	TiXmlElement* refractivityElement = element->FirstChildElement("refractivity");
+	if(refractivityElement) this->setRefractivity(Utils::parseIntoFloat(refractivityElement->FirstChild()->Value()));
+
+	//transparency
+	TiXmlElement* transparencyElement = element->FirstChildElement("transparency");
+	if(transparencyElement) this->setTransparency(Utils::parseIntoFloat(transparencyElement->FirstChild()->Value()));
 }
 
 //Diffuse Color
@@ -61,14 +83,24 @@ float Material::getReflectivity()
 	return this->reflectivity;
 }
 
-//Alpha
-void Material::setAlpha(float alpha)
+//Refractivity
+void Material::setRefractivity(float refractivity)
 {
-	this->alpha = alpha;
+	this->refractivity = refractivity;
 }
-float Material::getAlpha()
+float Material::getRefractivity()
 {
-	return this->alpha;
+	return this->refractivity;
+}
+
+//Transparency
+void Material::setTransparency(float transparency)
+{
+	this->transparency = transparency;
+}
+float Material::getTransparency()
+{
+	return this->transparency;
 }
 
 //Name
