@@ -23,6 +23,10 @@ public:
 	static void printVec3(glm::vec3 vec);
 	static void printVec2(glm::vec2 vec);
 
+	//Conversions
+	static std::string convertIntToString(int val);
+	static std::string convertFloatToString(float val);
+
 	//Parsing and Splitting
 	static std::vector<std::string> splitByCharacter(std::string s, char delim);
 	static float parseIntoFloat(std::string line);

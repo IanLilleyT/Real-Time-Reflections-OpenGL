@@ -68,6 +68,20 @@ void Utils::printVec2(glm::vec2 vec)
 	std::cout << vec.x << " " << vec.y << std::endl;
 }
 
+//Conversions
+std::string Utils::convertIntToString(int val)
+{
+	std::ostringstream ss;
+	ss << val;
+	return ss.str();
+}
+std::string Utils::convertFloatToString(float val)
+{
+	std::ostringstream ss;
+	ss << val;
+	return ss.str();
+}
+
 //Tokenizing
 std::vector<std::string> Utils::splitByCharacter(std::string s, char delim)
 {
