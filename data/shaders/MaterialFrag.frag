@@ -10,6 +10,7 @@ uniform vec4 specularColor;
 uniform float specularShininess;
 uniform float transparency;
 uniform float reflectivity;
+uniform float reflectivityScatter;
 uniform float refractivity;
 
 uniform sampler2D colorTextureFront;
@@ -125,7 +126,7 @@ vec4 ComputeReflection()
 	vec3 screenSpaceReflectionPosition = 0.5 * NDCSpaceReflectionPosition + 0.5;
 
 	vec3 screenSpaceReflectionVector = normalize(screenSpaceReflectionPosition - screenSpacePosition);
-	float pixelSize = 1/500.0;
+	float pixelSize = 1/100.0;
 	float scaleAmount = pixelSize / length(screenSpaceReflectionVector.xy);
 	screenSpaceReflectionVector *= scaleAmount;
 	
@@ -134,7 +135,8 @@ vec4 ComputeReflection()
 
 	vec4 color = vec4(0,0,0,1);
 	int count = 0;
-	while(true)
+	float colorStrength = 1.0;
+	while(count < 200)
 	{
 		if(currentPosition.x <= 0 || currentPosition.x >= 1 ||
 		   currentPosition.y <= 0 || currentPosition.y >= 1 ||
@@ -160,7 +162,12 @@ vec4 ComputeReflection()
 		count++;
 		oldPosition = currentPosition;
 		currentPosition = oldPosition + screenSpaceReflectionVector;
+		colorStrength = clamp((1-count/50.0),0.0,1.0);
+		float falloff = clamp((count/20.0),0.0,1.0);
+		vec3 scatter = vec3(rand(screenSpaceReflectionVector.xx),rand(screenSpaceReflectionVector.yy),0)*reflectivityScatter*falloff;
+		currentPosition += scatter;
 	}
+	color *= colorStrength;
 	return color;
 }
 

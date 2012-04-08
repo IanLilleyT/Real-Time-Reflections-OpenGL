@@ -6,6 +6,7 @@ Material::Material()
 	this->specularColor = glm::vec4(1,1,1,1);
 	this->specularShininess = .1f;
 	this->reflectivity = 0.0f;
+	this->reflectivityScatter = 0.0f;
 	this->refractivity = 1.0f;
 	this->transparency = 0.0f;
 }
@@ -20,87 +21,31 @@ void Material::initialize(TiXmlElement* element)
 
 	//diffuse color
 	TiXmlElement* diffuseColorElement = element->FirstChildElement("diffuseColor");
-	if(diffuseColorElement) this->setDiffuseColor(Utils::parseIntoVec4(diffuseColorElement->FirstChild()->Value()));
+	if(diffuseColorElement) this->diffuseColor = Utils::parseIntoVec4(diffuseColorElement->FirstChild()->Value());
 
 	//specular color
 	TiXmlElement* specularColorElement = element->FirstChildElement("specularColor");
-	if(specularColorElement) this->setSpecularColor(Utils::parseIntoVec4(specularColorElement->FirstChild()->Value()));
+	if(specularColorElement) this->specularColor = Utils::parseIntoVec4(specularColorElement->FirstChild()->Value());
 
 	//specular shininess
 	TiXmlElement* specularShininessElement = element->FirstChildElement("specularShininess");
-	if(specularShininessElement) this->setSpecularShininess(Utils::parseIntoFloat(specularShininessElement->FirstChild()->Value()));
+	if(specularShininessElement) this->specularShininess = Utils::parseIntoFloat(specularShininessElement->FirstChild()->Value());
 
 	//reflectivity
 	TiXmlElement* reflectivityElement = element->FirstChildElement("reflectivity");
-	if(reflectivityElement) this->setReflectivity(Utils::parseIntoFloat(reflectivityElement->FirstChild()->Value()));
+	if(reflectivityElement) this->reflectivity = Utils::parseIntoFloat(reflectivityElement->FirstChild()->Value());
+
+	//reflectivity scatter
+	TiXmlElement* reflectivityScatterElement = element->FirstChildElement("reflectivityScatter");
+	if(reflectivityScatterElement) this->reflectivityScatter = Utils::parseIntoFloat(reflectivityScatterElement->FirstChild()->Value());
 
 	//refractivity
 	TiXmlElement* refractivityElement = element->FirstChildElement("refractivity");
-	if(refractivityElement) this->setRefractivity(Utils::parseIntoFloat(refractivityElement->FirstChild()->Value()));
+	if(refractivityElement) this->refractivity = Utils::parseIntoFloat(refractivityElement->FirstChild()->Value());
 
 	//transparency
 	TiXmlElement* transparencyElement = element->FirstChildElement("transparency");
-	if(transparencyElement) this->setTransparency(Utils::parseIntoFloat(transparencyElement->FirstChild()->Value()));
-}
-
-//Diffuse Color
-void Material::setDiffuseColor(glm::vec4 diffuseColor)
-{
-	this->diffuseColor = diffuseColor;
-}
-glm::vec4 Material::getDiffuseColor()
-{
-	return this->diffuseColor;
-}
-
-//Specular Color
-void Material::setSpecularColor(glm::vec4 specularColor)
-{
-	this->specularColor = specularColor;
-}
-glm::vec4 Material::getSpecularColor()
-{
-	return this->specularColor;
-}
-
-//Specular Shininess
-void Material::setSpecularShininess(float specularShininess)
-{
-	this->specularShininess = specularShininess;
-}
-float Material::getSpecularShininess()
-{
-	return this->specularShininess;
-}
-
-//Reflectivity
-void Material::setReflectivity(float reflectivity)
-{
-	this->reflectivity = reflectivity;
-}
-float Material::getReflectivity()
-{
-	return this->reflectivity;
-}
-
-//Refractivity
-void Material::setRefractivity(float refractivity)
-{
-	this->refractivity = refractivity;
-}
-float Material::getRefractivity()
-{
-	return this->refractivity;
-}
-
-//Transparency
-void Material::setTransparency(float transparency)
-{
-	this->transparency = transparency;
-}
-float Material::getTransparency()
-{
-	return this->transparency;
+	if(transparencyElement) this->transparency = Utils::parseIntoFloat(transparencyElement->FirstChild()->Value());
 }
 
 //Name

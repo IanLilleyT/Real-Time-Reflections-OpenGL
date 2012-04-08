@@ -38,7 +38,7 @@ void RenderObject::initialize(TiXmlElement* element)
 	if(diffuseColorElement != 0)
 	{
 		glm::vec4 color = Utils::parseIntoVec4(diffuseColorElement->FirstChild()->Value());
-		this->material->setDiffuseColor(color);
+		this->material->diffuseColor = color;
 	}
 }
 void RenderObject::initialize(std::string name, std::string mesh, std::string material, std::string program)

@@ -16,40 +16,19 @@ public:
 	//Initialize
 	void initialize(TiXmlElement* element);
 
-	//Diffuse Color
-	void setDiffuseColor(glm::vec4 diffuseColor);
-	glm::vec4 getDiffuseColor();
-
-	//Specular Color
-	void setSpecularColor(glm::vec4 specularColor);
-	glm::vec4 getSpecularColor();
-
-	//Specular Shininess
-	void setSpecularShininess(float specularShininess);
-	float getSpecularShininess();
-
-	//Reflectivity
-	void setReflectivity(float reflectivity);
-	float getReflectivity();
-
-	//Refractiviy
-	void setRefractivity(float refractivity);
-	float getRefractivity();
-
-	//Transparency
-	void setTransparency(float transparency);
-	float getTransparency();
-
 	//Name
 	void setName(std::string name);
 	std::string getName();
-
-private:
+	
+	//Public variables
 	glm::vec4 diffuseColor;
 	glm::vec4 specularColor;
 	float specularShininess;
 	float reflectivity;
+	float reflectivityScatter;
 	float refractivity;
 	float transparency;
+
+private:
 	std::string name;
 };
