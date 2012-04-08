@@ -1,9 +1,9 @@
 <material>
 	<name>blue</name>
-	<diffuseColor>0 0 0 1</diffuseColor>
+	<diffuseColor>1 0 0 1</diffuseColor>
 	<specularColor>1 1 1 1</specularColor>
 	<specularShininess>.1</specularShininess>
 	<reflectivity>0</reflectivity>
-  <refractivity>1</refractivity>
-	<transparency>1</transparency>
+  <refractivity>0</refractivity>
+  <refractiveIndex>1.3</refractiveIndex>
 </material>

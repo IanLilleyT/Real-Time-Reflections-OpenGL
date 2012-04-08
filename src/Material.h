@@ -25,8 +25,9 @@ public:
 	glm::vec4 specularColor;
 	float specularShininess;
 	float reflectivity;
-	float reflectivityScatter;
+	float reflectiveScatter;
 	float refractivity;
+	float refractiveIndex;
 	float transparency;
 
 private:

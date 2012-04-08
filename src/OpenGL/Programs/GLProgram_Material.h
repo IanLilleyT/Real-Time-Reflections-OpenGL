@@ -66,14 +66,19 @@ protected:
 		glUniform1f(reflectivityUniform,reflectivity);
 
 		//Reflectivity scatter
-		float reflectivityScatter = material->reflectivityScatter;
-		GLuint reflectivityScatterUniform = glGetUniformLocation(this->program, "reflectivityScatter");
-		glUniform1f(reflectivityScatterUniform, reflectivityScatter);
+		float reflectiveScatter = material->reflectiveScatter;
+		GLuint reflectiveScatterUniform = glGetUniformLocation(this->program, "reflectiveScatter");
+		glUniform1f(reflectiveScatterUniform, reflectiveScatter);
 
 		//Refractivity
 		float refractivity = material->refractivity;
 		GLuint refractivityUniform = glGetUniformLocation(this->program, "refractivity");
 		glUniform1f(refractivityUniform, refractivity);
+
+		//Refractive index
+		float refractiveIndex = material->refractiveIndex;
+		GLuint refractiveIndexUniform = glGetUniformLocation(this->program, "refractiveIndex");
+		glUniform1f(refractiveIndexUniform, refractiveIndex);
 
 		//Color texture front
 		GLuint colorTextureFrontUniform = glGetUniformLocation(this->program, "colorTextureFront");
