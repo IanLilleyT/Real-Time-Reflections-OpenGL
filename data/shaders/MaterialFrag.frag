@@ -95,6 +95,18 @@ vec4 ComputeLighting(in PerLight lightData)
 	return lighting;
 }
 
+/*
+vec4 GetRayBounce(in vec4 cameraSpaceViewDirection, int vec4 cameraSpaceSurfaceNormal)
+{
+	if(ReflectionToggleBlck.reflectionToggle == 1 && reflectivity > 0)
+	{
+		return reflect(cameraSpaceViewDirection,cameraSpaceSurfaceNormal);
+	}
+	else if(ReflectionToggleBlock.refractionToggle == 1 && refractvivity != 1.0)
+	{
+		return refract(cameraSpaceViewDirection,cameraSpaceSurfaceNormal,1.0/refractivity);
+	}
+}*/
 vec4 ComputeReflection()
 {
 	vec4 clipSpacePosition = ProjectionBlck.cameraToClipMatrix * vec4(cameraSpacePosition, 1);
@@ -113,7 +125,7 @@ vec4 ComputeReflection()
 	vec3 screenSpaceReflectionPosition = 0.5 * NDCSpaceReflectionPosition + 0.5;
 
 	vec3 screenSpaceReflectionVector = normalize(screenSpaceReflectionPosition - screenSpacePosition);
-	float pixelSize = 1/100.0;
+	float pixelSize = 1/500.0;
 	float scaleAmount = pixelSize / length(screenSpaceReflectionVector.xy);
 	screenSpaceReflectionVector *= scaleAmount;
 	
@@ -124,10 +136,10 @@ vec4 ComputeReflection()
 	int count = 0;
 	while(true)
 	{
-		bool valid = currentPosition.x > 0 && currentPosition.x < 1 &&
-			         currentPosition.y > 0 && currentPosition.y < 1 &&
-				     currentPosition.z > 0 && currentPosition.z < 1;
-		if(!valid) break;
+		if(currentPosition.x <= 0 || currentPosition.x >= 1 ||
+		   currentPosition.y <= 0 || currentPosition.y >= 1 ||
+		   currentPosition.z <= 0 || currentPosition.z >= 1)
+			break;
 
 		float oldDepth = oldPosition.z;
 		float currentDepth = currentPosition.z;

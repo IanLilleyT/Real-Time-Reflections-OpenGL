@@ -50,6 +50,9 @@ public:
 		//Draw to correct color buffer
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		
+		int amount;
+		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS,&amount);
+
 		//Error checking
 		GLenum status = glCheckFramebufferStatus(GL_DRAW_FRAMEBUFFER);
 		if (status != GL_FRAMEBUFFER_COMPLETE)

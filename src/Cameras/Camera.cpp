@@ -53,7 +53,6 @@ void Camera::update(void)
     this->CalcMatrix();
     Singleton<GLCamera>::Instance()->setWorldToCameraMatrix(this->worldToCameraMatrix);
 }
-
 void Camera::CalcLookAtMatrix()
 {
     glm::vec3 rightDir = glm::normalize(glm::cross(this->lookDir, this->upDir));
