@@ -13,6 +13,9 @@
 #include "../Cameras/Camera3rdPerson.h" //For using different camera types
 #include "../Cameras/Camera1stPerson.h" //For using different camera types
 #include "../Objects/RenderObject.h"
+#include "../Physics/PhysicsWorld.h"
+#include "../Physics/PhysicsObject.h"
+#include "../Physics/PhysicsSceneDefault.h"
 
 /*---------------------------------------------
 GLDisplay: Essentially a bridge between
@@ -28,6 +31,7 @@ public:
     ~GLDisplay();
 
 	void initialize();
+	void initializePhysics();
 	void update();
 	void resize(int width, int height);
 
@@ -44,10 +48,12 @@ private:
 	World* world;
 	GLFramebuffer* reflectionBufferFront;
 	GLFramebuffer* reflectionBufferBack;
+	PhysicsWorld* physicsWorld;
 
 	void initializeGL();
 	void initializeCamera();
 	void initializeFramebuffers();
+	
 	void resize(sf::Event sfEvent);
 	void clearGL();
 	void updateFramebuffers();

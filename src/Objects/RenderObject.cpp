@@ -75,9 +75,9 @@ void RenderObject::setMesh(std::string name)
 	GLMesh* newMesh = Singleton<MeshDatabase>::Instance()->loadMesh(name);
 	if(newMesh != 0) this->mesh = newMesh;
 }
-std::string RenderObject::getMesh()
+GLMesh* RenderObject::getMesh()
 {
-	return this->mesh->getName();
+	return this->mesh;
 }
 
 //Material

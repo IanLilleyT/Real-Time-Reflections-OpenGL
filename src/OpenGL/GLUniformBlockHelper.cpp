@@ -63,7 +63,7 @@ void GLUniformBlockHelper::update(std::string name)
 		for(int i = 0; i < numLights; i++)
 		{
 			Light* light = dynamic_cast<Light*>(lights.at(i));
-			glm::vec4 lightPos = glm::vec4(light->getPosition(), 1.0f);
+			glm::vec4 lightPos = glm::vec4(light->getTranslation(), 1.0f);
 			glm::vec4 lightPosCameraSpace = glm::vec4(glm::vec3(worldToCameraMatrix * lightPos),1.0f);
 			lightsBlock.lights[i].cameraSpaceLightPos = lightPosCameraSpace;
 			lightsBlock.lights[i].lightIntensity = light->getIntensity();

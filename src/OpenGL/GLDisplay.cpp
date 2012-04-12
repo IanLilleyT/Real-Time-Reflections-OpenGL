@@ -55,6 +55,12 @@ void GLDisplay::initializeFramebuffers()
 	this->reflectionBufferBack = new GLFramebuffer_Reflection();
 	this->reflectionBufferBack->initialize();
 }
+void GLDisplay::initializePhysics()
+{
+	MeshDatabase* meshDatabase = Singleton<MeshDatabase>::Instance();
+	MaterialDatabase* materialDatabase = Singleton<MaterialDatabase>::Instance();
+	this->physicsWorld = PhysicsSceneDefault::getDefaultScene(this->world);
+}
 void GLDisplay::update()
 {
 	if(this->world != 0)
@@ -62,6 +68,7 @@ void GLDisplay::update()
 		GLState* glState = Singleton<GLState>::Instance();
 		GLUniformBlockHelper* uniformBlockHelper = Singleton<GLUniformBlockHelper>::Instance();
 
+		physicsWorld->update();
 		world->update();
 
 		//Render to framebuffer without reflections
@@ -70,7 +77,7 @@ void GLDisplay::update()
 
 		std::vector<RenderObject*> objectsToRender;
 		std::vector<Object*> objects = this->world->getObjectsByType("RenderObject",false);
-		for(int i = 0; i < objects.size(); i++)
+		for(unsigned int i = 0; i < objects.size(); i++)
 		{
 			RenderObject* renderObject = (RenderObject*)objects.at(i);
 			if(renderObject->getMaterial()->refractivity <= .001f)
@@ -81,14 +88,14 @@ void GLDisplay::update()
 		glCullFace(GL_BACK);
 		this->reflectionBufferFront->bindForWriting();
 		this->clearGL();
-		for(int i = 0; i < objectsToRender.size(); i++)
+		for(unsigned int i = 0; i < objectsToRender.size(); i++)
 			objectsToRender.at(i)->render();
 		
 		//Back face render
 		glCullFace(GL_FRONT);
 		this->reflectionBufferBack->bindForWriting();
 		this->clearGL();
-		for(int i = 0; i < objectsToRender.size(); i++)
+		for(unsigned int i = 0; i < objectsToRender.size(); i++)
 			objectsToRender.at(i)->render();
 
 		//Render for real with reflections

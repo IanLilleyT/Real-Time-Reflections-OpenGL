@@ -1,7 +1,7 @@
 --This is a generic 32-bit Windows build script for OpenGL applications
 --Author: Ian Lilley
 
---Name
+--Appliaction name
 local name = "OpenGLApplication"
 
 --Directory stuff
@@ -13,11 +13,11 @@ local data_location_rel =    project_location_rel .. "data/"         -- Data
 local headers_location_rel = project_location_rel .. "include/"      -- Headers
 local libs_location_rel =    project_location_rel .. "libs/"         -- Libraries
 
---SFML
-local lib_sfml = libs_location_rel      .. "SFML_2.0/"
-local lib_sfml_win32_debug =   lib_sfml .. "Debug/"
-local lib_sfml_win32_release = lib_sfml .. "Release/"
-local lib_sfml_path = ""
+local lib_sfml =   libs_location_rel .. "SFML_2.0/"                  --SFML
+local lib_bullet = libs_location_rel .. "bullet_2.79/"               --Bullet
+
+local lib_debug =   "Debug/"
+local lib_release = "Release/"
 
 --These functions format the lib files properly
 function matchlibs(dir)
@@ -28,8 +28,7 @@ function matchlibs(dir)
 	end
 	return libs
 end
-function addlibs()
-	local paths = { lib_sfml_path }
+function addlibs(paths)
 	for i,path in pairs(paths) do
 		links(matchlibs(cwd .. path))
 		libdirs(path)
@@ -65,12 +64,12 @@ project ( name )
 	configuration "Debug"
 		flags { "Symbols" }
 		defines { "DEBUG" }
-		lib_sfml_path = lib_sfml_win32_debug
-		addlibs()
+		addlibs({lib_sfml   .. lib_debug, 
+			     lib_bullet .. lib_debug})
 		
 	--Release---------------------------------	
 	configuration "Release"
 		flags { "Optimize" }
 		defines { "NDEBUG" }
-		lib_sfml_path = lib_sfml_win32_release
-		addlibs()
+		addlibs({lib_sfml   .. lib_release, 
+			     lib_bullet .. lib_release})

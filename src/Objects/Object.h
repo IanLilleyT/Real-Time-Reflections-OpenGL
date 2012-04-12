@@ -39,48 +39,48 @@ public:
 
 	//Transformations
 	glm::mat4 getTransformationMatrix();
-	void setTransformationMatrix(glm::mat4 transformationMatrix);
+	virtual void setTransformationMatrix(glm::mat4 transformationMatrix);
 
 	//Translation
-	void translateX(float amount);
-	void translateY(float amount);
-	void translateZ(float amount);
-	void translate(glm::vec3 vector);
-	void setTranslationX(float amount);
-	void setTranslationY(float amount);
-	void setTranslationZ(float amount);
-	void setTranslation(glm::vec3 vector);
-	glm::vec3 getPosition();
-	glm::mat4 getTranslationMatrix();
-	void setTranslationMatrix(glm::mat4 translationMatrix);
+	virtual glm::vec3 getTranslation();
+	virtual glm::mat4 getTranslationMatrix();
+	virtual void setTranslationMatrix(glm::mat4 translationMatrix);
+	virtual void translateX(float amount);
+	virtual void translateY(float amount);
+	virtual void translateZ(float amount);
+	virtual void translate(glm::vec3 vector);
+	virtual void setTranslationX(float amount);
+	virtual void setTranslationY(float amount);
+	virtual void setTranslationZ(float amount);
+	virtual void setTranslation(glm::vec3 vector);
 	
 	//Scale
-	void scaleX(float amount);
-	void scaleY(float amount);
-	void scaleZ(float amount);
-	void scale(float amount);
-	void scale(glm::vec3 vector);
-	void setScaleX(float amount);
-	void setScaleY(float amount);
-	void setScaleZ(float amount);
-	void setScale(float amount);
-	void setScale(glm::vec3 vector);
-	glm::mat4 getScaleMatrix();
-	void setScaleMatrix(glm::mat4 scaleMatrix);
+	virtual glm::mat4 getScaleMatrix();
+	virtual void setScaleMatrix(glm::mat4 scaleMatrix);
+	virtual void scaleX(float amount);
+	virtual void scaleY(float amount);
+	virtual void scaleZ(float amount);
+	virtual void scale(float amount);
+	virtual void scale(glm::vec3 vector);
+	virtual void setScaleX(float amount);
+	virtual void setScaleY(float amount);
+	virtual void setScaleZ(float amount);
+	virtual void setScale(float amount);
+	virtual void setScale(glm::vec3 vector);
 	
 	//Rotation
-	void yaw(float angle);
-	void pitch(float angle);
-	void roll(float angle);
-	void rotate(glm::vec3 axis, float angle);
-	void setRotation(glm::vec3 axis, float angle);
-	glm::mat4 getRotationMatrix();
-	void setRotationMatrix(glm::mat4 rotationMatrix);
-
+	virtual glm::mat4 getRotationMatrix();
+	virtual void setRotationMatrix(glm::mat4 rotationMatrix);
+	virtual void yaw(float angle);
+	virtual void pitch(float angle);
+	virtual void roll(float angle);
+	virtual void rotate(glm::vec3 axis, float angle);
+	virtual void setRotation(glm::vec3 axis, float angle);
+	
 protected:
 	std::string name;
 
-	void updateTransformations();
+	virtual void updateTransformationMatrix();
 	glm::mat4 transformationMatrix;
 	glm::mat4 translationMatrix;
 	glm::mat4 rotationMatrix;

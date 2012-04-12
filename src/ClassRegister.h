@@ -7,6 +7,7 @@
 #include "Objects/RenderObject.h"
 #include "Objects/Jello.h"
 #include "Objects/Light.h"
+#include "Physics/PhysicsObject.h"
 
 //Programs
 #include "OpenGL/Programs/GLProgram_Material.h"
@@ -36,6 +37,7 @@ public:
 		factory->register_class<RenderObject>("RenderObject");
 		factory->register_class<Jello>("Jello");
 		factory->register_class<Light>("Light");
+		factory->register_class<PhysicsObject>("PhysicsObject");
 
 		//Programs
 		factory->register_class<GLProgram_Material>("GLProgram_Material");
@@ -44,11 +46,12 @@ public:
 		/*-------------------------------------------
 		//// Class Hierarchy ////////////////////////
 		-------------------------------------------*/
-		tree<std::string>::iterator object, renderObject, jello, light;
-		object =       Object::classHierarchy.set_head(Object::className);
-		renderObject = Object::classHierarchy.append_child(object,RenderObject::className);
-		jello =        Object::classHierarchy.append_child(renderObject,Jello::className);
-		light =        Object::classHierarchy.append_child(object,Light::className);
+		tree<std::string>::iterator object, renderObject, jello, light, physicsObject;
+		object =        Object::classHierarchy.set_head(Object::className);
+		renderObject =  Object::classHierarchy.append_child(object,RenderObject::className);
+		jello =         Object::classHierarchy.append_child(renderObject,Jello::className);
+		light =         Object::classHierarchy.append_child(object,Light::className);
+		physicsObject = Object::classHierarchy.append_child(object,PhysicsObject::className);
 	}
 	~ClassRegister(){}
 };

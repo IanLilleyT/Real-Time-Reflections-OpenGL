@@ -197,8 +197,8 @@ vec4 ComputeEffect(in int type)
 		currentPosition = oldPosition + screenSpaceVector;// + scatter;
 		count++;
 	}
-	float colorStrength = (1-reflectiveScatter) * clamp((1-count/50.0),0.0,1.0);
-	color *= colorStrength;
+	//float colorStrength = (1-reflectiveScatter) * clamp(distance(currentPosition, screenSpacePosition)/1024.0,0,1);
+	//color *= colorStrength;
 	return color;
 }
 
@@ -228,5 +228,5 @@ void main()
 	{
 		outputColor = accumLighting;
 	}
-	//outputColor.w = clamp(1-transparency,0,1);
+	outputColor.w = clamp(1-transparency,0,1);
 }

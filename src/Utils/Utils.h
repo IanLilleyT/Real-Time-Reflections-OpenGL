@@ -14,6 +14,7 @@ public:
 	static float degToRad;
 	static glm::mat4 getRotationMatrixDegrees(glm::vec3 axis, float angleDegrees);
 	static glm::mat4 getRotationMatrixRads(glm::vec3 axis, float angleRads);
+	static float getRandom(float min, float max);
 
 	//Printing
 	static void printMat4(glm::mat4 mat);

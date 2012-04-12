@@ -33,7 +33,7 @@ public:
 
 	//Mesh
 	void setMesh(std::string name);
-	std::string getMesh();
+	GLMesh* getMesh();
 
 	//Material
 	void setMaterial(std::string name);
