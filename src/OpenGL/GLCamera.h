@@ -14,7 +14,6 @@ public:
 	~GLCamera();
 
 	void calcCameraToClipMatrix(float viewAngle, float frustumNear, float frustumFar);
-	void setCameraToClipMatrix(glm::mat4 cameraToClipMatrix);
 	glm::mat4 getCameraToClipMatrix();
 
 	void setWorldToCameraMatrix(glm::mat4 worldToCameraMatrix);
@@ -29,7 +28,6 @@ public:
 	float getFrustumFar();
 
 private:
-	void update();
 	glm::mat4 cameraToClipMatrix;
 	glm::mat4 worldToCameraMatrix;
 	float viewAngle;

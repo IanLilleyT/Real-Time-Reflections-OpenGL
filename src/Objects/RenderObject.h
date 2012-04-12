@@ -37,7 +37,7 @@ public:
 
 	//Material
 	void setMaterial(std::string name);
-	std::string getMaterial();
+	Material* getMaterial();
 
 	//Program
 	void setProgram(std::string program);

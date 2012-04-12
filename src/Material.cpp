@@ -44,6 +44,10 @@ void Material::initialize(TiXmlElement* element)
 	TiXmlElement* refractivityElement = element->FirstChildElement("refractivity");
 	if(refractivityElement) this->refractivity = Utils::parseIntoFloat(refractivityElement->FirstChild()->Value());
 
+	//refractive index
+	TiXmlElement* refractiveIndexElement = element->FirstChildElement("refractiveIndex");
+	if(refractiveIndexElement) this->refractiveIndex = Utils::parseIntoFloat(refractiveIndexElement->FirstChild()->Value());
+
 	//transparency
 	TiXmlElement* transparencyElement = element->FirstChildElement("transparency");
 	if(transparencyElement) this->transparency = Utils::parseIntoFloat(transparencyElement->FirstChild()->Value());

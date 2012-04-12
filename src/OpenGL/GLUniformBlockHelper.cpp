@@ -41,14 +41,17 @@ void GLUniformBlockHelper::initialize()
 void GLUniformBlockHelper::update(std::string name)
 {
 	GLState* glState = Singleton<GLState>::Instance();
-	glm::mat4 worldToCameraMatrix = glState->getWorldToCameraMatrix();
-	glm::mat4 cameraToClipMatrix = glState->getCameraToClipMatrix();
+	GLCamera* glCamera = Singleton<GLCamera>::Instance();
+	glm::mat4 worldToCameraMatrix = glCamera->getWorldToCameraMatrix();
+	glm::mat4 cameraToClipMatrix = glCamera->getCameraToClipMatrix();
 
 	if(name == TYPE_PROJECTION)
 	{
 		GLUniformBlock* projectionUniformBlock = this->findUniformBlock(TYPE_PROJECTION);
 		ProjectionBlock projectionBlock = ProjectionBlock();
 		projectionBlock.cameraToClipMatrix = cameraToClipMatrix;
+		projectionBlock.zNear = glCamera->getFrustumNear();
+		projectionBlock.zFar = glCamera->getFrustumFar();
 		projectionUniformBlock->setData(&projectionBlock);
 	}
 	else if(name == TYPE_LIGHTS)

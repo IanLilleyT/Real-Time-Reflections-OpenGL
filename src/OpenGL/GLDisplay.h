@@ -12,6 +12,7 @@
 #include "../Cameras/Camera.h" //For using different camera types
 #include "../Cameras/Camera3rdPerson.h" //For using different camera types
 #include "../Cameras/Camera1stPerson.h" //For using different camera types
+#include "../Objects/RenderObject.h"
 
 /*---------------------------------------------
 GLDisplay: Essentially a bridge between

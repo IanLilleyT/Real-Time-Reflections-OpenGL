@@ -13,26 +13,6 @@ glm::mat4 GLState::getModelToWorldMatrix()
 	return this->modelToWorldMatrix;
 }
 
-//WorldToCameraMatrix
-void GLState::setWorldToCameraMatrix(glm::mat4 worldToCameraMatrix)
-{
-	this->worldToCameraMatrix = worldToCameraMatrix;
-}
-glm::mat4 GLState::getWorldToCameraMatrix()
-{
-	return this->worldToCameraMatrix;
-}
-
-//CameraToClipMatrix
-void GLState::setCameraToClipMatrix(glm::mat4 cameraToClipMatrix)
-{
-	this->cameraToClipMatrix = cameraToClipMatrix;
-}
-glm::mat4 GLState::getCameraToClipMatrix()
-{
-	return this->cameraToClipMatrix;
-}
-
 //Material
 void GLState::setMaterial(Material* material)
 {

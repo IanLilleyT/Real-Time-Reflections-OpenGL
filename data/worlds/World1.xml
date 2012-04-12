@@ -26,13 +26,14 @@
   </object>
   <object type="RenderObject">
     <name>cow2</name>
-    <material>refractive</material>
+    <material>red</material>
     <mesh>cow_soft</mesh>
     <program>Material</program>
     <translation>0 2.5 2</translation>
     <scale>.5 .5 .5</scale>
     <diffuseColor>1 0 0 1</diffuseColor>
   </object>
+  <!--
   <object type="RenderObject">
     <name>cow_soft</name>
     <material>cow</material>
@@ -60,6 +61,15 @@
     <scale>.5 .5 .5</scale>
     <rotation>0 1 0 -45</rotation>
     <diffuseColor>1 0 0 1</diffuseColor>
+  </object>
+  -->
+  <object type="RenderObject">
+    <name>ball</name>
+    <material>refractive</material>
+    <mesh>cow_soft</mesh>
+    <program>Material</program>
+    <translation>0 3 0</translation>
+    <scale>.5 .5 .5</scale>
   </object>
   <object type="Light">
     <name>light1</name>

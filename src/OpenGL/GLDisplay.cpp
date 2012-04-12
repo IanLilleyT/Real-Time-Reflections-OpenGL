@@ -39,7 +39,7 @@ void GLDisplay::initializeCamera()
 	//Camera
 	float fov = 45.0f;
 	float nearPlane = 0.1f;
-	float farPlane = 1000.0f;
+	float farPlane = 100.0f;
 
 	this->camera = new Camera3rdPerson();
 	this->camera->zoom(-1);
@@ -68,17 +68,28 @@ void GLDisplay::update()
 		glState->setReflectionToggle(0);
 		uniformBlockHelper->updateAll();
 
+		std::vector<RenderObject*> objectsToRender;
+		std::vector<Object*> objects = this->world->getObjectsByType("RenderObject",false);
+		for(int i = 0; i < objects.size(); i++)
+		{
+			RenderObject* renderObject = (RenderObject*)objects.at(i);
+			if(renderObject->getMaterial()->refractivity <= .001f)
+				objectsToRender.push_back(renderObject);
+		}
+
 		//Front face render
 		glCullFace(GL_BACK);
 		this->reflectionBufferFront->bindForWriting();
 		this->clearGL();
-		world->render();
+		for(int i = 0; i < objectsToRender.size(); i++)
+			objectsToRender.at(i)->render();
 		
 		//Back face render
 		glCullFace(GL_FRONT);
 		this->reflectionBufferBack->bindForWriting();
 		this->clearGL();
-		world->render();
+		for(int i = 0; i < objectsToRender.size(); i++)
+			objectsToRender.at(i)->render();
 
 		//Render for real with reflections
 		glCullFace(GL_BACK);

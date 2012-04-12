@@ -23,13 +23,6 @@ void GLCamera::calcCameraToClipMatrix(float viewAngle, float frustumNear, float 
 	this->cameraToClipMatrix[2].z = (this->frustumFar + this->frustumNear)/(this->frustumNear - this->frustumFar);
 	this->cameraToClipMatrix[2].w = -1.0f;
 	this->cameraToClipMatrix[3].z = (2.0f*this->frustumFar*this->frustumNear)/(this->frustumNear - this->frustumFar);
-	
-	this->update();
-}
-void GLCamera::setCameraToClipMatrix(glm::mat4 cameraToClipMatrix)
-{
-	this->cameraToClipMatrix = cameraToClipMatrix;
-	this->update();
 }
 glm::mat4 GLCamera::getCameraToClipMatrix()
 {
@@ -40,7 +33,6 @@ glm::mat4 GLCamera::getCameraToClipMatrix()
 void GLCamera::setWorldToCameraMatrix(glm::mat4 worldToCameraMatrix)
 {
 	this->worldToCameraMatrix = worldToCameraMatrix;
-	this->update();
 }
 glm::mat4 GLCamera::getWorldToCameraMatrix()
 {
@@ -53,19 +45,12 @@ void GLCamera::setWindowDimensions(int width, int height)
 	glViewport(0, 0, (GLsizei) width, (GLsizei) height);
 	this->cameraToClipMatrix[0].x = frustumScale * (height/ (float)width);
 	this->cameraToClipMatrix[1].y = frustumScale;
-	this->update();
 }
 glm::ivec2 GLCamera::getWindowDimensions()
 {
 	GLint viewport[4];
 	glGetIntegerv(GL_VIEWPORT,viewport);
 	return glm::ivec2((int)viewport[2],(int)viewport[3]);
-}
-
-void GLCamera::update()
-{
-	Singleton<GLState>::Instance()->setWorldToCameraMatrix(this->worldToCameraMatrix);
-	Singleton<GLState>::Instance()->setCameraToClipMatrix(this->cameraToClipMatrix);
 }
 Ray GLCamera::getPickingRay(int x, int y, int width, int height)
 {
@@ -97,7 +82,7 @@ Ray GLCamera::getPickingRay(int x, int y, int width, int height)
 	closePoint = clipToCamera * closePoint;
 	farPoint = clipToCamera * farPoint;
 
-	glm::mat4 worldToCameraMatrix = Singleton<GLState>::Instance()->getWorldToCameraMatrix();
+	glm::mat4 worldToCameraMatrix = this->worldToCameraMatrix;
 	glm::mat4 cameraToWorld = glm::inverse(worldToCameraMatrix);
 	closePoint = cameraToWorld * closePoint;
 	farPoint = cameraToWorld * farPoint;

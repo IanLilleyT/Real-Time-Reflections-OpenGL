@@ -25,8 +25,9 @@ protected:
 	virtual void fillUniforms()
 	{
 		GLState* glState = Singleton<GLState>::Instance();
+		GLCamera* glCamera = Singleton<GLCamera>::Instance();
 		glm::mat4 modelToWorldMatrix = glState->getModelToWorldMatrix();
-		glm::mat4 worldToCameraMatrix = glState->getWorldToCameraMatrix();
+		glm::mat4 worldToCameraMatrix = glCamera->getWorldToCameraMatrix();
 		glm::mat4 modelToCameraMatrix = worldToCameraMatrix * modelToWorldMatrix;
 		Material* material = glState->getMaterial();
 

@@ -86,9 +86,9 @@ void RenderObject::setMaterial(std::string material)
 	Material* databaseMaterial = Singleton<MaterialDatabase>::Instance()->loadMaterial(material);
 	this->material = new Material(*databaseMaterial);
 }
-std::string RenderObject::getMaterial()
+Material* RenderObject::getMaterial()
 {
-	return this->material->getName();
+	return this->material;
 }
 
 //Program Type

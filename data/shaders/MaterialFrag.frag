@@ -24,6 +24,8 @@ uniform int numLights;
 uniform ProjectionBlock
 {
 	mat4 cameraToClipMatrix;
+	float zNear;
+	float zFar;
 } ProjectionBlck;
 
 struct PerLight
@@ -48,7 +50,7 @@ uniform ReflectionToggleBlock
 } ReflectionToggleBlck;
 
 float rand(vec2 co){
-    return 0.0;//fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
 
 float CalcAttenuation(in vec3 cameraSpacePosition,
@@ -97,19 +99,6 @@ vec4 ComputeLighting(in PerLight lightData)
 	return lighting;
 }
 
-/*
-vec4 GetRayBounce(in vec4 cameraSpaceViewDirection, int vec4 cameraSpaceSurfaceNormal)
-{
-	if(ReflectionToggleBlck.reflectionToggle == 1 && reflectivity > 0)
-	{
-		return reflect(cameraSpaceViewDirection,cameraSpaceSurfaceNormal);
-	}
-	else if(ReflectionToggleBlock.refractionToggle == 1 && refractvivity != 1.0)
-	{
-		return refract(cameraSpaceViewDirection,cameraSpaceSurfaceNormal,1.0/refractivity);
-	}
-}*/
-
 //Convert something in camera space to screen space
 vec3 convertCameraSpaceToScreenSpace(in vec3 cameraSpace)
 {
@@ -133,79 +122,84 @@ void calcScreenSpaceVector(in int type, out vec3 screenSpacePosition, out vec3 s
 		cameraSpaceVector = refract(cameraSpaceViewDirection,cameraSpaceSurfaceNormal,1.0/refractiveIndex);
 	cameraSpaceVector = normalize(cameraSpaceVector);
 
-	//Fragment position in screen space
+	//Screen space vector
 	screenSpacePosition = convertCameraSpaceToScreenSpace(cameraSpacePosition);
-
-	//Point along camera space reflection vector in screen space
 	vec3 cameraSpaceVectorPosition = cameraSpacePosition + cameraSpaceVector;
 	vec3 screenSpaceVectorPosition = convertCameraSpaceToScreenSpace(cameraSpaceVectorPosition);
-
-	//Scale reflection vector
 	screenSpaceVector = normalize(screenSpaceVectorPosition - screenSpacePosition);
-	float pixelSize = 1/100.0;
-	float scaleAmount = pixelSize / length(screenSpaceVector.xy);
-	screenSpaceVector *= scaleAmount;
 }
-
-vec4 ComputeReflection()
+float linearizeDepth(float depth)
+{
+	float n = ProjectionBlck.zNear;
+	float f = ProjectionBlck.zFar;
+	return (2.0 * n) / (f + n - depth * (f - n));
+}
+vec4 ComputeEffect(in int type)
 {
 	//Initial reflection positions
 	vec3 screenSpacePosition;
-	vec3 screenSpaceReflectionVector;
-	calcScreenSpaceVector(REFLECTION,screenSpacePosition,screenSpaceReflectionVector);
-	vec3 oldPosition = screenSpacePosition + screenSpaceReflectionVector;
-	vec3 currentPosition = oldPosition + screenSpaceReflectionVector;
+	vec3 screenSpaceVector;
+	calcScreenSpaceVector(type,screenSpacePosition,screenSpaceVector);
+
+	screenSpaceVector *= .01;///length(screenSpaceVector.xy);
+	vec3 oldPosition = screenSpacePosition + screenSpaceVector;
+	vec3 currentPosition = oldPosition + screenSpaceVector;
 	
-	float colorStrength = 1.0;
 	vec4 color = vec4(0,0,0,1);
 	int count = 0;
-	while(count < 200) //Hard limit on number of ray marches
+	while(count < 3000)
 	{
 		//Stop ray trace when it goes outside screen space
-		if(currentPosition.x <= 0 || currentPosition.x >= 1 ||
-		   currentPosition.y <= 0 || currentPosition.y >= 1 ||
-		   currentPosition.z <= 0 || currentPosition.z >= 1)
+		if(currentPosition.x < 0 || currentPosition.x > 1 ||
+		   currentPosition.y < 0 || currentPosition.y > 1 ||
+		   currentPosition.z < 0 || currentPosition.z > 1)
 			break;
 
-		float oldDepth = oldPosition.z;
-		float currentDepth = currentPosition.z;
-
-		//Sample front faces
-		float sampleDepth = texture(depthTextureFront, (currentPosition.xy + oldPosition.xy)/2.0).x;
+		//front
+		vec2 samplePos = currentPosition.xy;//(currentPosition.xy + oldPosition.xy)/2.0;
+		float oldDepth = linearizeDepth(oldPosition.z);
+		float currentDepth = linearizeDepth(currentPosition.z);
 		float depthDifference = abs(oldDepth - currentDepth);
-		float sampleDifference = abs(sampleDepth - min(oldDepth, currentDepth));
-		if(sampleDifference <= depthDifference)
-			{color = texture(colorTextureFront, (currentPosition.xy + oldPosition.xy)/2.0);break;}
 
-		//Sample backfaces
-		sampleDepth = texture(depthTextureBack, (currentPosition.xy + oldPosition.xy)/2.0).x;
-		depthDifference = abs(oldDepth - currentDepth);
-		sampleDifference = abs(sampleDepth - min(oldDepth, currentDepth));
-		if(sampleDifference <= depthDifference)
-			{color = texture(colorTextureBack, (currentPosition.xy + oldPosition.xy)/2.0);break;}
+		float sampleDepthFront = linearizeDepth(texture(depthTextureFront, samplePos).x);
+		float depthDifferenceFront = abs(sampleDepthFront - min(currentDepth,oldDepth));
+		if(depthDifferenceFront <= depthDifference)
+		{
+			screenSpaceVector *= .5;
+			currentPosition = oldPosition;
+			if(length(screenSpaceVector) < .04)
+			{
+				color = texture(colorTextureFront, samplePos);
+				break;
+			}
+		}
+
+		//back
+		float sampleDepthBack = linearizeDepth(texture(depthTextureBack, samplePos).x);
+		float depthDifferenceBack = abs(sampleDepthBack - min(currentDepth,oldDepth));
+		if(depthDifferenceBack <= depthDifference)
+		{
+			screenSpaceVector *= .5;
+			currentPosition = oldPosition;
+			if(length(screenSpaceVector) < .04)
+			{
+				color = texture(colorTextureBack, samplePos);
+				break;
+			}
+		}
 
 		//Blur and scatter effects
-		colorStrength = clamp((1-count/50.0),0.0,1.0);
-		float scatterAmount = clamp((count/20.0),0.0,1.0);
-		vec3 scatter = vec3(rand(screenSpaceReflectionVector.xx),rand(screenSpaceReflectionVector.yy),0)*reflectiveScatter*scatterAmount;
+		//float scatterAmount = clamp((count/20.0),0.0,1.0);
+		//vec3 scatter = vec3(rand(screenSpaceVector.xx),rand(screenSpaceVector.yy),0)*reflectiveScatter*scatterAmount;
 		
 		//Update vectors
 		oldPosition = currentPosition;
-		currentPosition = oldPosition + screenSpaceReflectionVector + scatter;
+		currentPosition = oldPosition + screenSpaceVector;// + scatter;
 		count++;
 	}
+	float colorStrength = (1-reflectiveScatter) * clamp((1-count/50.0),0.0,1.0);
 	color *= colorStrength;
 	return color;
-}
-
-vec4 ComputeRefraction()
-{
-	vec3 screenSpacePosition;
-	vec3 screenSpaceRefractionVector;
-	calcScreenSpaceVector(REFRACTION,screenSpacePosition,screenSpaceRefractionVector);
-	vec3 oldPosition = screenSpacePosition + screenSpaceRefractionVector;
-	vec3 currentPosition = oldPosition + screenSpaceRefractionVector;
-	return vec4(0,0,0,0);
 }
 
 void main()
@@ -224,9 +218,9 @@ void main()
 		vec4 reflectiveColor = vec4(0,0,0,0);
 		vec4 refractiveColor = vec4(0,0,0,0);
 		if(reflectivity > 0)
-			reflectiveColor = ComputeReflection();
+			reflectiveColor = ComputeEffect(REFLECTION);
 		if(refractivity > 0)
-			refractiveColor = ComputeRefraction();
+			refractiveColor = ComputeEffect(REFRACTION);
 		
 		outputColor = reflectivity*reflectiveColor + refractivity*refractiveColor + (1-reflectivity-refractivity)*accumLighting;
 	}
@@ -234,5 +228,5 @@ void main()
 	{
 		outputColor = accumLighting;
 	}
-	outputColor.w = clamp(1-transparency,0,1);
+	//outputColor.w = clamp(1-transparency,0,1);
 }
