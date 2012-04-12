@@ -21,9 +21,9 @@ public:
 		//Bullet
 		for(int i = 0; i < 50; i++)
 		{
-			RenderObject* fallingObject = new RenderObject();
+			RenderObject* fallingObject = new RenderObject();	
 			PhysicsObject* projectile = new PhysicsObject();
-
+			
 			int type = i%2;
 			if(type == 0)
 			{
@@ -48,6 +48,11 @@ public:
 				projectile->setScale(Utils::getRandom(min,max));
 			}
 			
+			glm::vec4 randomColor = glm::vec4(Utils::getRandom(0.0f,1.0f),Utils::getRandom(0,1),Utils::getRandom(0,1),Utils::getRandom(0,1));
+			float randomReflectivity = Utils::getRandom(.3f,1.0f);
+			fallingObject->getMaterial()->diffuseColor = randomColor;
+			fallingObject->getMaterial()->reflectivity = randomReflectivity;
+
 			projectile->setTranslationY(3.0f*i+5.0f);
 			physicsWorld->addObject(projectile);
 			world->addObject(fallingObject);
