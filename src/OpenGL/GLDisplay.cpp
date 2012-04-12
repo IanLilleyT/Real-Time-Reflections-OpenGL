@@ -60,6 +60,7 @@ void GLDisplay::initializePhysics()
 	MeshDatabase* meshDatabase = Singleton<MeshDatabase>::Instance();
 	MaterialDatabase* materialDatabase = Singleton<MaterialDatabase>::Instance();
 	this->physicsWorld = PhysicsSceneDefault::getDefaultScene(this->world);
+	Singleton<PhysicsIO>::Instance()->initialize(this->physicsWorld,this->world,this->camera);
 }
 void GLDisplay::update()
 {

@@ -16,6 +16,7 @@
 #include "../Physics/PhysicsWorld.h"
 #include "../Physics/PhysicsObject.h"
 #include "../Physics/PhysicsSceneDefault.h"
+#include "../Physics/PhysicsIO.h"
 
 /*---------------------------------------------
 GLDisplay: Essentially a bridge between

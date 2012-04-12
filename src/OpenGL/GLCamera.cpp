@@ -52,10 +52,11 @@ glm::ivec2 GLCamera::getWindowDimensions()
 	glGetIntegerv(GL_VIEWPORT,viewport);
 	return glm::ivec2((int)viewport[2],(int)viewport[3]);
 }
-Ray GLCamera::getPickingRay(int x, int y, int width, int height)
+Ray GLCamera::getPickingRay(int x, int y)
 {
-	float winWidth = (float)width;
-	float winHeight = (float)height;
+	glm::ivec2 windowDimensions = GLCamera::getWindowDimensions();
+	float winWidth = (float)windowDimensions.x;
+	float winHeight = (float)windowDimensions.y;
 	float winX = (float)x;
 	float winY = (float)y;
 	float winZClose = 0.0f;

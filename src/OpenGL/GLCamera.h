@@ -19,7 +19,7 @@ public:
 	void setWorldToCameraMatrix(glm::mat4 worldToCameraMatrix);
 	glm::mat4 getWorldToCameraMatrix();
 
-	Ray getPickingRay(int x, int y, int width, int height);
+	Ray getPickingRay(int x, int y);
 	void setWindowDimensions(int w, int h);
 	glm::ivec2 getWindowDimensions();
 
