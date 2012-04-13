@@ -29,13 +29,27 @@ glm::mat4 Utils::getRotationMatrixRads(glm::vec3 axis, float angleRads)
 
 	return theMat;
 }
+
+//Random
 float Utils::getRandom(float min, float max)
 {
 	float initial = ((float)rand())/((float)RAND_MAX);
 	float final = max - initial * (max - min);
 	return final;
 }
+glm::vec4 Utils::getRandomColor()
+{
+	return glm::vec4(Utils::getRandomVec3(0.0f,1.0f),1);
+}
+glm::vec3 Utils::getRandomVec3(float min, float max)
+{
+	float val1 = Utils::getRandom(min,max);
+	float val2 = Utils::getRandom(min,max);
+	float val3 = Utils::getRandom(min,max);
+	return glm::vec3(val1,val2,val3);
+}
 
+//Printing
 void Utils::printMat4(glm::mat4 mat)
 {
     std::cout << 

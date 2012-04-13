@@ -4,61 +4,38 @@
 #include "PhysicsObject.h"
 #include "../World.h"
 #include "../Objects/RenderObject.h"
+#include "../Utils/Utils.h"
 
 class PhysicsSceneDefault
 {
 public:
-	static PhysicsWorld* getDefaultScene(World* world)
+	PhysicsSceneDefault(){}
+	~PhysicsSceneDefault(){}
+	PhysicsWorld* getScene()
 	{
-		PhysicsWorld* physicsWorld = new PhysicsWorld();
+		return this->physicsWorld;
+	}
+	void makeDefaultScene(World* world)
+	{
+		this->physicsWorld = new PhysicsWorld();
+		this->world = world;
 
-		//ground plane
-		PhysicsSceneDefault::makeWall(physicsWorld, world, glm::vec3(10,1,10),glm::vec3(0,0,0),glm::vec4(0,1,0,1));
-		PhysicsSceneDefault::makeWall(physicsWorld, world, glm::vec3(12,5,1),glm::vec3(0,2,-5.5),glm::vec4(0,0,1,1));
-		//PhysicsSceneDefault::makeWall(physicsWorld, world, glm::vec3(12,5,1),glm::vec3(0,2,5.5),glm::vec4(0,0,1,1));
-		PhysicsSceneDefault::makeWall(physicsWorld, world, glm::vec3(1,5,10),glm::vec3(5.5,2,0),glm::vec4(1,0,1,1));
-		PhysicsSceneDefault::makeWall(physicsWorld, world, glm::vec3(1,5,10),glm::vec3(-5.5,2,0),glm::vec4(1,0,0,1));
+		//walls
+		this->makeWall(glm::vec3(10,1,10),glm::vec3(0,0,0),glm::vec4(0,1,0,1));
+		this->makeWall(glm::vec3(12,5,1),glm::vec3(0,2,-5.5),glm::vec4(0,0,1,1));
+		this->makeWall(glm::vec3(1,5,10),glm::vec3(5.5,2,0),glm::vec4(1,0,1,1));
+		this->makeWall(glm::vec3(1,5,10),glm::vec3(-5.5,2,0),glm::vec4(1,0,0,1));
 
 		//Bullet
 		int numObjects = 100;
 		for(int i = 0; i < numObjects; i++)
 		{
-			RenderObject* fallingObject = new RenderObject();	
-			PhysicsObject* projectile = new PhysicsObject();
-			
+			glm::vec3 position = glm::vec3(0,3.0f*i+5.0f,0);
 			int type = i%2;
 			if(type == 0)
-			{
-				fallingObject->initialize("fallingObject","cube","reflective","Material");
-				projectile->initialize(
-					PRIMITIVE_BOX,
-					fallingObject,
-					1.0f,0.1f,0.7f);
-				float min = .5f;
-				float max = 2.0f;
-				projectile->setScale(glm::vec3(Utils::getRandom(min,max),Utils::getRandom(min,max),Utils::getRandom(min,max)));
-			}
+				this->makeRandomCube(position);
 			else
-			{
-				fallingObject->initialize("fallingObject","sphere","reflective","Material");
-				projectile->initialize(
-					PRIMITIVE_SPHERE,
-					fallingObject,
-					1.0f,0.1f,0.7f);
-				float min = .5f;
-				float max = 2.0f;
-				projectile->setScale(Utils::getRandom(min,max));
-			}
-			
-			glm::vec4 randomColor = glm::vec4(Utils::getRandom(0.0f,1.0f),Utils::getRandom(0,1),Utils::getRandom(0,1),Utils::getRandom(0,1));
-			float randomReflectivity = Utils::getRandom(.3f,1.0f);
-			fallingObject->getMaterial()->diffuseColor = randomColor;
-			fallingObject->getMaterial()->reflectivity = randomReflectivity;
-
-			projectile->setTranslationY(3.0f*i+5.0f);
-			physicsWorld->addObject(projectile);
-			world->addObject(fallingObject);
-			world->addObject(projectile);
+				this->makeRandomSphere(position);
 		}
 
 		//standing cow
@@ -68,10 +45,57 @@ public:
 		cow->setScale(.5f);
 		cow->setTranslationY(5);
 		world->addObject(cow);
-
-		return physicsWorld;
 	}
-	static void makeWall(PhysicsWorld* physicsWorld, World* world, glm::vec3 dimensions, glm::vec3 position, glm::vec4 color)
+	PhysicsObject* makeRandomCube(glm::vec3 position)
+	{
+		RenderObject* fallingObject = new RenderObject();	
+		PhysicsObject* projectile = new PhysicsObject();
+		fallingObject->initialize("cube","cube","reflective","Material");
+		projectile->initialize(
+			PRIMITIVE_BOX,
+			fallingObject,
+			1.0f,0.1f,0.7f);
+		projectile->setScale(Utils::getRandomVec3(.5f,2.0f));
+			
+		glm::vec4 randomColor = Utils::getRandomColor();
+		float randomReflectivity = Utils::getRandom(.3f,1.0f);
+		fallingObject->getMaterial()->diffuseColor = randomColor;
+		fallingObject->getMaterial()->reflectivity = randomReflectivity;
+
+		projectile->setTranslation(position);
+		physicsWorld->addObject(projectile);
+		world->addObject(fallingObject);
+		world->addObject(projectile);
+
+		return projectile;
+	}
+	PhysicsObject* makeRandomSphere(glm::vec3 position)
+	{
+		RenderObject* fallingObject = new RenderObject();	
+		PhysicsObject* projectile = new PhysicsObject();
+
+		fallingObject->initialize("fallingObject","sphere","reflective","Material");
+		projectile->initialize(
+			PRIMITIVE_SPHERE,
+			fallingObject,
+			1.0f,0.1f,0.7f);
+		float min = .5f;
+		float max = 2.0f;
+		projectile->setScale(Utils::getRandom(min,max));
+		
+		glm::vec4 randomColor = Utils::getRandomColor();
+		float randomReflectivity = Utils::getRandom(.3f,1.0f);
+		fallingObject->getMaterial()->diffuseColor = randomColor;
+		fallingObject->getMaterial()->reflectivity = randomReflectivity;
+
+		projectile->setTranslation(position);
+		physicsWorld->addObject(projectile);
+		world->addObject(fallingObject);
+		world->addObject(projectile);
+
+		return projectile;
+	}
+	void makeWall(glm::vec3 dimensions, glm::vec3 position, glm::vec4 color)
 	{
 		RenderObject* floorObject = new RenderObject();
 		floorObject->initialize("floor","cube","reflective","Material");
@@ -87,4 +111,7 @@ public:
 		world->addObject(floorObject);
 		world->addObject(floorPhysics);
 	}
+
+	PhysicsWorld* physicsWorld;
+	World* world;
 };

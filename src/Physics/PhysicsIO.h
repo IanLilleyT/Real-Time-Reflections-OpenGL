@@ -3,7 +3,6 @@
 #include <vector>
 
 #include "PhysicsWorld.h"
-#include "PhysicsUtils.h"
 #include "../Utils/Singleton.h"
 #include "../Utils/EventHandler.h"
 #include "../Utils/Ray.h"
@@ -14,12 +13,8 @@ class PhysicsIO
 public:
 	PhysicsIO(){}
 	~PhysicsIO(){}
-	void initialize(PhysicsWorld* physicsWorld, World* world, Camera* camera)
+	void initialize()
 	{
-		this->physicsWorld = physicsWorld;
-		this->camera = camera;
-		this->world = world;
-
 		Singleton<EventHandler>::Instance()->addEnterFrameEventListener(EnterFrameReceiver::from_method<PhysicsIO,&PhysicsIO::update>(this));
 		Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::MouseButtonPressed, InputReceiver::from_method<PhysicsIO,&PhysicsIO::shoot>(this));
 	}
@@ -38,7 +33,8 @@ public:
 		if(eventHandler->isKeyDown(sf::Keyboard::Down))
 			force += glm::vec3(0,-forceMagnitude,0);
 
-		std::vector<PhysicsObject*>& objects = this->physicsWorld->getObjects();
+		PhysicsWorld* physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
+		std::vector<PhysicsObject*>& objects = physicsWorld->getObjects();
 		for(unsigned int i = 0; i < objects.size(); i++)
 		{
 			PhysicsObject* object = objects.at(i);
@@ -52,34 +48,20 @@ public:
 
 		if(!eventHandler->isAltDown())
 		{
-			RenderObject* fallingObject = new RenderObject();	
-			PhysicsObject* projectile = new PhysicsObject();
-			fallingObject->initialize("fallingObject","sphere","reflective","Material");
-			projectile->initialize(
-				PRIMITIVE_SPHERE,
-				fallingObject,
-				1.0f,0.1f,0.7f);
-
-			float min = .5f;
-			float max = 2.0f;
-			projectile->setScale(Utils::getRandom(min,max));
-			glm::vec4 randomColor = glm::vec4(Utils::getRandom(0.0f,1.0f),Utils::getRandom(0,1),Utils::getRandom(0,1),Utils::getRandom(0,1));
-			float randomReflectivity = Utils::getRandom(.3f,1.0f);
-			fallingObject->getMaterial()->diffuseColor = randomColor;
-			fallingObject->getMaterial()->reflectivity = randomReflectivity;
-
-			float forceAmount = 1000.0f;
+			PhysicsObject* projectile = 0;
 			Ray shootingRay = Singleton<GLCamera>::Instance()->getPickingRay(sfEvent.MouseButton.X,sfEvent.MouseButton.Y);
-			projectile->setTranslation(shootingRay.origin);
+			glm::vec3 position = shootingRay.origin;
+			
+			if(sfEvent.MouseButton.Button == sf::Mouse::Left)
+				projectile = Singleton<PhysicsSceneDefault>::Instance()->makeRandomSphere(position);
+			else if(sfEvent.MouseButton.Button = sf::Mouse::Right)
+				projectile = Singleton<PhysicsSceneDefault>::Instance()->makeRandomCube(position);
+
+			glm::vec3 torque = Utils::getRandomVec3(0.0f,100.0f);
+			float forceAmount = 1000.0f;
+			projectile->getRigidBody()->applyTorque(PhysicsUtils::convertGLMVectorToBullet(torque));
 			projectile->getRigidBody()->applyCentralForce(forceAmount*PhysicsUtils::convertGLMVectorToBullet(shootingRay.direction));
-		
-			physicsWorld->addObject(projectile);
-			this->world->addObject(fallingObject);
-			this->world->addObject(projectile);
+
 		}	
 	}
-
-	PhysicsWorld* physicsWorld;
-	Camera* camera;
-	World* world;
 };
