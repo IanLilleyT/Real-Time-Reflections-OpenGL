@@ -61,7 +61,6 @@ public:
 			float forceAmount = 1000.0f;
 			projectile->getRigidBody()->applyTorque(PhysicsUtils::convertGLMVectorToBullet(torque));
 			projectile->getRigidBody()->applyCentralForce(forceAmount*PhysicsUtils::convertGLMVectorToBullet(shootingRay.direction));
-
 		}	
 	}
 };

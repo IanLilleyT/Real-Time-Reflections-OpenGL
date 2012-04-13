@@ -134,6 +134,32 @@ float linearizeDepth(float depth)
 	float f = ProjectionBlck.zFar;
 	return (2.0 * n) / (f + n - depth * (f - n));
 }
+
+const int FRONT = 0;
+const int BACK = 1;
+bool findIntersection(in int faceType, inout vec3 screenSpaceVector, inout vec3 currentPosition, inout vec3 oldPosition, inout int numRefinements, out vec4 color)
+{
+	vec2 samplePos = currentPosition.xy;
+	float currentDepth = linearizeDepth(currentPosition.z);
+	float sampleDepth = faceType == FRONT ? 
+		linearizeDepth(texture(depthTextureFront, samplePos).x) :
+		linearizeDepth(texture(depthTextureBack, samplePos).x);
+	float diff = currentDepth - sampleDepth;
+	if(diff >= 0 && diff < length(screenSpaceVector))
+	{
+		screenSpaceVector *= .5;
+		currentPosition = oldPosition;
+		numRefinements += 1;
+		if(numRefinements >= 3)
+		{
+			color = faceType == FRONT ? 
+				texture(colorTextureFront, samplePos) :
+				texture(colorTextureBack, samplePos);
+			return true;
+		}
+	}
+	return false;
+}
 vec4 ComputeEffect(in int type)
 {
 	//Initial reflection positions
@@ -141,13 +167,14 @@ vec4 ComputeEffect(in int type)
 	vec3 screenSpaceVector;
 	calcScreenSpaceVector(type,screenSpacePosition,screenSpaceVector);
 
-	screenSpaceVector *= .01;///length(screenSpaceVector.xy);
+	screenSpaceVector *= .02;
 	vec3 oldPosition = screenSpacePosition + screenSpaceVector;
 	vec3 currentPosition = oldPosition + screenSpaceVector;
 	
-	vec4 color = vec4(0,0,0,1);
+	vec4 color;
 	int count = 0;
-	while(count < 3000)
+	int numRefinements = 0;
+	while(count < 1000)
 	{
 		//Stop ray trace when it goes outside screen space
 		if(currentPosition.x < 0 || currentPosition.x > 1 ||
@@ -155,50 +182,16 @@ vec4 ComputeEffect(in int type)
 		   currentPosition.z < 0 || currentPosition.z > 1)
 			break;
 
-		//front
-		vec2 samplePos = currentPosition.xy;//(currentPosition.xy + oldPosition.xy)/2.0;
-		float oldDepth = linearizeDepth(oldPosition.z);
-		float currentDepth = linearizeDepth(currentPosition.z);
-		float depthDifference = abs(oldDepth - currentDepth);
+		//intersections
+		if(findIntersection(FRONT,screenSpaceVector,currentPosition,oldPosition,numRefinements,color) ||
+		   findIntersection(BACK,screenSpaceVector,currentPosition,oldPosition,numRefinements,color))
+		   break;
 
-		float sampleDepthFront = linearizeDepth(texture(depthTextureFront, samplePos).x);
-		float depthDifferenceFront = abs(sampleDepthFront - min(currentDepth,oldDepth));
-		if(depthDifferenceFront <= depthDifference)
-		{
-			screenSpaceVector *= .5;
-			currentPosition = oldPosition;
-			if(length(screenSpaceVector) < .04)
-			{
-				color = texture(colorTextureFront, samplePos);
-				break;
-			}
-		}
-
-		//back
-		float sampleDepthBack = linearizeDepth(texture(depthTextureBack, samplePos).x);
-		float depthDifferenceBack = abs(sampleDepthBack - min(currentDepth,oldDepth));
-		if(depthDifferenceBack <= depthDifference)
-		{
-			screenSpaceVector *= .5;
-			currentPosition = oldPosition;
-			if(length(screenSpaceVector) < .04)
-			{
-				color = texture(colorTextureBack, samplePos);
-				break;
-			}
-		}
-
-		//Blur and scatter effects
-		//float scatterAmount = clamp((count/20.0),0.0,1.0);
-		//vec3 scatter = vec3(rand(screenSpaceVector.xx),rand(screenSpaceVector.yy),0)*reflectiveScatter*scatterAmount;
-		
 		//Update vectors
 		oldPosition = currentPosition;
-		currentPosition = oldPosition + screenSpaceVector;// + scatter;
+		currentPosition = oldPosition + screenSpaceVector;
 		count++;
 	}
-	//float colorStrength = (1-reflectiveScatter) * clamp(distance(currentPosition, screenSpacePosition)/1024.0,0,1);
-	//color *= colorStrength;
 	return color;
 }
 

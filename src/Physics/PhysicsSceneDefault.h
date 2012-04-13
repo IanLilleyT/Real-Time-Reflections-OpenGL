@@ -58,7 +58,7 @@ public:
 		projectile->setScale(Utils::getRandomVec3(.5f,2.0f));
 			
 		glm::vec4 randomColor = Utils::getRandomColor();
-		float randomReflectivity = Utils::getRandom(.3f,1.0f);
+		float randomReflectivity = Utils::getRandom(.3f,0.5f);
 		fallingObject->getMaterial()->diffuseColor = randomColor;
 		fallingObject->getMaterial()->reflectivity = randomReflectivity;
 
@@ -84,7 +84,7 @@ public:
 		projectile->setScale(Utils::getRandom(min,max));
 		
 		glm::vec4 randomColor = Utils::getRandomColor();
-		float randomReflectivity = Utils::getRandom(.3f,1.0f);
+		float randomReflectivity = Utils::getRandom(.3f,0.5f);
 		fallingObject->getMaterial()->diffuseColor = randomColor;
 		fallingObject->getMaterial()->reflectivity = randomReflectivity;
 
