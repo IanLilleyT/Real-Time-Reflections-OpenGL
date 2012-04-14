@@ -2,7 +2,7 @@
 	<name>blue</name>
 	<diffuseColor>0 0 1 1</diffuseColor>
 	<specularColor>1 1 1 1</specularColor>
-	<specularShininess>.2</specularShininess>
-	<reflectivity>1</reflectivity>
-  <reflectiveScatter>0</reflectiveScatter>
+	<specularShininess>.05</specularShininess>
+	<reflectivity>.5</reflectivity>
+  <reflectiveScatter>1</reflectiveScatter>
 </material>

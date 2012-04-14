@@ -57,12 +57,9 @@ void GLDisplay::initializeFramebuffers()
 }
 void GLDisplay::initializePhysics()
 {
-	MeshDatabase* meshDatabase = Singleton<MeshDatabase>::Instance();
-	MaterialDatabase* materialDatabase = Singleton<MaterialDatabase>::Instance();
-
-	Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
-	this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
-	Singleton<PhysicsIO>::Instance()->initialize();
+	//Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
+	//this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
+	//Singleton<PhysicsIO>::Instance()->initialize();
 }
 void GLDisplay::update()
 {
@@ -71,7 +68,7 @@ void GLDisplay::update()
 		GLState* glState = Singleton<GLState>::Instance();
 		GLUniformBlockHelper* uniformBlockHelper = Singleton<GLUniformBlockHelper>::Instance();
 
-		physicsWorld->update();
+		//physicsWorld->update();
 		world->update();
 
 		//Render to framebuffer without reflections

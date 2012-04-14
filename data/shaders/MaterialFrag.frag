@@ -137,7 +137,20 @@ float linearizeDepth(float depth)
 
 const int FRONT = 0;
 const int BACK = 1;
-bool findIntersection(in int faceType, inout vec3 screenSpaceVector, inout vec3 currentPosition, inout vec3 oldPosition, inout int numRefinements, out vec4 color)
+
+vec3 screenSpacePosition;
+vec3 screenSpaceVector;
+vec3 oldPosition;
+vec3 currentPosition;
+vec4 color = vec4(0,0,0,1);
+int count = 0;
+int numRefinements = 0;
+
+float initialStepAmount = .01;
+float stepRefinementAmount = .7;
+int maxRefinements = 3;
+
+bool findIntersection(in int faceType, in int effectType)
 {
 	vec2 samplePos = currentPosition.xy;
 	float currentDepth = linearizeDepth(currentPosition.z);
@@ -145,12 +158,13 @@ bool findIntersection(in int faceType, inout vec3 screenSpaceVector, inout vec3 
 		linearizeDepth(texture(depthTextureFront, samplePos).x) :
 		linearizeDepth(texture(depthTextureBack, samplePos).x);
 	float diff = currentDepth - sampleDepth;
-	if(diff >= 0 && diff < length(screenSpaceVector))
+	float error = effectType == REFLECTION ? length(screenSpaceVector) : 100;
+	if(diff >= 0 && diff < error)
 	{
-		screenSpaceVector *= .5;
+		screenSpaceVector *= stepRefinementAmount;
 		currentPosition = oldPosition;
-		numRefinements += 1;
-		if(numRefinements >= 3)
+		numRefinements ++;
+		if(numRefinements >= maxRefinements)
 		{
 			color = faceType == FRONT ? 
 				texture(colorTextureFront, samplePos) :
@@ -163,17 +177,14 @@ bool findIntersection(in int faceType, inout vec3 screenSpaceVector, inout vec3 
 vec4 ComputeEffect(in int type)
 {
 	//Initial reflection positions
-	vec3 screenSpacePosition;
-	vec3 screenSpaceVector;
 	calcScreenSpaceVector(type,screenSpacePosition,screenSpaceVector);
 
-	screenSpaceVector *= .02;
-	vec3 oldPosition = screenSpacePosition + screenSpaceVector;
-	vec3 currentPosition = oldPosition + screenSpaceVector;
+	float randomOffset = clamp(rand(gl_FragCoord.xy),0,1)/10000.0;
+	screenSpaceVector *= initialStepAmount;
+	oldPosition = screenSpacePosition;// + screenSpaceVector;
+	oldPosition *= clamp((1-randomOffset*reflectiveScatter),0,1);
+	currentPosition = oldPosition + screenSpaceVector;
 	
-	vec4 color;
-	int count = 0;
-	int numRefinements = 0;
 	while(count < 1000)
 	{
 		//Stop ray trace when it goes outside screen space
@@ -183,8 +194,8 @@ vec4 ComputeEffect(in int type)
 			break;
 
 		//intersections
-		if(findIntersection(FRONT,screenSpaceVector,currentPosition,oldPosition,numRefinements,color) ||
-		   findIntersection(BACK,screenSpaceVector,currentPosition,oldPosition,numRefinements,color))
+		if(findIntersection(FRONT,type))// ||
+		   //findIntersection(BACK,type))
 		   break;
 
 		//Update vectors
@@ -192,6 +203,10 @@ vec4 ComputeEffect(in int type)
 		currentPosition = oldPosition + screenSpaceVector;
 		count++;
 	}
+	
+	//color = vec4(rand(currentPosition.xx),rand(currentPosition.yy),rand(currentPosition.xy),0);
+	float travelLength = clamp(2*distance(screenSpacePosition, currentPosition),0,1);
+	color *= 1.0 - travelLength*reflectiveScatter;
 	return color;
 }
 
