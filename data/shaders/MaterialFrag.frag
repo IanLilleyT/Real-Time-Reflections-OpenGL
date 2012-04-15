@@ -5,6 +5,7 @@ in vec3 vertexNormal;
 in vec3 cameraSpacePosition;
 out vec4 outputColor;
 
+//Material properties
 uniform vec4 diffuseColor;
 uniform vec4 specularColor;
 uniform float specularShininess;
@@ -14,13 +15,13 @@ uniform float reflectiveScatter;
 uniform float refractivity;
 uniform float refractiveIndex;
 
+//FBO textures
 uniform sampler2D colorTextureFront;
 uniform sampler2D depthTextureFront;
 uniform sampler2D colorTextureBack;
 uniform sampler2D depthTextureBack;
 
-uniform int numLights;
-
+//Projection matrix
 uniform ProjectionBlock
 {
 	mat4 cameraToClipMatrix;
@@ -28,13 +29,14 @@ uniform ProjectionBlock
 	float zFar;
 } ProjectionBlck;
 
+//Lighting structs
+uniform int numLights;
+const int maxNumberOfLights = 8;
 struct PerLight
 {
 	vec4 cameraSpaceLightPos;
 	vec4 lightIntensity;
 };
-
-const int maxNumberOfLights = 8;
 uniform LightsBlock
 {
 	vec4 ambientIntensity;
@@ -44,18 +46,19 @@ uniform LightsBlock
 	PerLight lights[maxNumberOfLights];
 } LightsBlck;
 
-uniform ReflectionToggleBlock
+//Set different effects
+uniform EffectTypeBlock
 {
-	int reflectionToggle;
-} ReflectionToggleBlck;
+	int effectType;
+} EffectTypeBlck;
 
+//Random function used for jittering rays (kinda slow)
 float rand(vec2 co){
     return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
 
-float CalcAttenuation(in vec3 cameraSpacePosition,
-	in vec3 cameraSpaceLightPos,
-	out vec3 lightDirection)
+//Diffuse / specular lighting calculations
+float CalcAttenuation(in vec3 cameraSpacePosition,in vec3 cameraSpaceLightPos,out vec3 lightDirection)
 {
 	vec3 lightDifference =  cameraSpaceLightPos - cameraSpacePosition;
 	float lightDistanceSqr = dot(lightDifference, lightDifference);
@@ -63,7 +66,6 @@ float CalcAttenuation(in vec3 cameraSpacePosition,
 	
 	return (1 / ( 1.0 + LightsBlck.lightAttenuation * lightDistanceSqr));
 }
-
 vec4 ComputeLighting(in PerLight lightData)
 {
 	vec3 lightDir;
@@ -108,17 +110,25 @@ vec3 convertCameraSpaceToScreenSpace(in vec3 cameraSpace)
 	return screenSpace;
 }
 
-const int REFLECTION = 0;
-const int REFRACTION = 1;
-void calcScreenSpaceVector(in int type, out vec3 screenSpacePosition, out vec3 screenSpaceVector)
+//Effect types
+const int DIFFUSE = 0;
+const int REFLECTION = 1;
+const int REFRACTION = 2;
+
+//Front vs Back face
+const int FRONT = 0;
+const int BACK = 1;
+
+//Calculates two positions in screen space and outputs the screen space ray
+void calcScreenSpaceVector(in int effectType, out vec3 screenSpacePosition, out vec3 screenSpaceVector)
 {
 	//Camera space vector
 	vec3 cameraSpaceViewDirection = normalize(cameraSpacePosition);
 	vec3 cameraSpaceSurfaceNormal = normalize(vertexNormal);
 	vec3 cameraSpaceVector;
-	if(type == REFLECTION)
+	if(effectType == REFLECTION)
 		cameraSpaceVector = reflect(cameraSpaceViewDirection,cameraSpaceSurfaceNormal);
-	else if(type == REFRACTION)
+	else if(effectType == REFRACTION)
 		cameraSpaceVector = refract(cameraSpaceViewDirection,cameraSpaceSurfaceNormal,1.0/refractiveIndex);
 	cameraSpaceVector = normalize(cameraSpaceVector);
 
@@ -128,6 +138,8 @@ void calcScreenSpaceVector(in int type, out vec3 screenSpacePosition, out vec3 s
 	vec3 screenSpaceVectorPosition = convertCameraSpaceToScreenSpace(cameraSpaceVectorPosition);
 	screenSpaceVector = normalize(screenSpaceVectorPosition - screenSpacePosition);
 }
+
+//Z buffer is nonlinear by default, so we fix this here
 float linearizeDepth(float depth)
 {
 	float n = ProjectionBlck.zNear;
@@ -135,9 +147,7 @@ float linearizeDepth(float depth)
 	return (2.0 * n) / (f + n - depth * (f - n));
 }
 
-const int FRONT = 0;
-const int BACK = 1;
-
+//Variables used across several methods
 vec3 screenSpacePosition;
 vec3 screenSpaceVector;
 vec3 oldPosition;
@@ -146,10 +156,13 @@ vec4 color = vec4(0,0,0,1);
 int count = 0;
 int numRefinements = 0;
 
+//Tweakable variables
 float initialStepAmount = .01;
 float stepRefinementAmount = .7;
 int maxRefinements = 3;
 
+//Finds the intersection of the ray and the depth texture
+//and performs the binary search operation
 bool findIntersection(in int faceType, in int effectType)
 {
 	vec2 samplePos = currentPosition.xy;
@@ -174,11 +187,12 @@ bool findIntersection(in int faceType, in int effectType)
 	}
 	return false;
 }
-vec4 ComputeEffect(in int type)
+vec4 ComputeEffect(in int effectType)
 {
 	//Initial reflection positions
-	calcScreenSpaceVector(type,screenSpacePosition,screenSpaceVector);
+	calcScreenSpaceVector(effectType,screenSpacePosition,screenSpaceVector);
 
+	//Jitter the initial ray
 	float randomOffset = clamp(rand(gl_FragCoord.xy),0,1)/10000.0;
 	screenSpaceVector *= initialStepAmount;
 	oldPosition = screenSpacePosition;// + screenSpaceVector;
@@ -194,17 +208,17 @@ vec4 ComputeEffect(in int type)
 			break;
 
 		//intersections
-		if(findIntersection(FRONT,type))// ||
-		   //findIntersection(BACK,type))
+		if(findIntersection(FRONT,effectType))// ||
+		   //findIntersection(BACK,effectType))
 		   break;
 
-		//Update vectors
+		//Step ray
 		oldPosition = currentPosition;
 		currentPosition = oldPosition + screenSpaceVector;
 		count++;
 	}
 	
-	//color = vec4(rand(currentPosition.xx),rand(currentPosition.yy),rand(currentPosition.xy),0);
+	//Fade the reflection at large distance
 	float travelLength = clamp(2*distance(screenSpacePosition, currentPosition),0,1);
 	color *= 1.0 - travelLength*reflectiveScatter;
 	return color;
@@ -212,29 +226,38 @@ vec4 ComputeEffect(in int type)
 
 void main()
 {
-	//Calculate 
-	vec4 accumLighting = diffuseColor * LightsBlck.ambientIntensity;
-	for(int light = 0; light < numLights; light++)
-		accumLighting += ComputeLighting(LightsBlck.lights[light]);
-	accumLighting = accumLighting / LightsBlck.maxIntensity;
-	vec4 gamma = vec4(1.0 / LightsBlck.gamma);
-	gamma.w = 1.0;
-	accumLighting = pow(accumLighting, gamma);
-
-	if(ReflectionToggleBlck.reflectionToggle == 1)
+	vec2 screenSpacePosition = convertCameraSpaceToScreenSpace(cameraSpacePosition).xy;
+	if(EffectTypeBlck.effectType == DIFFUSE)
 	{
-		vec4 reflectiveColor = vec4(0,0,0,0);
-		vec4 refractiveColor = vec4(0,0,0,0);
-		if(reflectivity > 0)
-			reflectiveColor = ComputeEffect(REFLECTION);
-		if(refractivity > 0)
-			refractiveColor = ComputeEffect(REFRACTION);
-		
-		outputColor = reflectivity*reflectiveColor + refractivity*refractiveColor + (1-reflectivity-refractivity)*accumLighting;
-	}
-	else
-	{
+		//Calculate diffuse/specular lighting
+		if(refractivity > 0) discard;
+		vec4 accumLighting = diffuseColor * LightsBlck.ambientIntensity;
+		for(int light = 0; light < numLights; light++)
+			accumLighting += ComputeLighting(LightsBlck.lights[light]);
+		accumLighting = accumLighting / LightsBlck.maxIntensity;
+		vec4 gamma = vec4(1.0 / LightsBlck.gamma);
+		gamma.w = 1.0;
+		accumLighting = pow(accumLighting, gamma);
 		outputColor = accumLighting;
 	}
-	outputColor.w = clamp(1-transparency,0,1);
+	else if(EffectTypeBlck.effectType == REFLECTION)
+	{
+		//Calculate reflection
+		if(refractivity > 0) discard;
+		vec4 reflectiveColor = vec4(0,0,0,0);
+		reflectiveColor = ComputeEffect(REFLECTION);
+		float reflectionAmount = reflectivity / (1.0 - reftactivity);
+		float diffuseAmount = 1.0 - reflectionAmount;
+		glm::vec4 diffuseColor = (texture(colorTextureFront, screenSpacePosition);
+		outputColor = reflectionAmount * reflectiveColor + diffuseAmount * diffuseColor;
+	}
+	else if(EffectTypeBlck.effectType == REFRACTION)
+	{
+		//Calculate refraction
+		vec4 refractiveColor = vec4(0,0,0,0);
+		refractiveColor = ComputeEffect(REFRACTION);
+		float otherAmount = 1.0 - refractivity;
+		glm::vec4 otherColor = (texture(colorTextureFront, screenSpacePosition);
+		outputColor = refractionAmount * refractiveColor + otherAmount * otherColor;
+	}
 }

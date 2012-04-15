@@ -70,38 +70,42 @@ void GLDisplay::update()
 
 		//physicsWorld->update();
 		world->update();
-
-		//Render to framebuffer without reflections
-		glState->setReflectionToggle(0);
 		uniformBlockHelper->updateAll();
 
-		std::vector<RenderObject*> nonRefractiveObjects;
-		std::vector<Object*> objects = this->world->getObjectsByType("RenderObject",false);
-		for(unsigned int i = 0; i < objects.size(); i++)
-		{
-			RenderObject* renderObject = (RenderObject*)objects.at(i);
-			if(renderObject->getMaterial()->refractivity <= .001f)
-				nonRefractiveObjects.push_back(renderObject);
-		}
+		//Texture types
+		GLenum textureUnitsFront[2] = {GL_TEXTURE0, GL_TEXTURE1};
+		GLenum textureUnitsBack[2] =  {GL_TEXTURE2, GL_TEXTURE3};
 
-		//Front face render
+		//Diffuse render to texture (front and back faces)
+		glState->setEffectType(GLUniformBlockHelper::DIFFUSE);
+		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
+
+		//Front face diffuse render
 		glCullFace(GL_BACK);
 		this->reflectionBufferFront->bindForWriting();
 		this->clearGL();
-		for(unsigned int i = 0; i < nonRefractiveObjects.size(); i++)
-			nonRefractiveObjects.at(i)->render();
+		world->render();
 		
-		//Back face render
+		//Back face diffuse render
 		glCullFace(GL_FRONT);
 		this->reflectionBufferBack->bindForWriting();
 		this->clearGL();
-		for(unsigned int i = 0; i < nonRefractiveObjects.size(); i++)
-			nonRefractiveObjects.at(i)->render();
+		world->render();
 
-		//Render for real with reflections
+		//Reflections render to texture (front faces)
 		glCullFace(GL_BACK);
-		glState->setReflectionToggle(1);
-		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_REFLECTION_TOGGLE);
+		glState->setEffectType(GLUniformBlockHelper::REFLECTION);
+		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
+		
+		this->reflectionBufferFront->bindForReading(textureUnitsFront);
+		this->reflectionBufferBack->bindForReading(textureUnitsBack);
+		this->clearGL();
+		world->render();
+
+		//Refractions render to screen (front faces)
+		glCullFace(GL_BACK);
+		glState->setEffectType(GLUniformBlockHelper::REFRACTION);
+		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
 		GLenum textureUnitsFront[2] = {GL_TEXTURE0, GL_TEXTURE1};
 		GLenum textureUnitsBack[2] =  {GL_TEXTURE2, GL_TEXTURE3};
 		this->reflectionBufferFront->bindForReading(textureUnitsFront);

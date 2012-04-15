@@ -23,8 +23,8 @@ public:
 	void setLights(std::vector<Object*>& lights);
 	std::vector<Object*>& getLights();
 
-	void setReflectionToggle(int reflectionToggle);
-	int getReflectionToggle();
+	void setEffectType(int effectType);
+	int getEffectType();
 
 private:
 	glm::mat4 modelToWorldMatrix;
@@ -32,5 +32,5 @@ private:
 	glm::mat4 cameraToClipMatrix;
 	Material* material;
 	std::vector<Object*> lights;
-	int reflectionToggle;
+	int effectType;
 };

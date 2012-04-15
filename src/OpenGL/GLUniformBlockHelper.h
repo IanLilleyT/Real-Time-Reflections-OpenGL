@@ -23,7 +23,11 @@ public:
 
 	static std::string TYPE_PROJECTION;
 	static std::string TYPE_LIGHTS;
-	static std::string TYPE_REFLECTION_TOGGLE;
+	static std::string TYPE_EFFECT_TYPE;
+
+	static const int DIFFUSE = 0;
+	static const int REFLECTION = 1;
+	static const int REFRACTION = 2;
 
 private:
 	std::map<std::string, GLUniformBlock*> uniformBlockMap;
@@ -53,7 +57,7 @@ struct LightsBlock
 	float padding;
 	PerLight lights[MAX_NUMBER_OF_LIGHTS];
 };
-struct ReflectionToggleBlock
+struct EffectTypeBlock
 {
-	int value;
+	int effectType;
 };

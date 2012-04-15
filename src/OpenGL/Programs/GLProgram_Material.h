@@ -20,7 +20,7 @@ protected:
 		GLProgram::bindUniformBlocks();
 		this->bindUniformBlock(GLUniformBlockHelper::TYPE_PROJECTION);
 		this->bindUniformBlock(GLUniformBlockHelper::TYPE_LIGHTS);
-		this->bindUniformBlock(GLUniformBlockHelper::TYPE_REFLECTION_TOGGLE);
+		this->bindUniformBlock(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
 	}
 	virtual void fillUniforms()
 	{

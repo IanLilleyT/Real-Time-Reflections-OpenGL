@@ -14,7 +14,7 @@ public:
 		
 		//Create FBO
 		glGenFramebuffers(1, &fbo);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 		
 		//Window dimensions
 		glm::ivec2 windowDimensions = Singleton<GLCamera>::Instance()->getWindowDimensions();
@@ -44,8 +44,8 @@ public:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 		//Bind textures
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0);
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,  GL_TEXTURE_2D, depthTexture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorTexture, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,  GL_TEXTURE_2D, depthTexture, 0);
 
 		//Draw to correct color buffer
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
@@ -59,12 +59,24 @@ public:
 			printf("FB error, status: 0x%x\n", status);
 		
 		//Unbind buffer
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); 
+		glBindFramebuffer(GL_FRAMEBUFFER, 0); 
+	}
+	virtual void bindForReadingAndWriting(GLenum* textureUnits)
+	{
+		bindForWriting();
+		bindTextures(textureUnits);
+	}
+	virtual void bindForWriting()
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 	}
 	virtual void bindForReading(GLenum* textureUnits)
 	{
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-
+		bindTextures(textureUnits);
+	}
+	virtual void bindTextures(GLenum* textureUnits)
+	{
 		//Bind color
 		glActiveTexture(textureUnits[0]);
 		glBindTexture(GL_TEXTURE_2D, colorTexture);
@@ -72,10 +84,6 @@ public:
 		//Bind depth
 		glActiveTexture(textureUnits[1]);
 		glBindTexture(GL_TEXTURE_2D, depthTexture);
-	}
-	virtual void bindForWriting()
-	{
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	}
 
 private:

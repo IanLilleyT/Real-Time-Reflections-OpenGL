@@ -2,7 +2,7 @@
 
 std::string GLUniformBlockHelper::TYPE_PROJECTION = "ProjectionBlock";
 std::string GLUniformBlockHelper::TYPE_LIGHTS = "LightsBlock";
-std::string GLUniformBlockHelper::TYPE_REFLECTION_TOGGLE = "ReflectionToggleBlock";
+std::string GLUniformBlockHelper::TYPE_EFFECT_TYPE = "EffectTypeBlock";
 
 GLUniformBlockHelper::GLUniformBlockHelper(){}
 GLUniformBlockHelper::~GLUniformBlockHelper(){}
@@ -12,7 +12,7 @@ void GLUniformBlockHelper::initialize()
 	std::vector<std::string> allUniformBlockNames = std::vector<std::string>();
 	allUniformBlockNames.push_back(TYPE_PROJECTION);
 	allUniformBlockNames.push_back(TYPE_LIGHTS);
-	allUniformBlockNames.push_back(TYPE_REFLECTION_TOGGLE);
+	allUniformBlockNames.push_back(TYPE_EFFECT_TYPE);
 
 	int bindingIndex = 0;
 	int uniformBlockSize = 0;
@@ -25,8 +25,8 @@ void GLUniformBlockHelper::initialize()
 			uniformBlockSize = sizeof(ProjectionBlock);
 		else if(uniformBlockName == TYPE_LIGHTS)
 			uniformBlockSize = sizeof(LightsBlock);
-		else if(uniformBlockName == TYPE_REFLECTION_TOGGLE)
-			uniformBlockSize = sizeof(ReflectionToggleBlock);
+		else if(uniformBlockName == TYPE_EFFECT_TYPE)
+			uniformBlockSize = sizeof(EffectTypeBlock);
 
 		GLUniformBlock* uniformBlock = new GLUniformBlock();
 		uniformBlock->setName(uniformBlockName);
@@ -74,19 +74,19 @@ void GLUniformBlockHelper::update(std::string name)
 		lightsBlock.maxIntensity = Light::getMaxIntensity();
 		lightsUniformBlock->setData(&lightsBlock);
 	}
-	else if(name == TYPE_REFLECTION_TOGGLE)
+	else if(name == TYPE_EFFECT_TYPE)
 	{
-		GLUniformBlock* reflectionToggleUniformBlock = this->findUniformBlock(TYPE_REFLECTION_TOGGLE);
-		ReflectionToggleBlock reflectionToggleBlock = ReflectionToggleBlock();
-		reflectionToggleBlock.value = glState->getReflectionToggle();
-		reflectionToggleUniformBlock->setData(&reflectionToggleBlock);
+		GLUniformBlock* effectTypeUniformBlock = this->findUniformBlock(TYPE_EFFECT_TYPE);
+		EffectTypeBlock effectTypeBlock = EffectTypeBlock();
+		effectTypeBlock.effectType = glState->getEffectType();
+		effectTypeUniformBlock->setData(&effectTypeBlock);
 	}
 }
 void GLUniformBlockHelper::updateAll()
 {
 	this->update(TYPE_PROJECTION);
 	this->update(TYPE_LIGHTS);
-	this->update(TYPE_REFLECTION_TOGGLE);
+	this->update(TYPE_EFFECT_TYPE);
 }
 
 GLUniformBlock* GLUniformBlockHelper::findUniformBlock(std::string name)
