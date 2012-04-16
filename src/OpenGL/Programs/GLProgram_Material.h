@@ -83,19 +83,19 @@ protected:
 
 		//Color texture front
 		GLuint colorTextureFrontUniform = glGetUniformLocation(this->program, "colorTextureFront");
-		glUniform1i(colorTextureFrontUniform, 0);
+		glUniform1i(colorTextureFrontUniform, glState->colorTextureFront);
 
 		//Depth texture front
 		GLuint depthTextureFrontUniform = glGetUniformLocation(this->program, "depthTextureFront");
-		glUniform1i(depthTextureFrontUniform, 1);
+		glUniform1i(depthTextureFrontUniform, glState->depthTextureFront);
 
 		//Color texture back
 		GLuint colorTextureBackUniform = glGetUniformLocation(this->program, "colorTextureBack");
-		glUniform1i(colorTextureBackUniform, 2);
+		glUniform1i(colorTextureBackUniform, glState->colorTextureBack);
 
 		//Depth texture back
 		GLuint depthTextureBackUniform = glGetUniformLocation(this->program, "depthTextureBack");
-		glUniform1i(depthTextureBackUniform, 3);
+		glUniform1i(depthTextureBackUniform, glState->depthTextureBack);
 
 		//Num Lights
 		int numLights = glState->getLights().size();

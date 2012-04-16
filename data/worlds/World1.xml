@@ -1,5 +1,6 @@
 <world>
   <name> World1 </name>
+  <!--
   <object type="RenderObject">
     <name>floor</name>
     <material>scatter</material>
@@ -25,6 +26,7 @@
     <translation>-5.5 2 0</translation>
     <scale>1 5 10</scale>
   </object>
+  -->
   <!--
   <object type="RenderObject">
     <name>cow2</name>

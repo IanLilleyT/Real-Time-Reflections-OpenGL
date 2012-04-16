@@ -231,14 +231,13 @@ void main()
 	{
 		//Calculate diffuse/specular lighting
 		if(refractivity > 0) discard;
-		vec4 accumLighting = diffuseColor * LightsBlck.ambientIntensity;
+		outputColor = diffuseColor * LightsBlck.ambientIntensity;
 		for(int light = 0; light < numLights; light++)
-			accumLighting += ComputeLighting(LightsBlck.lights[light]);
-		accumLighting = accumLighting / LightsBlck.maxIntensity;
+			outputColor += ComputeLighting(LightsBlck.lights[light]);
+		outputColor = outputColor / LightsBlck.maxIntensity;
 		vec4 gamma = vec4(1.0 / LightsBlck.gamma);
 		gamma.w = 1.0;
-		accumLighting = pow(accumLighting, gamma);
-		outputColor = accumLighting;
+		outputColor = pow(outputColor, gamma);
 	}
 	else if(EffectTypeBlck.effectType == REFLECTION)
 	{
@@ -259,5 +258,6 @@ void main()
 		float otherAmount = 1.0 - refractivity;
 		vec4 otherColor = texture(colorTextureFront, screenSpacePosition);
 		outputColor = refractivity * refractiveColor + otherAmount * otherColor;
+		outputColor = vec4(vec3(otherAmount),1);
 	}
 }

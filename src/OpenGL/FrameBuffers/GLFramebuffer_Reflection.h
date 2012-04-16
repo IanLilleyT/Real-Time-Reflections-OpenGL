@@ -37,17 +37,17 @@ public:
 
 	void bindForReadingAndWriting(GLenum colorTextureUnit, GLenum depthTextureUnit, int textureGroupRead, int textureGroupWrite)
 	{
-		this->bindReadTextures(colorTextureUnit, depthTextureUnit, textureGroupRead);
 		this->bindForWriting(textureGroupWrite);
+		this->bindReadTextures(colorTextureUnit, depthTextureUnit, textureGroupRead);
 	}
 	void bindForWriting(int textureGroup)
 	{
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 		this->bindWriteTextures(textureGroup);
 	}
 	void bindForReading(GLenum colorTextureUnit, GLenum depthTextureUnit, int textureGroup)
 	{
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		this->bindReadTextures(colorTextureUnit, depthTextureUnit, textureGroup);
 	}
 	
@@ -68,6 +68,7 @@ private:
 		std::pair<GLuint,GLuint> textures = this->getTexturesByGroup(textureGroup);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textures.first, 0);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,  GL_TEXTURE_2D, textures.second, 0);
+		this->checkFBOErrors();
 	}
 	std::pair<GLuint,GLuint> getTexturesByGroup(int textureGroup)
 	{

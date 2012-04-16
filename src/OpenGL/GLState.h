@@ -26,6 +26,13 @@ public:
 	void setEffectType(int effectType);
 	int getEffectType();
 
+	//Reflection textures
+	int colorTextureFront;
+	int depthTextureFront;
+	int colorTextureBack;
+	int depthTextureBack;
+	void setReflectionTextures(int colorFront, int depthFront, int colorBack, int depthBack);
+
 private:
 	glm::mat4 modelToWorldMatrix;
 	glm::mat4 worldToCameraMatrix;
