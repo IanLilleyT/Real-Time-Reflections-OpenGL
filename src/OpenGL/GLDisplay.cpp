@@ -67,49 +67,44 @@ void GLDisplay::update()
 	{
 		GLState* glState = Singleton<GLState>::Instance();
 		GLUniformBlockHelper* uniformBlockHelper = Singleton<GLUniformBlockHelper>::Instance();
+		int textureGroup0 = GLFramebuffer_Reflection::TEXTURE_GROUP0;
+		int textureGroup1 = GLFramebuffer_Reflection::TEXTURE_GROUP1;
 
 		//physicsWorld->update();
 		world->update();
 		uniformBlockHelper->updateAll();
-
-		//Texture types
-		GLenum textureUnitsFront[2] = {GL_TEXTURE0, GL_TEXTURE1};
-		GLenum textureUnitsBack[2] =  {GL_TEXTURE2, GL_TEXTURE3};
 
 		//Diffuse render to texture (front and back faces)
 		glState->setEffectType(GLUniformBlockHelper::DIFFUSE);
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
 
 		//Front face diffuse render
+		this->reflectionBufferFront->bindForWriting(textureGroup0);
 		glCullFace(GL_BACK);
-		this->reflectionBufferFront->bindForWriting();
 		this->clearGL();
 		world->render();
 		
 		//Back face diffuse render
+		this->reflectionBufferBack->bindForWriting(textureGroup0);
 		glCullFace(GL_FRONT);
-		this->reflectionBufferBack->bindForWriting();
 		this->clearGL();
 		world->render();
 
 		//Reflections render to texture (front faces)
-		glCullFace(GL_BACK);
 		glState->setEffectType(GLUniformBlockHelper::REFLECTION);
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
-		
-		this->reflectionBufferFront->bindForReading(textureUnitsFront);
-		this->reflectionBufferBack->bindForReading(textureUnitsBack);
+		glCullFace(GL_BACK);
+		this->reflectionBufferFront->bindForReadingAndWriting(GL_TEXTURE0,GL_TEXTURE1,textureGroup0,textureGroup1);
+		this->reflectionBufferBack->bindForReadingAndWriting(GL_TEXTURE2,GL_TEXTURE3,textureGroup0,textureGroup1);
 		this->clearGL();
 		world->render();
 
 		//Refractions render to screen (front faces)
-		glCullFace(GL_BACK);
 		glState->setEffectType(GLUniformBlockHelper::REFRACTION);
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
-		GLenum textureUnitsFront[2] = {GL_TEXTURE0, GL_TEXTURE1};
-		GLenum textureUnitsBack[2] =  {GL_TEXTURE2, GL_TEXTURE3};
-		this->reflectionBufferFront->bindForReading(textureUnitsFront);
-		this->reflectionBufferBack->bindForReading(textureUnitsBack);
+		glCullFace(GL_BACK);
+		this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup1);
+		this->reflectionBufferBack->bindForReading(GL_TEXTURE2,GL_TEXTURE3,textureGroup1);
 		this->clearGL();
 		world->render();
 	}

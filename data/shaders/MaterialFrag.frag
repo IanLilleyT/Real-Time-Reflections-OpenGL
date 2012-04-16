@@ -244,20 +244,21 @@ void main()
 	{
 		//Calculate reflection
 		if(refractivity > 0) discard;
-		vec4 reflectiveColor = vec4(0,0,0,0);
+		vec4 reflectiveColor;
 		reflectiveColor = ComputeEffect(REFLECTION);
-		float reflectionAmount = reflectivity / (1.0 - reftactivity);
+		float reflectionAmount = refractivity == 1.0 ? 0 : reflectivity / (1.0 - refractivity);
 		float diffuseAmount = 1.0 - reflectionAmount;
-		glm::vec4 diffuseColor = (texture(colorTextureFront, screenSpacePosition);
+		vec4 diffuseColor = texture(colorTextureFront, screenSpacePosition);
 		outputColor = reflectionAmount * reflectiveColor + diffuseAmount * diffuseColor;
+		outputColor = vec4(.5,.5,.5,1);
 	}
 	else if(EffectTypeBlck.effectType == REFRACTION)
 	{
 		//Calculate refraction
-		vec4 refractiveColor = vec4(0,0,0,0);
+		vec4 refractiveColor;
 		refractiveColor = ComputeEffect(REFRACTION);
 		float otherAmount = 1.0 - refractivity;
-		glm::vec4 otherColor = (texture(colorTextureFront, screenSpacePosition);
-		outputColor = refractionAmount * refractiveColor + otherAmount * otherColor;
+		vec4 otherColor = texture(colorTextureFront, screenSpacePosition);
+		outputColor = refractivity * refractiveColor + otherAmount * otherColor;
 	}
 }

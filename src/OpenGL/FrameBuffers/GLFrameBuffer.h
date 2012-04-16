@@ -15,11 +15,7 @@ public:
 	virtual ~GLFramebuffer(){}
 
 	virtual void initialize(){}
-	virtual void bindForWriting();
-	virtual void bindForReadingAndWriting(GLenum* textureUnits){}
-	virtual void bindForReading(GLenum* textureUnits){}
 
 protected:
-	virtual void bindTextures(GLenum* textureUnits){}
 	GLuint fbo;
 };
