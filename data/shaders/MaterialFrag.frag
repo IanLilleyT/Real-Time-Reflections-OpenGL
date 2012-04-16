@@ -250,7 +250,6 @@ void main()
 		float diffuseAmount = 1.0 - reflectionAmount;
 		vec4 diffuseColor = texture(colorTextureFront, screenSpacePosition);
 		outputColor = reflectionAmount * reflectiveColor + diffuseAmount * diffuseColor;
-		outputColor = vec4(.5,.5,.5,1);
 	}
 	else if(EffectTypeBlck.effectType == REFRACTION)
 	{

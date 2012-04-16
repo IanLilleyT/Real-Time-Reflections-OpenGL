@@ -94,19 +94,21 @@ void GLDisplay::update()
 		glState->setEffectType(GLUniformBlockHelper::REFLECTION);
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
 		glCullFace(GL_BACK);
-		this->reflectionBufferFront->bindForReadingAndWriting(GL_TEXTURE0,GL_TEXTURE1,textureGroup0,textureGroup1);
-		this->reflectionBufferBack->bindForReadingAndWriting(GL_TEXTURE2,GL_TEXTURE3,textureGroup0,textureGroup1);
+		//this->reflectionBufferFront->bindForReadingAndWriting(GL_TEXTURE0,GL_TEXTURE1,textureGroup0,textureGroup1);
+		//this->reflectionBufferBack->bindForReadingAndWriting(GL_TEXTURE2,GL_TEXTURE3,textureGroup0,textureGroup1);
+		this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup0);
+		this->reflectionBufferBack->bindForReading(GL_TEXTURE2,GL_TEXTURE3,textureGroup0);
 		this->clearGL();
 		world->render();
 
 		//Refractions render to screen (front faces)
-		glState->setEffectType(GLUniformBlockHelper::REFRACTION);
+		/*glState->setEffectType(GLUniformBlockHelper::REFRACTION);
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
 		glCullFace(GL_BACK);
 		this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup1);
 		this->reflectionBufferBack->bindForReading(GL_TEXTURE2,GL_TEXTURE3,textureGroup1);
 		this->clearGL();
-		world->render();
+		world->render();*/
 	}
 }
 void GLDisplay::clearGL()

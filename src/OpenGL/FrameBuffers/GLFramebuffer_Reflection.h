@@ -19,10 +19,10 @@ public:
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 		
 		//Generate textures
-		this->generateColorTexture(colorTexture0);
-		this->generateDepthTexture(depthTexture0);
-		this->generateColorTexture(colorTexture1);
-		this->generateDepthTexture(depthTexture1);
+		this->generateColorTexture(&colorTexture0);
+		this->generateDepthTexture(&depthTexture0);
+		this->generateColorTexture(&colorTexture1);
+		this->generateDepthTexture(&depthTexture1);
 
 		//Draw to correct color buffer
 		this->bindWriteTextures(GLFramebuffer_Reflection::TEXTURE_GROUP0);
@@ -75,14 +75,14 @@ private:
 		GLuint depthTexture = textureGroup == GLFramebuffer_Reflection::TEXTURE_GROUP0 ? depthTexture0 : depthTexture1;
 		return std::pair<GLuint,GLuint>(colorTexture, depthTexture);
 	}
-	void generateColorTexture(GLuint texture)
+	void generateColorTexture(GLuint* texture)
 	{
 		glm::ivec2 windowDimensions = Singleton<GLCamera>::Instance()->getWindowDimensions();
 		GLuint width = (GLuint)windowDimensions.x;
 		GLuint height = (GLuint)windowDimensions.y;
 
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glGenTextures(1, texture);
+		glBindTexture(GL_TEXTURE_2D, *texture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0,
 			GL_RGBA, GL_UNSIGNED_INT_8_8_8_8 , NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -91,14 +91,14 @@ private:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
-	void generateDepthTexture(GLuint texture)
+	void generateDepthTexture(GLuint* texture)
 	{
 		glm::ivec2 windowDimensions = Singleton<GLCamera>::Instance()->getWindowDimensions();
 		GLuint width = (GLuint)windowDimensions.x;
 		GLuint height = (GLuint)windowDimensions.y;
 
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
+		glGenTextures(1, texture);
+		glBindTexture(GL_TEXTURE_2D, *texture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, width, height, 0,
 			GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
