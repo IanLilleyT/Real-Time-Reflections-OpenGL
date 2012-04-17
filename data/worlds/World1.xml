@@ -1,9 +1,8 @@
 <world>
   <name> World1 </name>
-  <!--
   <object type="RenderObject">
     <name>floor</name>
-    <material>scatter</material>
+    <material>reflective</material>
     <mesh>cube</mesh>
     <program>Material</program>
     <translation>0 0 0</translation>
@@ -26,8 +25,6 @@
     <translation>-5.5 2 0</translation>
     <scale>1 5 10</scale>
   </object>
-  -->
-  <!--
   <object type="RenderObject">
     <name>cow2</name>
     <material>red</material>
@@ -37,11 +34,10 @@
     <scale>.5 .5 .5</scale>
     <diffuseColor>1 0 0 1</diffuseColor>
   </object>
-  -->
   <object type="RenderObject">
     <name>cow_soft</name>
     <material>refractive</material>
-    <mesh>cow</mesh>
+    <mesh>cow_soft</mesh>
     <program>Material</program>
     <translation>0 2.5 0</translation>
     <scale>.5 .5 .5</scale>
@@ -67,7 +63,6 @@
     <rotation>0 1 0 -45</rotation>
     <diffuseColor>1 0 0 1</diffuseColor>
   </object>
-
   <object type="Light">
     <name>light1</name>
     <intensity>1 1 1 1</intensity>

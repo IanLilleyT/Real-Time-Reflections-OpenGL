@@ -258,6 +258,5 @@ void main()
 		float otherAmount = 1.0 - refractivity;
 		vec4 otherColor = texture(colorTextureFront, screenSpacePosition);
 		outputColor = refractivity * refractiveColor + otherAmount * otherColor;
-		outputColor = vec4(vec3(otherAmount),1);
 	}
 }

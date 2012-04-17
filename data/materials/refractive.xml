@@ -6,5 +6,5 @@
 	<reflectivity>0</reflectivity>
   <reflectiveScatter>0</reflectiveScatter>
   <refractivity>1</refractivity>
-  <refractiveIndex>1.1</refractiveIndex>
+  <refractiveIndex>1.2</refractiveIndex>
 </material>

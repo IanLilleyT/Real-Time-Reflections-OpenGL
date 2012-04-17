@@ -78,27 +78,25 @@ void GLDisplay::update()
 		//Diffuse render to texture (front and back faces)
 		glState->setEffectType(GLUniformBlockHelper::DIFFUSE);
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
-
 		//Front face diffuse render
 		this->reflectionBufferFront->bindForWriting(textureGroup0);
 		glCullFace(GL_BACK);
 		this->clearGL();
 		world->render();
-		
 		//Back face diffuse render
-		this->reflectionBufferBack->bindForWriting(textureGroup0);
-		glCullFace(GL_FRONT);
-		this->clearGL();
-		world->render();
+		//this->reflectionBufferBack->bindForWriting(textureGroup1);
+		//glCullFace(GL_FRONT);
+		//this->clearGL();
+		//world->render();
 
 		//Reflections render to texture (front faces)
 		glState->setEffectType(GLUniformBlockHelper::REFLECTION);
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
 		glCullFace(GL_BACK);
 		this->reflectionBufferFront->bindForReadingAndWriting(GL_TEXTURE0,GL_TEXTURE1,textureGroup0,textureGroup1);
-		this->reflectionBufferBack->bindForReadingAndWriting(GL_TEXTURE2,GL_TEXTURE3,textureGroup0,textureGroup1);
-		//this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup0);
-		//this->reflectionBufferBack->bindForReading(GL_TEXTURE2,GL_TEXTURE3,textureGroup0);
+		//this->reflectionBufferBack->bindForReadingAndWriting(GL_TEXTURE2,GL_TEXTURE3,textureGroup0,textureGroup1);
+		//this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup1);
+		//this->reflectionBufferBack->bindForReading(GL_TEXTURE2,GL_TEXTURE3,textureGroup1);
 		this->clearGL();
 		world->render();
 
@@ -107,7 +105,7 @@ void GLDisplay::update()
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
 		glCullFace(GL_BACK);
 		this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup1);
-		this->reflectionBufferBack->bindForReading(GL_TEXTURE2,GL_TEXTURE3,textureGroup1);
+		//this->reflectionBufferBack->bindForReading(GL_TEXTURE2,GL_TEXTURE3,textureGroup1);
 		this->clearGL();
 		world->render();
 	}

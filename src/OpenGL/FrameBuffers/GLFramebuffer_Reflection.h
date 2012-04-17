@@ -37,8 +37,8 @@ public:
 
 	void bindForReadingAndWriting(GLenum colorTextureUnit, GLenum depthTextureUnit, int textureGroupRead, int textureGroupWrite)
 	{
-		this->bindForWriting(textureGroupWrite);
 		this->bindReadTextures(colorTextureUnit, depthTextureUnit, textureGroupRead);
+		this->bindForWriting(textureGroupWrite);
 	}
 	void bindForWriting(int textureGroup)
 	{

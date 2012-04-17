@@ -27,7 +27,7 @@ public:
 		this->makeWall(glm::vec3(1,5,10),glm::vec3(-5.5,2,0),glm::vec4(1,0,0,1));
 
 		//Bullet
-		int numObjects = 0;
+		int numObjects = 50;
 		for(int i = 0; i < numObjects; i++)
 		{
 			glm::vec3 position = glm::vec3(0,3.0f*i+5.0f,0);
