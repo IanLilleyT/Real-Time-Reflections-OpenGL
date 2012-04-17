@@ -21,10 +21,11 @@ public:
 		this->world = world;
 
 		//walls
-		this->makeWall(glm::vec3(10,1,10),glm::vec3(0,0,0),glm::vec4(0,1,0,1));
-		this->makeWall(glm::vec3(12,5,1),glm::vec3(0,2,-5.5),glm::vec4(0,0,1,1));
-		this->makeWall(glm::vec3(1,5,10),glm::vec3(5.5,2,0),glm::vec4(1,0,1,1));
-		this->makeWall(glm::vec3(1,5,10),glm::vec3(-5.5,2,0),glm::vec4(1,0,0,1));
+		this->makeWall(glm::vec3(10,1,10),glm::vec3(0,0,0),glm::vec4(0,1,0,1),"reflective");
+		this->makeWall(glm::vec3(12,5,1),glm::vec3(0,2,-5.5),glm::vec4(0,0,1,1),"reflective");
+		this->makeWall(glm::vec3(1,5,10),glm::vec3(5.5,2,0),glm::vec4(1,0,1,1),"reflective");
+		this->makeWall(glm::vec3(1,5,10),glm::vec3(-5.5,2,0),glm::vec4(1,0,0,1),"reflective");
+		//this->makeWall(glm::vec3(5,1,5),glm::vec3(0,2.5,0),glm::vec4(0,1,0,1),"reflective");
 
 		//Bullet
 		int numObjects = 50;
@@ -40,10 +41,10 @@ public:
 
 		//standing cow
 		RenderObject* cow = new RenderObject();
-		cow->initialize("floor","cow_soft","refractive","Material");
+		cow->initialize("floor","cube","refractive","Material");
 		cow->getMaterial()->diffuseColor = glm::vec4(1,0,0,1);
-		cow->setScale(.5f);
-		cow->setTranslationY(5);
+		cow->setScale(glm::vec3(5,1,5));
+		cow->setTranslationY(5.5);
 		world->addObject(cow);
 	}
 	PhysicsObject* makeRandomCube(glm::vec3 position)
@@ -95,10 +96,10 @@ public:
 
 		return projectile;
 	}
-	void makeWall(glm::vec3 dimensions, glm::vec3 position, glm::vec4 color)
+	void makeWall(glm::vec3 dimensions, glm::vec3 position, glm::vec4 color, std::string material)
 	{
 		RenderObject* floorObject = new RenderObject();
-		floorObject->initialize("floor","cube","reflective","Material");
+		floorObject->initialize("floor","cube",material,"Material");
 		floorObject->getMaterial()->diffuseColor = color;
 		PhysicsObject* floorPhysics = new PhysicsObject();
 		floorPhysics->initialize(

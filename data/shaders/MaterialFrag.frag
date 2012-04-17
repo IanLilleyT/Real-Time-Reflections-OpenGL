@@ -98,6 +98,7 @@ vec4 ComputeLighting(in PerLight lightData)
 	
 	vec4 lighting = diffuseColor * lightIntensity * cosAngIncidence;
 	lighting += specularColor * lightIntensity * gaussianTerm;
+	//if(gaussianTerm > .1) lighting = vec4(1,1,1,1);
 	return lighting;
 }
 

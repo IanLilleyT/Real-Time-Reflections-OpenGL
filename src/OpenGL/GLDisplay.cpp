@@ -57,9 +57,9 @@ void GLDisplay::initializeFramebuffers()
 }
 void GLDisplay::initializePhysics()
 {
-	//Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
-	//this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
-	//Singleton<PhysicsIO>::Instance()->initialize();
+	Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
+	this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
+	Singleton<PhysicsIO>::Instance()->initialize();
 }
 void GLDisplay::update()
 {
@@ -71,7 +71,7 @@ void GLDisplay::update()
 		int textureGroup0 = GLFramebuffer_Reflection::TEXTURE_GROUP0;
 		int textureGroup1 = GLFramebuffer_Reflection::TEXTURE_GROUP1;
 
-		//physicsWorld->update();
+		physicsWorld->update();
 		world->update();
 		uniformBlockHelper->updateAll();
 
