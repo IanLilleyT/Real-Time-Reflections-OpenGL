@@ -2,7 +2,7 @@
   <name> World1 </name>
   <object type="RenderObject">
     <name>floor</name>
-    <material>reflective</material>
+    <material>red</material>
     <mesh>cube</mesh>
     <program>Material</program>
     <translation>0 0 0</translation>
@@ -11,19 +11,21 @@
   </object>
   <object type="RenderObject">
     <name>wall</name>
-    <material>reflective</material>
+    <material>red</material>
     <mesh>cube</mesh>
     <program>Material</program>
     <translation>0 2 -5.5</translation>
     <scale>10 5 1</scale>
+    <diffuseColor>0 0 1 1</diffuseColor>
   </object>
   <object type="RenderObject">
     <name>wall</name>
-    <material>reflective</material>
+    <material>red</material>
     <mesh>cube</mesh>
     <program>Material</program>
     <translation>-5.5 2 0</translation>
     <scale>1 5 10</scale>
+    <diffuseColor>0 0 1 1</diffuseColor>
   </object>
   <object type="RenderObject">
     <name>cow2</name>
@@ -32,7 +34,7 @@
     <program>Material</program>
     <translation>0 2.5 2</translation>
     <scale>.5 .5 .5</scale>
-    <diffuseColor>1 0 0 1</diffuseColor>
+    <diffuseColor>1 0 1 1</diffuseColor>
   </object>
   <object type="RenderObject">
     <name>cow_soft</name>
