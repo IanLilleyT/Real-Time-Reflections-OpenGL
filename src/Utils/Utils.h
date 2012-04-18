@@ -11,6 +11,8 @@ class Utils
 {
 public:
 	//Math
+	static float pi;
+	static float piDiv2;
 	static float degToRad;
 	static glm::mat4 getRotationMatrixDegrees(glm::vec3 axis, float angleDegrees);
 	static glm::mat4 getRotationMatrixRads(glm::vec3 axis, float angleRads);

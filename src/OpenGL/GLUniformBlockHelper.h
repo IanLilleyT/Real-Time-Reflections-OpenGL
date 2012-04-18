@@ -7,7 +7,7 @@
 #include "GLUniformBlock.h" //For storing UniformBlocks
 #include "GLState.h" //For getting current world values
 #include "GLCamera.h" //For camera values
-#include "../Objects/Light.h" //For lights
+#include "../Objects/Lights/Light.h" //For lights
 #include "../Utils/Singleton.h" //For accessing GLState
 
 class GLUniformBlockHelper
@@ -39,6 +39,7 @@ private:
 struct ProjectionBlock
 {
 	glm::mat4 cameraToClipMatrix;
+	glm::mat4 lightToClipMatrix;
 	float zNear;
 	float zFar;
 };

@@ -20,11 +20,13 @@ uniform sampler2D colorTextureFront;
 uniform sampler2D depthTextureFront;
 uniform sampler2D colorTextureBack;
 uniform sampler2D depthTextureBack;
+uniform sampler2D depthTextureShadow;
 
 //Projection matrix
 uniform ProjectionBlock
 {
 	mat4 cameraToClipMatrix;
+	mat4 lightWorldToClipMatrix;
 	float zNear;
 	float zFar;
 } ProjectionBlck;
@@ -93,12 +95,10 @@ vec4 ComputeLighting(in PerLight lightData)
 	float exponent = angleNormalHalf / specularShininess;
 	exponent = -(exponent * exponent);
 	float gaussianTerm = exp(exponent);
-
 	gaussianTerm = cosAngIncidence != 0.0 ? gaussianTerm : 0.0;
 	
 	vec4 lighting = diffuseColor * lightIntensity * cosAngIncidence;
 	lighting += specularColor * lightIntensity * gaussianTerm;
-	//if(gaussianTerm > .1) lighting = vec4(1,1,1,1);
 	return lighting;
 }
 
@@ -115,6 +115,7 @@ vec3 convertCameraSpaceToScreenSpace(in vec3 cameraSpace)
 const int DIFFUSE = 0;
 const int REFLECTION = 1;
 const int REFRACTION = 2;
+const int SHADOW = 3;
 
 //Front vs Back face
 const int FRONT = 0;
@@ -259,5 +260,9 @@ void main()
 		float otherAmount = 1.0 - refractivity;
 		vec4 otherColor = texture(colorTextureFront, screenSpacePosition);
 		outputColor = refractivity * refractiveColor + otherAmount * otherColor;
+	}
+	else if(EffectTypeBlck.effectType == SHADOW)
+	{
+		
 	}
 }

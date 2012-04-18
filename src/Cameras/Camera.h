@@ -20,9 +20,18 @@ public:
 	void mouseMoved(sf::Event sfEvent);
 	void mouseWheelMoved(sf::Event sfEvent);
 
-    virtual void rotate(float x, float y) = 0;
-    virtual void zoom(float delta) = 0;
+	virtual void setCameraPos(glm::vec3 newPos) = 0;
+
+    virtual void rotateRad(float radX, float radY) = 0;
+	virtual void rotateDeg(float degX, float degY) = 0; 
+	virtual void setRotationRad(float radX, float radY) = 0;
+	virtual void setRotationDeg(float degX, float degY) = 0;
+
+    virtual void zoom(float distance) = 0;
+	virtual void setZoom(float distance) = 0;
+
     virtual void pan(float x, float y) = 0;
+	virtual void setPan(float x, float y) = 0;
 
     glm::mat4 getWorldToCameraMatrix(void);
     glm::vec3 getCameraPos(void);

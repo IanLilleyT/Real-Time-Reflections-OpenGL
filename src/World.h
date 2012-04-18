@@ -10,7 +10,7 @@
 #include "Utils/Singleton.h" //For using global classes
 #include "Objects/Object.h" //Storage type
 #include "OpenGL/GLState.h" //Takes the world's lights
-#include "Objects/Light.h" //For sending lights to GLState
+#include "Objects/Lights/Light.h" //For sending lights to GLState
 #include "Utils/Factory.h" //For constructing new objects during initialization
 
 class World

@@ -14,25 +14,65 @@ Camera3rdPerson::~Camera3rdPerson(void){}
 //-----------------------------
 // Camera Movements ///////////
 //-----------------------------
+void Camera3rdPerson::setCameraPos(glm::vec3 newPos)
+{
+	this->radius = glm::length(newPos);
+	float radX = std::atan2(newPos.x,newPos.z);
+	float radY = -std::acos(newPos.y/this->radius) + Utils::pi/2.0;;
+	this->setRotationRad(radX,radY);
+}
 void Camera3rdPerson::pan(float x, float y)
 {
 	glm::vec3 right = glm::normalize(glm::cross(this->lookDir,this->upDir));
 	glm::vec3 up = this->upDir;
 	glm::vec3 moveX = x*right;
 	glm::vec3 moveY = y*up;
-	this->lookAt += moveX;
-	this->lookAt += moveY;
+	this->lookAt += (moveX + moveY)*(this->radius/10.0f);
 	this->update();
 }
-void Camera3rdPerson::rotate(float x, float y)
+void Camera3rdPerson::setPan(float x, float y)
 {
-	this->currXZRads += x;
-	this->currYRads += y;
+	glm::vec3 right = glm::normalize(glm::cross(this->lookDir,this->upDir));
+	glm::vec3 up = this->upDir;
+	glm::vec3 moveX = x*right;
+	glm::vec3 moveY = y*up;
+	this->lookAt = moveX + moveY;
 	this->update();
 }
+
+void Camera3rdPerson::rotateDeg(float degX, float degY)
+{
+	float radX = Utils::degToRad*degX;
+	float radY = Utils::degToRad*degY;
+	this->rotateRad(radX, radY);
+}
+void Camera3rdPerson::rotateRad(float radX, float radY)
+{
+	float amountX = this->currXZRads + radX;
+	float amountY = this->currYRads + radY;
+	this->setRotationRad(amountX,amountY);
+}
+void Camera3rdPerson::setRotationDeg(float degX, float degY)
+{
+	float radX = Utils::degToRad*degX;
+	float radY = Utils::degToRad*degY;
+	this->setRotationRad(radX,radY);
+}
+void Camera3rdPerson::setRotationRad(float radX, float radY)
+{
+	this->currXZRads = radX;
+	this->currYRads = radY;
+	this->update();
+}
+
 void Camera3rdPerson::zoom(float distance)
 {
 	this->radius -= distance;
+	this->update();
+}
+void Camera3rdPerson::setZoom(float distance)
+{
+	this->radius = distance;
 	this->update();
 }
 
@@ -47,7 +87,7 @@ void Camera3rdPerson::CalcMatrix(void)
     UpRotAxis.y = currPos.y;
     UpRotAxis.z = -currPos.x;
 
-    glm::mat4 xRotation = Utils::getRotationMatrixRads(UpRotAxis, currYRads);
+    glm::mat4 xRotation = Utils::getRotationMatrixRads(UpRotAxis, -currYRads);
     currPos = glm::vec3(xRotation * glm::vec4(currPos, 0.0));
     glm::vec3 tempVec = currPos * float(radius);
 

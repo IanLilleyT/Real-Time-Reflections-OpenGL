@@ -16,21 +16,52 @@ void Camera1stPerson::pan(float x, float y)
 	glm::vec3 up = this->upDir;
 	glm::vec3 moveX = x*right;
 	glm::vec3 moveY = y*up;
-	this->cameraPos += moveX;
-	this->cameraPos += moveY;
+	this->cameraPos += moveX + moveY;
+	this->update();
+}
+void Camera1stPerson::setPan(float x, float y)
+{
+	glm::vec3 right = glm::normalize(glm::cross(this->lookDir,this->upDir));
+	glm::vec3 up = this->upDir;
+	glm::vec3 moveX = x*right;
+	glm::vec3 moveY = y*up;
+	this->cameraPos = moveX + moveY;
 	this->update();
 }
 
-void Camera1stPerson::rotate(float x, float y)
+void Camera1stPerson::rotateDeg(float degX, float degY)
 {
-	this->currXZRads += x/3.0f;
-	this->currYRads -= y/3.0f;
+	float radX = Utils::degToRad*degX;
+	float radY = Utils::degToRad*degY;
+	this->rotateRad(radX, radY);
+}
+void Camera1stPerson::rotateRad(float radX, float radY)
+{
+	float amountX = this->currXZRads + radX;
+	float amountY = this->currYRads + radY;
+	this->setRotationRad(amountX,amountY);
+}
+void Camera1stPerson::setRotationDeg(float degX, float degY)
+{
+	float radX = Utils::degToRad*degX;
+	float radY = Utils::degToRad*degY;
+	this->setRotationRad(radX,radY);
+}
+void Camera1stPerson::setRotationRad(float radX, float radY)
+{
+	this->currXZRads = radX;
+	this->currYRads = radY;
 	this->update();
 }
 
 void Camera1stPerson::zoom(float distance)
 {
-	this->cameraPos += distance*this->lookDir;
+	this->cameraPos -= distance*this->lookDir;
+	this->update();
+}
+void Camera1stPerson::setZoom(float distance)
+{
+	this->cameraPos = distance*this->lookDir;
 	this->update();
 }
 

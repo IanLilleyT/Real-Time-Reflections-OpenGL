@@ -7,10 +7,20 @@ layout(location = 2) in vec3 normal;
 out vec3 vertexNormal;
 out vec3 cameraSpacePosition;
 
+//Projection matrix
 uniform ProjectionBlock
 {
 	mat4 cameraToClipMatrix;
+	mat4 lightWorldToClipMatrix;
+	float zNear;
+	float zFar;
 } ProjectionBlck;
+
+//Set different effects
+uniform EffectTypeBlock
+{
+	int effectType;
+} EffectTypeBlck;
 
 uniform mat4 modelToCameraMatrix;
 uniform mat3 normalModelToCameraMatrix;

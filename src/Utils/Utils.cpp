@@ -1,5 +1,7 @@
 #include "Utils.h"
 
+float Utils::pi = 3.14159f;
+float Utils::piDiv2 = 3.14159f/2.0f;
 float Utils::degToRad = 3.14159f / 180.0f;
 
 glm::mat4 Utils::getRotationMatrixDegrees(glm::vec3 axis, float angleDegrees)

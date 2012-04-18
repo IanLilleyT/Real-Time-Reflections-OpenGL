@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp> //For math
 
-#include "Object.h" //Superclass
+#include "../Object.h" //Superclass
 
 class Light: public Object
 {

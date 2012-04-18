@@ -6,6 +6,7 @@
 #include "GLCamera.h" //For handling camera
 #include "GLUniformBlockHelper.h" //For calling updates to unform blocks
 #include "Framebuffers/GLFramebuffer_Reflection.h" //For color buffer drawing
+#include "Framebuffers/GLFramebuffer_ShadowMap.h"
 #include "../Utils/EventHandler.h" //For enter frame events
 #include "../Utils/Singleton.h" //For accessing several globals
 #include "../World.h" //For storing world
@@ -49,6 +50,7 @@ private:
 	World* world;
 	GLFramebuffer_Reflection* reflectionBufferFront;
 	GLFramebuffer_Reflection* reflectionBufferBack;
+	GLFramebuffer_ShadowMap* shadowMapBuffer;
 	PhysicsWorld* physicsWorld;
 
 	void initializeGL();

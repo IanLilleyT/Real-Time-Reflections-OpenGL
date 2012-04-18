@@ -6,7 +6,7 @@
 #include "Objects/Object.h"
 #include "Objects/RenderObject.h"
 #include "Objects/Jello.h"
-#include "Objects/Light.h"
+#include "Objects/Lights/Light.h"
 #include "Physics/PhysicsObject.h"
 
 //Programs

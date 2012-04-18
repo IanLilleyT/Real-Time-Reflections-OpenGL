@@ -22,7 +22,7 @@ public:
 
 		//walls
 		this->makeWall(glm::vec3(10,1,10),glm::vec3(0,0,0),glm::vec4(0,1,0,1),"reflective");
-		this->makeWall(glm::vec3(12,5,1),glm::vec3(0,2,-5.5),glm::vec4(0,0,1,1),"reflective");
+		this->makeWall(glm::vec3(12,5,1),glm::vec3(0,2,5.5),glm::vec4(0,0,1,1),"reflective");
 		this->makeWall(glm::vec3(1,5,10),glm::vec3(5.5,2,0),glm::vec4(1,0,1,1),"reflective");
 		this->makeWall(glm::vec3(1,5,10),glm::vec3(-5.5,2,0),glm::vec4(1,0,0,1),"reflective");
 		//this->makeWall(glm::vec3(5,1,5),glm::vec3(0,2.5,0),glm::vec4(0,1,0,1),"reflective");

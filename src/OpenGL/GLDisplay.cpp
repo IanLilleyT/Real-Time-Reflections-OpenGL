@@ -42,8 +42,9 @@ void GLDisplay::initializeCamera()
 	float farPlane = 100.0f;
 
 	this->camera = new Camera3rdPerson();
-	this->camera->zoom(-1);
-	this->camera->rotate(0,-.4f);
+	this->camera->setCameraPos(glm::vec3(0,50,50));
+	//this->camera->zoom(-10);
+	//this->camera->rotateDeg(0.0f,40.0f);
 
 	Singleton<GLCamera>::Instance()->calcCameraToClipMatrix(fov,nearPlane,farPlane);
 }
@@ -54,15 +55,18 @@ void GLDisplay::initializeFramebuffers()
 
 	this->reflectionBufferBack = new GLFramebuffer_Reflection();
 	this->reflectionBufferBack->initialize();
+
+	this->shadowMapBuffer = new GLFramebuffer_ShadowMap();
+	this->shadowMapBuffer->initialize();
 }
 void GLDisplay::initializePhysics()
 {
-	Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
-	this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
-	Singleton<PhysicsIO>::Instance()->initialize();
+	//Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
+	//this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
+	//Singleton<PhysicsIO>::Instance()->initialize();
 }
 void GLDisplay::update()
-{
+{ 
 	if(this->world != 0)
 	{
 		GLState* glState = Singleton<GLState>::Instance();
@@ -71,7 +75,7 @@ void GLDisplay::update()
 		int textureGroup0 = GLFramebuffer_Reflection::TEXTURE_GROUP0;
 		int textureGroup1 = GLFramebuffer_Reflection::TEXTURE_GROUP1;
 
-		physicsWorld->update();
+		//physicsWorld->update();
 		world->update();
 		uniformBlockHelper->updateAll();
 
