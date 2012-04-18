@@ -1,9 +1,8 @@
 <world>
   <name> World1 </name>
-  <!--
   <object type="RenderObject">
     <name>floor</name>
-    <material>red</material>
+    <material>reflective</material>
     <mesh>cube</mesh>
     <program>Material</program>
     <translation>0 0 0</translation>
@@ -12,7 +11,7 @@
   </object>
   <object type="RenderObject">
     <name>wall</name>
-    <material>red</material>
+    <material>reflective</material>
     <mesh>cube</mesh>
     <program>Material</program>
     <translation>0 2 -5.5</translation>
@@ -21,7 +20,7 @@
   </object>
   <object type="RenderObject">
     <name>wall</name>
-    <material>red</material>
+    <material>reflective</material>
     <mesh>cube</mesh>
     <program>Material</program>
     <translation>-5.5 2 0</translation>
@@ -66,7 +65,6 @@
     <rotation>0 1 0 -45</rotation>
     <diffuseColor>1 0 0 1</diffuseColor>
   </object>
-  -->
   <object type="Light">
     <name>light1</name>
     <intensity>1 1 1 1</intensity>
