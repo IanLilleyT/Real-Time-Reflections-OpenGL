@@ -3,6 +3,7 @@ layout(std140) uniform;
 
 in vec3 vertexNormal;
 in vec3 cameraSpacePosition;
+in vec3 lightSpacePosition;
 out vec4 outputColor;
 
 //Material properties
@@ -26,7 +27,7 @@ uniform sampler2D depthTextureShadow;
 uniform ProjectionBlock
 {
 	mat4 cameraToClipMatrix;
-	mat4 shadowLightWorldToClipMatrix;
+	mat4 shadowLightWorldToCameraMatrix;
 	float zNear;
 	float zFar;
 } ProjectionBlck;
@@ -225,7 +226,15 @@ vec4 ComputeEffect(in int effectType)
 	color *= 1.0 - travelLength*reflectiveScatter;
 	return color;
 }
-
+float CalcShadowFactor() 
+{
+	vec3 screenSpaceLightPosition = convertCameraSpaceToScreenSpace(lightSpacePosition);
+	float depth = texture(depthTextureShadow, screenSpaceLightPosition.xy).x;
+	if (depth <= (screenSpaceLightPosition.z + 0.009))
+		return 0.5;
+	else
+		return 1.0;
+}  
 void main()
 {
 	vec2 screenSpacePosition = convertCameraSpaceToScreenSpace(cameraSpacePosition).xy;
@@ -263,6 +272,9 @@ void main()
 	}
 	else if(EffectTypeBlck.effectType == SHADOW)
 	{
-		
+		vec4 otherColor = texture(colorTextureFront, screenSpacePosition);
+		float shadowAmount = CalcShadowFactor();
+		outputColor = vec4(vec3(shadowAmount),1.0);
+		//outputColor = vec4(vec3(otherColor)*shadowAmount,1.0);
 	}
 }

@@ -35,6 +35,10 @@ protected:
 		GLuint modelToCameraMatrixUniform = glGetUniformLocation(this->program, "modelToCameraMatrix");
 		glUniformMatrix4fv(modelToCameraMatrixUniform, 1, GL_FALSE, glm::value_ptr(modelToCameraMatrix));
 
+		//Model to world
+		GLuint modelToWorldMatrixUniform = glGetUniformLocation(this->program, "modelToWorldMatrix");
+		glUniformMatrix4fv(modelToWorldMatrixUniform, 1, GL_FALSE, glm::value_ptr(modelToWorldMatrix));
+
 		//Normal model to camera
 		glm::mat3 normalModelToCameraMatrix = glm::mat3(modelToCameraMatrix);
 		normalModelToCameraMatrix = glm::transpose(glm::inverse(normalModelToCameraMatrix)); //Normal transformation
@@ -96,6 +100,10 @@ protected:
 		//Depth texture back
 		GLuint depthTextureBackUniform = glGetUniformLocation(this->program, "depthTextureBack");
 		glUniform1i(depthTextureBackUniform, glState->depthTextureBack);
+
+		//Depth texture shadow
+		GLuint depthTextureShadowUniform = glGetUniformLocation(this->program, "depthTextureShadow");
+		glUniform1i(depthTextureShadowUniform, glState->depthTextureShadow);
 
 		//Num Lights
 		int numLights = glState->lights.size();

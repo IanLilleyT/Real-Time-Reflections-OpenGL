@@ -1,3 +1,5 @@
+
+/*
 #include <gl3w/gl3w.h> //For GL commands
 
 class GLTexture
@@ -9,4 +11,4 @@ private:
 	GLuint textureObject;
 	GLenum textureUnit;
 
-}
+}*/

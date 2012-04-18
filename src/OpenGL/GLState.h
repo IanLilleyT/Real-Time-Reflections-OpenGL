@@ -17,15 +17,16 @@ public:
 	glm::mat4 modelToWorldMatrix;
 	glm::mat4 worldToCameraMatrix;
 	glm::mat4 cameraToClipMatrix;
-	glm::mat4 shadowLightWorldToClipMatrix;
+	glm::mat4 shadowLightWorldToCameraMatrix;
 	Material* material;
 	std::vector<Object*> lights;
 	int effectType;
 
-	//Reflection textures
+	//Texture attachments
 	int colorTextureFront;
 	int depthTextureFront;
 	int colorTextureBack;
 	int depthTextureBack;
+	int depthTextureShadow;
 	void setReflectionTextures(int colorFront, int depthFront, int colorBack, int depthBack);
 };

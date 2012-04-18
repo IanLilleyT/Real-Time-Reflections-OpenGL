@@ -50,7 +50,7 @@ void GLUniformBlockHelper::update(std::string name)
 		GLUniformBlock* projectionUniformBlock = this->findUniformBlock(TYPE_PROJECTION);
 		ProjectionBlock projectionBlock = ProjectionBlock();
 		projectionBlock.cameraToClipMatrix = cameraToClipMatrix;
-		projectionBlock.shadowLightToClipMatrix = glState->shadowLightWorldToClipMatrix;
+		projectionBlock.shadowLightWorldToCameraMatrix = glState->shadowLightWorldToCameraMatrix;
 		projectionBlock.zNear = glCamera->getFrustumNear();
 		projectionBlock.zFar = glCamera->getFrustumFar();
 		projectionUniformBlock->setData(&projectionBlock);

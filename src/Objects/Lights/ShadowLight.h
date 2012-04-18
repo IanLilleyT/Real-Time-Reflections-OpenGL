@@ -27,6 +27,5 @@ private:
 
 	virtual void updateTransformationMatrix();
 
-	glm::mat4 worldToClipMatrix;
 	Camera3rdPerson* lightCamera;
 };

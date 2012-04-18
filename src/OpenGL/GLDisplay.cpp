@@ -72,6 +72,7 @@ void GLDisplay::update()
 
 		//Texture stuff
 		glState->setReflectionTextures(0,1,2,3);
+		glState->depthTextureShadow = 4;
 		int textureGroup0 = GLFramebuffer_Reflection::TEXTURE_GROUP0;
 		int textureGroup1 = GLFramebuffer_Reflection::TEXTURE_GROUP1;
 		

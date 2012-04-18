@@ -40,7 +40,7 @@ private:
 struct ProjectionBlock
 {
 	glm::mat4 cameraToClipMatrix;
-	glm::mat4 shadowLightToClipMatrix;
+	glm::mat4 shadowLightWorldToCameraMatrix;
 	float zNear;
 	float zFar;
 };
