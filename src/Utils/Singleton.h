@@ -1,6 +1,7 @@
 #pragma once
 
 #include <assert.h> //Ensures that only one instance is present
+#include <string>
 
 template <class T>
 class Singleton

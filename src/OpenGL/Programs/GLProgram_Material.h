@@ -26,10 +26,10 @@ protected:
 	{
 		GLState* glState = Singleton<GLState>::Instance();
 		GLCamera* glCamera = Singleton<GLCamera>::Instance();
-		glm::mat4 modelToWorldMatrix = glState->getModelToWorldMatrix();
+		glm::mat4 modelToWorldMatrix = glState->modelToWorldMatrix;
 		glm::mat4 worldToCameraMatrix = glCamera->getWorldToCameraMatrix();
 		glm::mat4 modelToCameraMatrix = worldToCameraMatrix * modelToWorldMatrix;
-		Material* material = glState->getMaterial();
+		Material* material = glState->material;
 
 		//Model to camera
 		GLuint modelToCameraMatrixUniform = glGetUniformLocation(this->program, "modelToCameraMatrix");
@@ -98,7 +98,7 @@ protected:
 		glUniform1i(depthTextureBackUniform, glState->depthTextureBack);
 
 		//Num Lights
-		int numLights = glState->getLights().size();
+		int numLights = glState->lights.size();
 		GLuint numLightsUniform = glGetUniformLocation(this->program, "numLights");
 		glUniform1i(numLightsUniform, numLights);
 	}

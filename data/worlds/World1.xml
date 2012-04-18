@@ -14,7 +14,7 @@
     <material>red</material>
     <mesh>cube</mesh>
     <program>Material</program>
-    <translation>0 2 -10.5</translation>
+    <translation>0 2 -5.5</translation>
     <scale>10 5 1</scale>
     <diffuseColor>0 0 1 1</diffuseColor>
   </object>
@@ -65,6 +65,7 @@
     <rotation>0 1 0 -45</rotation>
     <diffuseColor>1 0 0 1</diffuseColor>
   </object>
+  <!--
   <object type="Light">
     <name>light1</name>
     <intensity>1 1 1 1</intensity>
@@ -74,6 +75,17 @@
     <name>light2</name>
     <intensity>1 .5 0 1</intensity>
     <translation>-1 3 4</translation>
+  </object>
+  -->
+  <object type="ShadowLight">
+    <name>light2</name>
+    <intensity>0 1 0 1</intensity>
+    <translation>2 10 2</translation>
+  </object>
+  
+  <object type="Camera3rdPerson">
+    <name>mainCamera</name>
+    <cameraPos>30 30 30</cameraPos>
   </object>
   
 </world>

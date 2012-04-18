@@ -50,6 +50,7 @@ void GLUniformBlockHelper::update(std::string name)
 		GLUniformBlock* projectionUniformBlock = this->findUniformBlock(TYPE_PROJECTION);
 		ProjectionBlock projectionBlock = ProjectionBlock();
 		projectionBlock.cameraToClipMatrix = cameraToClipMatrix;
+		projectionBlock.shadowLightToClipMatrix = glState->shadowLightWorldToClipMatrix;
 		projectionBlock.zNear = glCamera->getFrustumNear();
 		projectionBlock.zFar = glCamera->getFrustumFar();
 		projectionUniformBlock->setData(&projectionBlock);
@@ -58,7 +59,7 @@ void GLUniformBlockHelper::update(std::string name)
 	{
 		GLUniformBlock* lightsUniformBlock = this->findUniformBlock(TYPE_LIGHTS);
 		LightsBlock lightsBlock = LightsBlock();
-		std::vector<Object*>& lights = glState->getLights();
+		std::vector<Object*>& lights = glState->lights;
 		int numLights = std::min((int)lights.size(), (int)MAX_NUMBER_OF_LIGHTS);
 		for(int i = 0; i < numLights; i++)
 		{
@@ -78,7 +79,7 @@ void GLUniformBlockHelper::update(std::string name)
 	{
 		GLUniformBlock* effectTypeUniformBlock = this->findUniformBlock(TYPE_EFFECT_TYPE);
 		EffectTypeBlock effectTypeBlock = EffectTypeBlock();
-		effectTypeBlock.effectType = glState->getEffectType();
+		effectTypeBlock.effectType = glState->effectType;
 		effectTypeUniformBlock->setData(&effectTypeBlock);
 	}
 }

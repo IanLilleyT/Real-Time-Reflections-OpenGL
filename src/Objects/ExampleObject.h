@@ -19,7 +19,7 @@ public:
 	//Type
 	virtual std::string getType();
 
-private:
+protected:
 	void initialize(int value);
 
 	int value;

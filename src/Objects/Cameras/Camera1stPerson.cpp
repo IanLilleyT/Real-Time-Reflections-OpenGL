@@ -1,15 +1,38 @@
 #include "Camera1stPerson.h"
 
-Camera1stPerson::Camera1stPerson(void)
+std::string Camera1stPerson::className = "Camera1stPerson";
+
+Camera1stPerson::Camera1stPerson()
 {
 	this->currXZRads = 0.0f;
 	this->currYRads = 0.0f;
 	this->cameraPos = glm::vec3(0,0,0);
-	this->update();
+	this->CalcMatrix();
 }
 
 Camera1stPerson::~Camera1stPerson(void){}
 
+//Initialize
+void Camera1stPerson::initialize(TiXmlElement* element)
+{
+	Camera::initialize(element);
+}
+void Camera1stPerson::initialize(std::string name, glm::vec3 cameraPos)
+{
+	Camera::initialize(name,cameraPos);
+}
+
+//Type
+std::string Camera1stPerson::getType()
+{
+	return Camera1stPerson::className;
+}
+
+//Modifiers
+void Camera1stPerson::setCameraPos(glm::vec3 newPos)
+{
+	//Do nothing yet
+}
 void Camera1stPerson::pan(float x, float y)
 {
 	glm::vec3 right = glm::normalize(glm::cross(this->lookDir,this->upDir));
@@ -17,7 +40,7 @@ void Camera1stPerson::pan(float x, float y)
 	glm::vec3 moveX = x*right;
 	glm::vec3 moveY = y*up;
 	this->cameraPos += moveX + moveY;
-	this->update();
+	this->CalcMatrix();
 }
 void Camera1stPerson::setPan(float x, float y)
 {
@@ -26,7 +49,7 @@ void Camera1stPerson::setPan(float x, float y)
 	glm::vec3 moveX = x*right;
 	glm::vec3 moveY = y*up;
 	this->cameraPos = moveX + moveY;
-	this->update();
+	this->CalcMatrix();
 }
 
 void Camera1stPerson::rotateDeg(float degX, float degY)
@@ -51,18 +74,18 @@ void Camera1stPerson::setRotationRad(float radX, float radY)
 {
 	this->currXZRads = radX;
 	this->currYRads = radY;
-	this->update();
+	this->CalcMatrix();
 }
 
 void Camera1stPerson::zoom(float distance)
 {
 	this->cameraPos -= distance*this->lookDir;
-	this->update();
+	this->CalcMatrix();
 }
 void Camera1stPerson::setZoom(float distance)
 {
 	this->cameraPos = distance*this->lookDir;
-	this->update();
+	this->CalcMatrix();
 }
 
 void Camera1stPerson::CalcMatrix(void)

@@ -26,7 +26,7 @@ uniform sampler2D depthTextureShadow;
 uniform ProjectionBlock
 {
 	mat4 cameraToClipMatrix;
-	mat4 lightWorldToClipMatrix;
+	mat4 shadowLightWorldToClipMatrix;
 	float zNear;
 	float zFar;
 } ProjectionBlck;

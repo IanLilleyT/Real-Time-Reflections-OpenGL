@@ -19,7 +19,7 @@ protected:
 		//Model to clip
 		GLState* glState = Singleton<GLState>::Instance();
 		GLCamera* glCamera = Singleton<GLCamera>::Instance();
-		glm::mat4 modelToWorldMatrix = glState->getModelToWorldMatrix();
+		glm::mat4 modelToWorldMatrix = glState->modelToWorldMatrix;
 		glm::mat4 worldToCameraMatrix = glCamera->getWorldToCameraMatrix();
 		glm::mat4 cameraToClipMatrix = glCamera->getCameraToClipMatrix();
 		glm::mat4 modelToClipMatrix = cameraToClipMatrix * worldToCameraMatrix * modelToWorldMatrix;

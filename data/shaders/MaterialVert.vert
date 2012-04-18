@@ -11,7 +11,7 @@ out vec3 cameraSpacePosition;
 uniform ProjectionBlock
 {
 	mat4 cameraToClipMatrix;
-	mat4 lightWorldToClipMatrix;
+	mat4 shadowLightWorldToClipMatrix;
 	float zNear;
 	float zFar;
 } ProjectionBlck;

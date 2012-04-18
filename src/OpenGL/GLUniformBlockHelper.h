@@ -28,6 +28,7 @@ public:
 	static const int DIFFUSE = 0;
 	static const int REFLECTION = 1;
 	static const int REFRACTION = 2;
+	static const int SHADOW = 3;
 
 private:
 	std::map<std::string, GLUniformBlock*> uniformBlockMap;
@@ -39,7 +40,7 @@ private:
 struct ProjectionBlock
 {
 	glm::mat4 cameraToClipMatrix;
-	glm::mat4 lightToClipMatrix;
+	glm::mat4 shadowLightToClipMatrix;
 	float zNear;
 	float zFar;
 };

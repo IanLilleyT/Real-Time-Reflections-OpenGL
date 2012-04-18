@@ -13,6 +13,9 @@ void GLDisplay::initialize()
 	//Event handlers
 	Singleton<EventHandler>::Instance()->addEnterFrameEventListener(EnterFrameReceiver::from_method<GLDisplay,&GLDisplay::update>(this));
 	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::Resized,InputReceiver::from_method<GLDisplay,&GLDisplay::resize>(this));
+	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::MouseButtonPressed,InputReceiver::from_method<GLDisplay,&GLDisplay::mouseButtonPressed>(this));
+	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::MouseMoved,InputReceiver::from_method<GLDisplay,&GLDisplay::mouseMoved>(this));
+	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::MouseWheelMoved,InputReceiver::from_method<GLDisplay,&GLDisplay::mouseWheelMoved>(this));
 }
 void GLDisplay::initializeGL()
 {
@@ -36,16 +39,10 @@ void GLDisplay::initializeGL()
 }
 void GLDisplay::initializeCamera()
 {
-	//Camera
+	//Camera to Clip
 	float fov = 45.0f;
 	float nearPlane = 0.1f;
-	float farPlane = 100.0f;
-
-	this->camera = new Camera3rdPerson();
-	this->camera->setCameraPos(glm::vec3(0,50,50));
-	//this->camera->zoom(-10);
-	//this->camera->rotateDeg(0.0f,40.0f);
-
+	float farPlane = 1000.0f;
 	Singleton<GLCamera>::Instance()->calcCameraToClipMatrix(fov,nearPlane,farPlane);
 }
 void GLDisplay::initializeFramebuffers()
@@ -70,17 +67,22 @@ void GLDisplay::update()
 	if(this->world != 0)
 	{
 		GLState* glState = Singleton<GLState>::Instance();
-		glState->setReflectionTextures(0,1,2,3);
+		GLCamera* glCamera = Singleton<GLCamera>::Instance();
 		GLUniformBlockHelper* uniformBlockHelper = Singleton<GLUniformBlockHelper>::Instance();
+
+		//Texture stuff
+		glState->setReflectionTextures(0,1,2,3);
 		int textureGroup0 = GLFramebuffer_Reflection::TEXTURE_GROUP0;
 		int textureGroup1 = GLFramebuffer_Reflection::TEXTURE_GROUP1;
-
+		
+		//Update everything
 		//physicsWorld->update();
 		world->update();
+		glCamera->setWorldToCameraMatrix(this->camera->getWorldToCameraMatrix());
 		uniformBlockHelper->updateAll();
 
 		//Diffuse render to texture (front and back faces)
-		glState->setEffectType(GLUniformBlockHelper::DIFFUSE);
+		glState->effectType = GLUniformBlockHelper::DIFFUSE;
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
 		//Front face diffuse render
 		this->reflectionBufferFront->bindForWriting(textureGroup0);
@@ -94,7 +96,7 @@ void GLDisplay::update()
 		//world->render();
 
 		//Reflections render to texture (front faces)
-		glState->setEffectType(GLUniformBlockHelper::REFLECTION);
+		glState->effectType = GLUniformBlockHelper::REFLECTION;
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
 		glCullFace(GL_BACK);
 		this->reflectionBufferFront->bindForReadingAndWriting(GL_TEXTURE0,GL_TEXTURE1,textureGroup0,textureGroup1);
@@ -105,7 +107,7 @@ void GLDisplay::update()
 		world->render();
 
 		//Refractions render to screen (front faces)
-		glState->setEffectType(GLUniformBlockHelper::REFRACTION);
+		glState->effectType = GLUniformBlockHelper::REFRACTION;
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
 		glCullFace(GL_BACK);
 		this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup1);
@@ -126,15 +128,58 @@ void GLDisplay::resize(sf::Event sfEvent)
 	int height = sfEvent.Size.Height;
 	this->resize(width,height);
 }
+
+//IO Events
 void GLDisplay::resize(int width, int height)
 {
 	Singleton<GLCamera>::Instance()->setWindowDimensions(width,height);
+}
+void GLDisplay::mouseButtonPressed(sf::Event sfEvent)
+{
+	//Nothing yet
+}
+void GLDisplay::mouseMoved(sf::Event sfEvent)
+{
+	EventHandler* eventHandler = Singleton<EventHandler>::Instance();
+	glm::ivec2 mousePos = eventHandler->getMousePos();
+	glm::ivec2 prevMousePos = eventHandler->getPrevMousePos();
+	int mouseXDiff = (mousePos.x - prevMousePos.x);
+	int mouseYDiff = (mousePos.y - prevMousePos.y);
+
+	bool altIsDown = eventHandler->isAltDown();
+	if(eventHandler->isLeftMouseDown() && altIsDown)
+	{	
+		float scaleFactor = .008f;
+		float mouseXDifference = -(float)mouseXDiff * scaleFactor;
+		float mouseYDifference = (float)mouseYDiff * scaleFactor;
+		this->camera->rotateRad(mouseXDifference,mouseYDifference);
+	}
+	else if(eventHandler->isMiddleMouseDown() && altIsDown)
+	{
+		float scaleFactor = .01f;
+		float mouseXDifference = -(float)mouseXDiff * scaleFactor;
+		float mouseYDifference = (float)mouseYDiff * scaleFactor;
+		this->camera->pan(mouseXDifference,mouseYDifference);
+	}
+	else if(eventHandler->isRightMouseDown() && altIsDown)
+	{
+		float scaleFactor = .05f;
+		float mouseYDifference = -(float)mouseYDiff * scaleFactor;
+		this->camera->zoom(mouseYDifference);
+	}
+}
+void GLDisplay::mouseWheelMoved(sf::Event sfEvent)
+{
+	int delta = sfEvent.MouseWheel.Delta;
+	float scaleFactor = 1.0f;
+	this->camera->zoom(delta*scaleFactor);
 }
 
 //World
 void GLDisplay::setWorld(World* world)
 {
 	this->world = world;
+	this->camera = (Camera3rdPerson*)this->world->getObjectsByType("Camera3rdPerson",true).at(0);
 }
 World* GLDisplay::getWorld()
 {

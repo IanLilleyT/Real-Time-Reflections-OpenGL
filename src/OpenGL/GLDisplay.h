@@ -10,9 +10,9 @@
 #include "../Utils/EventHandler.h" //For enter frame events
 #include "../Utils/Singleton.h" //For accessing several globals
 #include "../World.h" //For storing world
-#include "../Cameras/Camera.h" //For using different camera types
-#include "../Cameras/Camera3rdPerson.h" //For using different camera types
-#include "../Cameras/Camera1stPerson.h" //For using different camera types
+#include "../Objects/Cameras/Camera.h" //For using different camera types
+#include "../Objects/Cameras/Camera3rdPerson.h" //For using different camera types
+#include "../Objects/Cameras/Camera1stPerson.h" //For using different camera types
 #include "../Objects/RenderObject.h"
 #include "../Physics/PhysicsWorld.h"
 #include "../Physics/PhysicsObject.h"
@@ -57,7 +57,13 @@ private:
 	void initializeCamera();
 	void initializeFramebuffers();
 	
-	void resize(sf::Event sfEvent);
+	
 	void clearGL();
 	void updateFramebuffers();
+
+	//IO Events
+	void resize(sf::Event sfEvent);
+	void mouseButtonPressed(sf::Event sfEvent);
+	void mouseMoved(sf::Event sfEvent);
+	void mouseWheelMoved(sf::Event sfEvent);
 };

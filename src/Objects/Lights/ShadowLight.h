@@ -1,6 +1,9 @@
 #pragma once
 
 #include "Light.h" //Superclass
+#include "../Cameras/Camera3rdPerson.h"
+#include "../../OpenGL/GLState.h"
+#include "../../OpenGL/GLCamera.h"
 
 class ShadowLight: public Light
 {
@@ -20,5 +23,10 @@ public:
 	virtual std::string getType();
 
 private:
-	void initialize(glm::vec4 intensity);
+	void initialize();
+
+	virtual void updateTransformationMatrix();
+
+	glm::mat4 worldToClipMatrix;
+	Camera3rdPerson* lightCamera;
 };

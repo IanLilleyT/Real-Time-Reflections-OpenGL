@@ -7,6 +7,10 @@
 #include "Objects/RenderObject.h"
 #include "Objects/Jello.h"
 #include "Objects/Lights/Light.h"
+#include "Objects/Lights/ShadowLight.h"
+#include "Objects/Cameras/Camera.h"
+#include "Objects/Cameras/Camera1stPerson.h"
+#include "Objects/Cameras/Camera3rdPerson.h"
 #include "Physics/PhysicsObject.h"
 
 //Programs
@@ -33,11 +37,14 @@ public:
 		Factory* factory = Singleton<Factory>::Instance();
 
 		//Objects
-		factory->register_class<Object>("Object");
-		factory->register_class<RenderObject>("RenderObject");
-		factory->register_class<Jello>("Jello");
-		factory->register_class<Light>("Light");
-		factory->register_class<PhysicsObject>("PhysicsObject");
+		factory->register_class<Object>(Object::className);
+		factory->register_class<RenderObject>(RenderObject::className);
+		factory->register_class<Jello>(Jello::className);
+		factory->register_class<Light>(Light::className);
+		factory->register_class<ShadowLight>(ShadowLight::className);
+		factory->register_class<Camera1stPerson>(Camera1stPerson::className);
+		factory->register_class<Camera3rdPerson>(Camera3rdPerson::className);
+		factory->register_class<PhysicsObject>(PhysicsObject::className);
 
 		//Programs
 		factory->register_class<GLProgram_Material>("GLProgram_Material");
@@ -46,12 +53,17 @@ public:
 		/*-------------------------------------------
 		//// Class Hierarchy ////////////////////////
 		-------------------------------------------*/
-		tree<std::string>::iterator object, renderObject, jello, light, physicsObject;
-		object =        Object::classHierarchy.set_head(Object::className);
-		renderObject =  Object::classHierarchy.append_child(object,RenderObject::className);
-		jello =         Object::classHierarchy.append_child(renderObject,Jello::className);
-		light =         Object::classHierarchy.append_child(object,Light::className);
-		physicsObject = Object::classHierarchy.append_child(object,PhysicsObject::className);
+		tree<std::string>::iterator object, renderObject, jello, light, shadowLight,
+			                        physicsObject, camera, camera1stPerson, camera3rdPerson;
+		object =          Object::classHierarchy.set_head(Object::className);
+		renderObject =    Object::classHierarchy.append_child(object,RenderObject::className);
+		jello =           Object::classHierarchy.append_child(renderObject,Jello::className);
+		light =           Object::classHierarchy.append_child(object,Light::className);
+		shadowLight =     Object::classHierarchy.append_child(light,ShadowLight::className);
+		physicsObject =   Object::classHierarchy.append_child(object,PhysicsObject::className);
+		camera =          Object::classHierarchy.append_child(object,Camera::className);
+		camera1stPerson = Object::classHierarchy.append_child(camera,Camera1stPerson::className);
+		camera3rdPerson = Object::classHierarchy.append_child(camera,Camera3rdPerson::className);
 	}
 	~ClassRegister(){}
 };

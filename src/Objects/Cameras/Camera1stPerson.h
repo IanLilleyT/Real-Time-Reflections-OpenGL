@@ -5,8 +5,21 @@
 class Camera1stPerson : public Camera
 {
 public:
-    Camera1stPerson(void);
-    virtual ~Camera1stPerson(void);
+	//Class
+	static std::string className;
+
+    Camera1stPerson();
+    virtual ~Camera1stPerson();
+
+	//Initialize
+	virtual void initialize(TiXmlElement* element);
+	void initialize(std::string name, glm::vec3 cameraPos);
+
+	//Type
+	virtual std::string getType();
+
+	//Modifiers
+	virtual void setCameraPos(glm::vec3 newPos);
 
 	virtual void rotateRad(float radX, float radY);
 	virtual void rotateDeg(float degX, float degY); 
@@ -22,7 +35,6 @@ public:
 protected:
 	virtual void CalcMatrix(void);
 
-	float currXZRads;
-    float currYRads;
+	
 };
 

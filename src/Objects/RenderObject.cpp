@@ -63,8 +63,8 @@ std::string RenderObject::getType()
 void RenderObject::render()
 {
 	Object::render();
-	Singleton<GLState>::Instance()->setModelToWorldMatrix(this->transformationMatrix);
-	Singleton<GLState>::Instance()->setMaterial(this->material);
+	Singleton<GLState>::Instance()->modelToWorldMatrix = this->transformationMatrix;
+	Singleton<GLState>::Instance()->material = this->material;
 	if(this->isVisible())
 		this->mesh->Render();
 }
