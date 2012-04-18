@@ -55,6 +55,13 @@ uniform EffectTypeBlock
 	int effectType;
 } EffectTypeBlck;
 
+//Effect types
+const int DIFFUSE = 0;
+const int REFLECTION = 1;
+const int REFRACTION = 2;
+const int SHADOW_BEGIN = 3;
+const int SHADOW_END = 4;
+
 //Random function used for jittering rays (kinda slow)
 float rand(vec2 co){
     return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
@@ -111,12 +118,6 @@ vec3 convertCameraSpaceToScreenSpace(in vec3 cameraSpace)
 	vec3 screenSpace = 0.5 * NDCSpace + 0.5;
 	return screenSpace;
 }
-
-//Effect types
-const int DIFFUSE = 0;
-const int REFLECTION = 1;
-const int REFRACTION = 2;
-const int SHADOW = 3;
 
 //Front vs Back face
 const int FRONT = 0;
@@ -229,8 +230,9 @@ vec4 ComputeEffect(in int effectType)
 float CalcShadowFactor() 
 {
 	vec3 screenSpaceLightPosition = convertCameraSpaceToScreenSpace(lightSpacePosition);
-	float depth = texture(depthTextureShadow, screenSpaceLightPosition.xy).x;
-	if (depth <= (screenSpaceLightPosition.z + 0.009))
+	float textureDepth = linearizeDepth(texture(depthTextureShadow, screenSpaceLightPosition.xy).x);
+	float currDepth = linearizeDepth(screenSpaceLightPosition.z);
+	if (textureDepth < (currDepth-.001))
 		return 0.5;
 	else
 		return 1.0;
@@ -270,11 +272,17 @@ void main()
 		vec4 otherColor = texture(colorTextureFront, screenSpacePosition);
 		outputColor = refractivity * refractiveColor + otherAmount * otherColor;
 	}
-	else if(EffectTypeBlck.effectType == SHADOW)
+	else if(EffectTypeBlck.effectType == SHADOW_END)
 	{
 		vec4 otherColor = texture(colorTextureFront, screenSpacePosition);
 		float shadowAmount = CalcShadowFactor();
-		outputColor = vec4(vec3(shadowAmount),1.0);
-		//outputColor = vec4(vec3(otherColor)*shadowAmount,1.0);
+		//outputColor = vec4(1,0,0,1);
+		//outputColor = vec4(vec3(shadowAmount),1.0);
+		//outputColor = vec4(lightSpacePosition,1.0);
+		outputColor = vec4(vec3(otherColor)*shadowAmount,1.0);
+	}
+	else
+	{
+		//outputColor = vec4(0,0,0,1);
 	}
 }

@@ -33,19 +33,20 @@ public:
 
 	void bindForReading(GLenum depthTextureUnit)
 	{
+		//glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		this->bindReadTextures(depthTextureUnit);
+		this->bindReadTexture(depthTextureUnit);
 	}
 	void bindForWriting()
 	{
-		glDrawBuffer(GL_NONE);
+		//glDrawBuffer(GL_NONE);
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 		this->bindWriteTexture();
 	}
 
 private:	
 
-	void bindReadTextures(GLenum depthTextureUnit)
+	void bindReadTexture(GLenum depthTextureUnit)
 	{
 		glActiveTexture(depthTextureUnit); //depth
 		glBindTexture(GL_TEXTURE_2D, depthTexture);

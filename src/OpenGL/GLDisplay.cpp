@@ -58,9 +58,9 @@ void GLDisplay::initializeFramebuffers()
 }
 void GLDisplay::initializePhysics()
 {
-	//Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
-	//this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
-	//Singleton<PhysicsIO>::Instance()->initialize();
+	Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
+	this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
+	Singleton<PhysicsIO>::Instance()->initialize();
 }
 void GLDisplay::update()
 { 
@@ -77,9 +77,11 @@ void GLDisplay::update()
 		int textureGroup1 = GLFramebuffer_Reflection::TEXTURE_GROUP1;
 		
 		//Update everything
-		//physicsWorld->update();
+		physicsWorld->update();
 		world->update();
-		glCamera->setWorldToCameraMatrix(this->camera->getWorldToCameraMatrix());
+		glm::mat4 worldToCameraMatrix = this->camera->getWorldToCameraMatrix();
+		//glm::mat4 worldToCameraMatrix = ((ShadowLight*)(this->world->getObjectsByType("ShadowLight").at(0)))->lightCamera->getWorldToCameraMatrix();
+		glCamera->setWorldToCameraMatrix(worldToCameraMatrix);
 		uniformBlockHelper->updateAll();
 
 		//Diffuse render to texture (front and back faces)
@@ -107,14 +109,35 @@ void GLDisplay::update()
 		this->clearGL();
 		world->render();
 
-		//Refractions render to screen (front faces)
+		//Refractions render to texture (front faces)
 		glState->effectType = GLUniformBlockHelper::REFRACTION;
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
 		glCullFace(GL_BACK);
+		//this->reflectionBufferFront->bindForReadingAndWriting(GL_TEXTURE0,GL_TEXTURE1,textureGroup1,textureGroup0);
 		this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup1);
 		//this->reflectionBufferBack->bindForReading(GL_TEXTURE2,GL_TEXTURE3,textureGroup1);
 		this->clearGL();
 		world->render();
+		
+		//this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup0);
+		//this->clearGL();
+		//world->render();
+
+		//Shadow map from light
+		/*glState->effectType = GLUniformBlockHelper::SHADOW_BEGIN;
+		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
+		glCullFace(GL_BACK);
+		this->shadowMapBuffer->bindForWriting();
+		this->clearGL();
+		world->render();
+
+		//Final
+		glState->effectType = GLUniformBlockHelper::SHADOW_END;
+		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
+		glCullFace(GL_BACK);
+		this->shadowMapBuffer->bindForReading(GL_TEXTURE4);
+		this->clearGL();
+		world->render();*/
 	}
 }
 void GLDisplay::clearGL()

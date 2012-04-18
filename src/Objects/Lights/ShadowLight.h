@@ -22,10 +22,10 @@ public:
 	//Type
 	virtual std::string getType();
 
+	Camera3rdPerson* lightCamera;
+
 private:
 	void initialize();
 
 	virtual void updateTransformationMatrix();
-
-	Camera3rdPerson* lightCamera;
 };

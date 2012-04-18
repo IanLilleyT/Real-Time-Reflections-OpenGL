@@ -17,17 +17,38 @@ uniform ProjectionBlock
 	float zFar;
 } ProjectionBlck;
 
+//Set different effects
+uniform EffectTypeBlock
+{
+	int effectType;
+} EffectTypeBlck;
+
+//Effect types
+const int DIFFUSE = 0;
+const int REFLECTION = 1;
+const int REFRACTION = 2;
+const int SHADOW_BEGIN = 3;
+const int SHADOW_END = 4;
+
 uniform mat4 modelToWorldMatrix;
 uniform mat4 modelToCameraMatrix;
 uniform mat3 normalModelToCameraMatrix;
 
 void main()
 {
-	vec4 tempCamPosition = (modelToCameraMatrix * vec4(position, 1.0));
-	vec4 tempLightPosition = (ProjectionBlck.shadowLightWorldToCameraMatrix * (modelToWorldMatrix * vec4(position, 1.0)));
-	gl_Position = ProjectionBlck.cameraToClipMatrix * tempCamPosition;
-
+	vec4 tempCamPosition = modelToCameraMatrix * vec4(position, 1.0);
+	vec4 tempLightPosition = ProjectionBlck.shadowLightWorldToCameraMatrix * modelToWorldMatrix * vec4(position, 1.0);
+	
 	vertexNormal = normalize(normalModelToCameraMatrix * normal);
 	cameraSpacePosition = vec3(tempCamPosition);
 	lightSpacePosition = vec3(tempLightPosition);
+	
+	if(EffectTypeBlck.effectType == SHADOW_BEGIN)
+	{
+		gl_Position = ProjectionBlck.cameraToClipMatrix * tempLightPosition;
+	}
+	else
+	{
+		gl_Position = ProjectionBlck.cameraToClipMatrix * tempCamPosition;
+	}
 }

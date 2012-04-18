@@ -28,7 +28,8 @@ public:
 	static const int DIFFUSE = 0;
 	static const int REFLECTION = 1;
 	static const int REFRACTION = 2;
-	static const int SHADOW = 3;
+	static const int SHADOW_BEGIN = 3;
+	static const int SHADOW_END = 4;
 
 private:
 	std::map<std::string, GLUniformBlock*> uniformBlockMap;
