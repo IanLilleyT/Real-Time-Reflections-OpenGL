@@ -22,6 +22,9 @@ public:
 	static glm::vec4 getRandomColor();
 	static glm::vec3 getRandomVec3(float min, float max);
 
+	//Strings
+	static bool stringContains(std::string s1, std::string s2);
+
 	//Printing
 	static void printMat4(glm::mat4 mat);
 	static void printMat3(glm::mat3 mat);
@@ -33,13 +36,11 @@ public:
 	//Conversions
 	static std::string convertIntToString(int val);
 	static std::string convertFloatToString(float val);
+	static int convertStringToInt(std::string s);
+	static float convertStringToFloat(std::string s);
 
 	//Parsing and Splitting
 	static std::vector<std::string> splitByCharacter(std::string s, char delim);
-	static float parseIntoFloat(std::string line);
-	static float parseIntoFloat(std::vector<std::string>& data);
-	static int parseIntoInt(std::string line);
-	static int parseIntoInt(std::vector<std::string>& data);
 
 	static glm::vec4 parseIntoVec4(std::string line);
 	static glm::vec4 parseIntoVec4(std::vector<std::string>& data);

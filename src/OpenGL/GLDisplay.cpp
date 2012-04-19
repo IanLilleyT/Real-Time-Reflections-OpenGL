@@ -12,6 +12,7 @@ void GLDisplay::initialize()
 
 	//Event handlers
 	Singleton<EventHandler>::Instance()->addEnterFrameEventListener(EnterFrameReceiver::from_method<GLDisplay,&GLDisplay::update>(this));
+	Singleton<EventHandler>::Instance()->addEnterFrameEventListener(EnterFrameReceiver::from_method<GLDisplay,&GLDisplay::checkKeyPress>(this));
 	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::Resized,InputReceiver::from_method<GLDisplay,&GLDisplay::resize>(this));
 	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::MouseButtonPressed,InputReceiver::from_method<GLDisplay,&GLDisplay::mouseButtonPressed>(this));
 	Singleton<EventHandler>::Instance()->addInputEventListener(sf::Event::MouseMoved,InputReceiver::from_method<GLDisplay,&GLDisplay::mouseMoved>(this));
@@ -92,6 +93,7 @@ void GLDisplay::update()
 		glCullFace(GL_BACK);
 		this->clearGL();
 		world->render();
+		this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup0);
 		//Back face diffuse render
 		//this->reflectionBufferBack->bindForWriting(textureGroup1);
 		//glCullFace(GL_FRONT);
@@ -99,7 +101,7 @@ void GLDisplay::update()
 		//world->render();
 
 		//Reflections render to texture (front faces)
-		glState->effectType = GLUniformBlockHelper::REFLECTION;
+		/*glState->effectType = GLUniformBlockHelper::REFLECTION;
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
 		glCullFace(GL_BACK);
 		this->reflectionBufferFront->bindForReadingAndWriting(GL_TEXTURE0,GL_TEXTURE1,textureGroup0,textureGroup1);
@@ -122,7 +124,7 @@ void GLDisplay::update()
 		this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup0);
 		//this->clearGL();
 		//world->render();
-
+		*/
 		//Shadow map from light
 		glState->effectType = GLUniformBlockHelper::SHADOW_BEGIN;
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
@@ -160,7 +162,36 @@ void GLDisplay::resize(int width, int height)
 }
 void GLDisplay::mouseButtonPressed(sf::Event sfEvent)
 {
-	//Nothing yet
+	EventHandler* eventHandler = Singleton<EventHandler>::Instance();
+	glm::ivec2 mousePos = eventHandler->getMousePos();
+	if(sfEvent.MouseButton.Button == sf::Mouse::Left)
+	{
+		if(!eventHandler->isAltDown())
+		{
+			RenderObject* oldSelectedObject = this->selectedObject;
+			this->selectedObject = 0;
+			float closestDistance = FLT_MAX;
+
+			Ray clickRay = Singleton<GLCamera>::Instance()->getPickingRay(mousePos.x,mousePos.y);
+			std::vector<Object*> renderObjects = this->world->getObjectsByType("RenderObject");
+			for(unsigned int i = 0; i < renderObjects.size(); i++)
+			{
+				RenderObject* renderObject = (RenderObject*)renderObjects.at(i);
+				glm::mat4 transformationMatrix = renderObject->getTransformationMatrix();
+				BoundingBox* boundingBox = renderObject->getMesh()->getGLMeshData()->boundingBox;
+				IntersectionData intersectionData = IntersectionAlgorithms::RayBoxIntersect(clickRay,transformationMatrix, boundingBox);
+				if(intersectionData.valid && intersectionData.distanceAlongRay < closestDistance)
+				{
+					closestDistance = intersectionData.distanceAlongRay;
+					this->selectedObject = renderObject;	
+				}
+			}
+			if(selectedObject != 0)
+				this->selectedObject->getMaterial()->diffuseColor += 1.0f;
+			if(oldSelectedObject != 0)
+				oldSelectedObject->getMaterial()->diffuseColor -= 1.0f;
+		}
+	}
 }
 void GLDisplay::mouseMoved(sf::Event sfEvent)
 {
@@ -198,12 +229,40 @@ void GLDisplay::mouseWheelMoved(sf::Event sfEvent)
 	float scaleFactor = 1.0f;
 	this->camera->zoom(delta*scaleFactor);
 }
+void GLDisplay::checkKeyPress()
+{
+	EventHandler* eventHandler = Singleton<EventHandler>::Instance();
+	if(this->selectedObject != 0)
+	{
+		float translationAmount = .01f;
+		glm::vec3 camUp = glm::normalize(this->camera->getUpDir());
+		glm::vec3 camLook = glm::normalize(this->camera->getLookDir());
+		glm::vec3 camRight = glm::normalize(glm::cross(camLook,camUp));
+		glm::vec3 moveX = glm::vec3(translationAmount,0,0);//translationAmount*camRight;
+		glm::vec3 moveY = glm::vec3(0,translationAmount,0);//translationAmount*camUp;
+		glm::vec3 moveZ = glm::vec3(0,0,translationAmount);//translationAmount*camLook;
+
+		if(eventHandler->isKeyDown(sf::Keyboard::A))
+			selectedObject->translate(-moveX);
+		if(eventHandler->isKeyDown(sf::Keyboard::D))
+			selectedObject->translate(moveX);
+		if(eventHandler->isKeyDown(sf::Keyboard::W))
+			selectedObject->translate(moveY);
+		if(eventHandler->isKeyDown(sf::Keyboard::S))
+			selectedObject->translate(-moveY);
+		if(eventHandler->isKeyDown(sf::Keyboard::Q))
+			selectedObject->translate(moveZ);
+		if(eventHandler->isKeyDown(sf::Keyboard::E))
+			selectedObject->translate(-moveZ);
+	}
+}
 
 //World
 void GLDisplay::setWorld(World* world)
 {
 	this->world = world;
 	this->camera = (Camera3rdPerson*)this->world->getObjectsByType("Camera3rdPerson",true).at(0);
+	this->selectedObject = 0;
 }
 World* GLDisplay::getWorld()
 {

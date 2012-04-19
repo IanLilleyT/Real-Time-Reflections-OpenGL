@@ -9,8 +9,8 @@ SFMLCore::SFMLCore(void)
 	title = "OpenGLApplication";
     window->Create(sf::VideoMode(width, height, 32), title);
     window->SetActive();
-    window->EnableVerticalSync(true);
-    window->SetFramerateLimit(60);
+   // window->EnableVerticalSync(true);
+   // window->SetFramerateLimit(60);
 
 	//Load GLDisplay
 	GLDisplay* glDisplay = Singleton<GLDisplay>::Instance();

@@ -9,6 +9,7 @@
     <scale>10 1 10</scale>
     <diffuseColor>0 1 1 1</diffuseColor>
   </object>
+  <!--
   <object type="RenderObject">
     <name>wall</name>
     <material>reflective</material>
@@ -27,6 +28,7 @@
     <scale>1 5 10</scale>
     <diffuseColor>0 0 1 1</diffuseColor>
   </object>
+  -->
   <object type="RenderObject">
     <name>cow2</name>
     <material>red</material>

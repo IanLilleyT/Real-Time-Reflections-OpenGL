@@ -41,11 +41,7 @@ public:
 
 	//Program
 	void setProgram(std::string program);
-	std::string getProgram();
-
-	//Visible
-	void setVibisle(bool visible);
-	bool isVisible();
+	GLProgram* getProgram();
 
 protected:
 	void initialize(std::string mesh, std::string material, std::string program);

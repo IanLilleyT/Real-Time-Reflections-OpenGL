@@ -30,27 +30,27 @@ void Material::initialize(TiXmlElement* element)
 
 	//specular shininess
 	TiXmlElement* specularShininessElement = element->FirstChildElement("specularShininess");
-	if(specularShininessElement) this->specularShininess = Utils::parseIntoFloat(specularShininessElement->FirstChild()->Value());
+	if(specularShininessElement) this->specularShininess = Utils::convertStringToFloat(specularShininessElement->FirstChild()->Value());
 
 	//reflectivity
 	TiXmlElement* reflectivityElement = element->FirstChildElement("reflectivity");
-	if(reflectivityElement) this->reflectivity = Utils::parseIntoFloat(reflectivityElement->FirstChild()->Value());
+	if(reflectivityElement) this->reflectivity = Utils::convertStringToFloat(reflectivityElement->FirstChild()->Value());
 
 	//reflectivity scatter
 	TiXmlElement* reflectiveScatterElement = element->FirstChildElement("reflectiveScatter");
-	if(reflectiveScatterElement) this->reflectiveScatter = Utils::parseIntoFloat(reflectiveScatterElement->FirstChild()->Value());
+	if(reflectiveScatterElement) this->reflectiveScatter = Utils::convertStringToFloat(reflectiveScatterElement->FirstChild()->Value());
 
 	//refractivity
 	TiXmlElement* refractivityElement = element->FirstChildElement("refractivity");
-	if(refractivityElement) this->refractivity = Utils::parseIntoFloat(refractivityElement->FirstChild()->Value());
+	if(refractivityElement) this->refractivity = Utils::convertStringToFloat(refractivityElement->FirstChild()->Value());
 
 	//refractive index
 	TiXmlElement* refractiveIndexElement = element->FirstChildElement("refractiveIndex");
-	if(refractiveIndexElement) this->refractiveIndex = Utils::parseIntoFloat(refractiveIndexElement->FirstChild()->Value());
+	if(refractiveIndexElement) this->refractiveIndex = Utils::convertStringToFloat(refractiveIndexElement->FirstChild()->Value());
 
 	//transparency
 	TiXmlElement* transparencyElement = element->FirstChildElement("transparency");
-	if(transparencyElement) this->transparency = Utils::parseIntoFloat(transparencyElement->FirstChild()->Value());
+	if(transparencyElement) this->transparency = Utils::convertStringToFloat(transparencyElement->FirstChild()->Value());
 }
 
 //Name

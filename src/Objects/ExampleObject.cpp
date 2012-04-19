@@ -16,7 +16,7 @@ void ExampleObject::initialize(TiXmlElement* element)
 
 	int value;
 	TiXmlElement* valueElement = element->FirstChildElement("value");
-	if(valueElement) value = Utils::parseIntoInt(valueElement->FirstChild()->Value());
+	if(valueElement) value = Utils::convertStringToInt(valueElement->FirstChild()->Value());
 
 	this->initialize(value);
 }

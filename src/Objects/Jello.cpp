@@ -74,6 +74,7 @@ void Jello::render()
 }
 void Jello::renderSprings()
 {
+	/*
 	std::map<SpringType,GLMesh*>::iterator iter;
 	for(iter = this->springMeshes.begin(); iter != this->springMeshes.end(); ++iter)
 	{
@@ -81,6 +82,7 @@ void Jello::renderSprings()
 		if(springMesh->isVisible())
 			springMesh->Render();
 	}
+	*/
 }
 /*---------------------------------------------
   Initializers
@@ -331,7 +333,7 @@ void Jello::initializeSpringMeshes()
 			springIBOData[i] = i;
 		springMesh->setGLMeshData(springVBOData,springIBOData,numSprings,GL_LINES);
 		springMesh->setProgram("White");
-		springMesh->setVisible(false);
+		//springMesh->setVisible(false);
 		this->springMeshes[type] = springMesh;
 	}
 }
@@ -346,7 +348,7 @@ void Jello::initializeNormalMesh()
 		normalIBOData[i] = i;
 	this->normalMesh->setGLMeshData(normalVBOData,normalIBOData,normalVBOData.size(),GL_LINES);
 	this->normalMesh->setProgram("White");
-	this->normalMesh->setVisible(false);
+	//this->normalMesh->setVisible(false);
 }
 void Jello::initializeForcesMesh()
 {
@@ -359,7 +361,7 @@ void Jello::initializeForcesMesh()
 		forceIBOData[i] = i;
 	this->forcesMesh->setGLMeshData(forceVBOData,forceIBOData,forceVBOData.size(),GL_LINES);
 	this->forcesMesh->setProgram("White");
-	this->forcesMesh->setVisible(false);
+	//this->forcesMesh->setVisible(false);
 }
 
 /*---------------------------------------------
@@ -571,7 +573,7 @@ void Jello::updateJelloMesh()
 		vboData[vboData.size()/2 + mappedIndex*3 + 2] = (GLfloat)normal.z;
 
 		//Normal vbo
-		if(this->normalMesh->isVisible())
+		/*if(this->normalMesh->isVisible())
 		{
 			float normalSize = 0.2f;
 			normalVBOData[mappedIndex*6 + 0] = (GLfloat)(particle.position.x);
@@ -593,7 +595,7 @@ void Jello::updateJelloMesh()
 			forcesVBOData[mappedIndex*6 + 3] = (GLfloat)(particle.position.x+force.x*forceSize);
 			forcesVBOData[mappedIndex*6 + 4] = (GLfloat)(particle.position.y+force.y*forceSize);
 			forcesVBOData[mappedIndex*6 + 5] = (GLfloat)(particle.position.z+force.z*forceSize);
-		}
+		}*/
 	}
 }
 glm::vec3 Jello::getNormal(FaceType f, Particle& particle)
@@ -621,6 +623,7 @@ glm::vec3 Jello::getNormal(FaceType f, Particle& particle)
 }
 void Jello::updateSpringMeshes()
 {
+	/*
 	std::map<SpringType,std::vector<Spring>>::iterator iter;
 	for(iter = this->springMap.begin(); iter != this->springMap.end(); ++iter)
 	{
@@ -644,6 +647,7 @@ void Jello::updateSpringMeshes()
 			}
 		}
 	}
+	*/
 }
 
 /*---------------------------------------------
@@ -761,6 +765,7 @@ glm::vec3 Jello::getExternalAcceleration()
 ---------------------------------------------*/
 void Jello::keyDown(sf::Event sfEvent)
 {
+	/*
 	//Toggling graphics
 	sf::Keyboard::Key key = sfEvent.Key.Code;
 	if(key == sf::Keyboard::Num1) //Toggle mesh
@@ -804,6 +809,7 @@ void Jello::keyDown(sf::Event sfEvent)
 		this->addExternalAcceleration(glm::vec3(0,0,userForceMagnitude));
 	if(eventHandler->isKeyDown(sf::Keyboard::Space))
 		this->addExternalAcceleration(glm::vec3(0,1000,0));
+	*/
 }
 /*---------------------------------------------
   Particle

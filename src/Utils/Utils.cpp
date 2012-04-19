@@ -1,5 +1,8 @@
 #include "Utils.h"
 
+/*----------------------------------------------
+	Math
+----------------------------------------------*/
 float Utils::pi = 3.14159f;
 float Utils::piDiv2 = 3.14159f/2.0f;
 float Utils::degToRad = 3.14159f / 180.0f;
@@ -32,7 +35,9 @@ glm::mat4 Utils::getRotationMatrixRads(glm::vec3 axis, float angleRads)
 	return theMat;
 }
 
-//Random
+/*----------------------------------------------
+	Random
+----------------------------------------------*/
 float Utils::getRandom(float min, float max)
 {
 	float initial = ((float)rand())/((float)RAND_MAX);
@@ -51,7 +56,17 @@ glm::vec3 Utils::getRandomVec3(float min, float max)
 	return glm::vec3(val1,val2,val3);
 }
 
-//Printing
+/*----------------------------------------------
+	Strings
+----------------------------------------------*/
+bool Utils::stringContains(std::string s1, std::string s2)
+{
+	return std::string::npos != s1.find(s2);
+}
+
+/*----------------------------------------------
+	Printing
+----------------------------------------------*/
 void Utils::printMat4(glm::mat4 mat)
 {
     std::cout << 
@@ -90,7 +105,9 @@ void Utils::printVec2(glm::vec2 vec)
 	std::cout << vec.x << " " << vec.y << std::endl;
 }
 
-//Conversions
+/*----------------------------------------------
+	Conversions
+----------------------------------------------*/
 std::string Utils::convertIntToString(int val)
 {
 	std::ostringstream ss;
@@ -103,8 +120,18 @@ std::string Utils::convertFloatToString(float val)
 	ss << val;
 	return ss.str();
 }
+int Utils::convertStringToInt(std::string s)
+{
+	return (int)atoi(s.c_str());
+}
+float Utils::convertStringToFloat(std::string s)
+{
+	return (float)atof(s.c_str());
+}
 
-//Tokenizing
+/*----------------------------------------------
+	Parsing and splitting
+----------------------------------------------*/
 std::vector<std::string> Utils::splitByCharacter(std::string s, char delim)
 {
 	std::vector<std::string> elems = std::vector<std::string>();
@@ -114,32 +141,8 @@ std::vector<std::string> Utils::splitByCharacter(std::string s, char delim)
 		elems.push_back(item);
 	return elems;
 }
-float Utils::parseIntoFloat(std::string line)
-{
-	std::vector<std::string> results = Utils::splitByCharacter(line, ' ');
-	return Utils::parseIntoFloat(results);
-}
-float Utils::parseIntoFloat(std::vector<std::string>& data)
-{
-	int numParts = data.size();
-	float part1 = (float)atof(data.at(numParts-1).c_str());
-	return part1;
-}
-int Utils::parseIntoInt(std::string line)
-{
-	return (int)Utils::parseIntoFloat(line);
-}
-int Utils::parseIntoInt(std::vector<std::string>& data)
-{
-	return (int)Utils::parseIntoFloat(data);
-}
 
 //Vec4
-glm::vec4 Utils::parseIntoVec4(std::string line)
-{
-	std::vector<std::string> results = Utils::splitByCharacter(line, ' ');
-	return Utils::parseIntoVec4(results);
-}
 glm::vec4 Utils::parseIntoVec4(std::vector<std::string>& data)
 {
 	int numParts = data.size();
@@ -149,6 +152,11 @@ glm::vec4 Utils::parseIntoVec4(std::vector<std::string>& data)
 	float part4 = (float)atof(data.at(numParts-1).c_str());
 	glm::vec4 parts = glm::vec4(part1,part2,part3,part4);
 	return parts;
+}
+glm::vec4 Utils::parseIntoVec4(std::string line)
+{
+	std::vector<std::string> results = Utils::splitByCharacter(line, ' ');
+	return Utils::parseIntoVec4(results);
 }
 glm::ivec4 Utils::parseIntoIVec4(std::string line)
 {
@@ -168,11 +176,6 @@ glm::uvec4 Utils::parseIntoUVec4(std::vector<std::string>& data)
 }
 
 //Vec3
-glm::vec3 Utils::parseIntoVec3(std::string line)
-{
-	std::vector<std::string> results = Utils::splitByCharacter(line, ' ');
-	return Utils::parseIntoVec3(results);
-}
 glm::vec3 Utils::parseIntoVec3(std::vector<std::string>& data)
 {
 	int numParts = data.size();
@@ -181,6 +184,11 @@ glm::vec3 Utils::parseIntoVec3(std::vector<std::string>& data)
 	float part3 = (float)atof(data.at(numParts-1).c_str());
 	glm::vec3 parts = glm::vec3(part1,part2,part3);
 	return parts;
+}
+glm::vec3 Utils::parseIntoVec3(std::string line)
+{
+	std::vector<std::string> results = Utils::splitByCharacter(line, ' ');
+	return Utils::parseIntoVec3(results);
 }
 glm::ivec3 Utils::parseIntoIVec3(std::string line)
 {
@@ -200,11 +208,6 @@ glm::uvec3 Utils::parseIntoUVec3(std::vector<std::string>& data)
 }
 
 //Vec2
-glm::vec2 Utils::parseIntoVec2(std::string line)
-{
-	std::vector<std::string> results = Utils::splitByCharacter(line, ' ');
-	return Utils::parseIntoVec2(results);
-}
 glm::vec2 Utils::parseIntoVec2(std::vector<std::string>& data)
 {
 	int numParts = data.size();
@@ -212,6 +215,11 @@ glm::vec2 Utils::parseIntoVec2(std::vector<std::string>& data)
 	float part2 = (float)atof(data.at(numParts-1).c_str());
 	glm::vec2 parts = glm::vec2(part1,part2);
 	return parts;
+}
+glm::vec2 Utils::parseIntoVec2(std::string line)
+{
+	std::vector<std::string> results = Utils::splitByCharacter(line, ' ');
+	return Utils::parseIntoVec2(results);
 }
 glm::ivec2 Utils::parseIntoIVec2(std::string line)
 {

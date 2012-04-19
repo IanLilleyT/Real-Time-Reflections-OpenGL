@@ -9,6 +9,7 @@
 #include "Framebuffers/GLFramebuffer_ShadowMap.h"
 #include "../Utils/EventHandler.h" //For enter frame events
 #include "../Utils/Singleton.h" //For accessing several globals
+#include "../Utils/IntersectionAlgorithms.h"
 #include "../World.h" //For storing world
 #include "../Objects/Cameras/Camera.h" //For using different camera types
 #include "../Objects/Cameras/Camera3rdPerson.h" //For using different camera types
@@ -58,7 +59,6 @@ private:
 	void initializeCamera();
 	void initializeFramebuffers();
 	
-	
 	void clearGL();
 	void updateFramebuffers();
 
@@ -67,4 +67,9 @@ private:
 	void mouseButtonPressed(sf::Event sfEvent);
 	void mouseMoved(sf::Event sfEvent);
 	void mouseWheelMoved(sf::Event sfEvent);
+	void checkKeyPress();
+
+	//THERE SHOULD BE A BETTER PLACE TO DO THIS
+	RenderObject* selectedObject;
+
 };

@@ -8,18 +8,21 @@ MeshDatabase::~MeshDatabase(){}
 GLMesh* MeshDatabase::loadMesh(std::string meshName)
 {
 	GLMesh* mesh = 0;
-	GLMeshData* meshData = this->findMesh(meshName);
-	if(meshData == 0) 
+	if(meshName != MeshDatabase::NONE)
 	{
-		meshData = this->openMeshFile(meshName);
+		GLMeshData* meshData = this->findMesh(meshName);
+		if(meshData == 0) 
+		{
+			meshData = this->openMeshFile(meshName);
+			if(meshData != 0)
+				this->meshMap[meshData->name] = meshData;
+		}
 		if(meshData != 0)
-			this->meshMap[meshData->name] = meshData;
-	}
-	if(meshData != 0)
-	{
-		mesh = new GLMesh();
-		mesh->setGLMeshData(meshData);
-		mesh->setName(meshName); //By default GLMesh given same name as GLMeshData
+		{
+			mesh = new GLMesh();
+			mesh->setGLMeshData(meshData);
+			mesh->setName(meshName); //By default GLMesh given same name as GLMeshData
+		}
 	}
 	return mesh;
 }
@@ -37,7 +40,8 @@ GLMeshData* MeshDatabase::openMeshFile(std::string meshName)
 	std::string meshPath = Singleton<GlobalPaths>::Instance()->getMeshPath();
 	std::string fullPath = meshPath + meshName + ".obj";
 
-	GLMeshData* meshData = GLMeshData::initialize(fullPath);
+	GLMeshData* meshData = new GLMeshData();
+	meshData->initialize(fullPath);
 	meshData->name = meshName;
 
 	return meshData;
