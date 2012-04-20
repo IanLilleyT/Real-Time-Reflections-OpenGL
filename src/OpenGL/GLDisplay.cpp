@@ -93,7 +93,7 @@ void GLDisplay::update()
 		glCullFace(GL_BACK);
 		this->clearGL();
 		world->render();
-		this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup0);
+		//this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup0);
 		//Back face diffuse render
 		//this->reflectionBufferBack->bindForWriting(textureGroup1);
 		//glCullFace(GL_FRONT);
@@ -101,7 +101,7 @@ void GLDisplay::update()
 		//world->render();
 
 		//Reflections render to texture (front faces)
-		/*glState->effectType = GLUniformBlockHelper::REFLECTION;
+		glState->effectType = GLUniformBlockHelper::REFLECTION;
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
 		glCullFace(GL_BACK);
 		this->reflectionBufferFront->bindForReadingAndWriting(GL_TEXTURE0,GL_TEXTURE1,textureGroup0,textureGroup1);
@@ -124,7 +124,7 @@ void GLDisplay::update()
 		this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup0);
 		//this->clearGL();
 		//world->render();
-		*/
+		
 		//Shadow map from light
 		glState->effectType = GLUniformBlockHelper::SHADOW_BEGIN;
 		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
@@ -234,13 +234,13 @@ void GLDisplay::checkKeyPress()
 	EventHandler* eventHandler = Singleton<EventHandler>::Instance();
 	if(this->selectedObject != 0)
 	{
-		float translationAmount = .01f;
+		float translationAmount = .03f;
 		glm::vec3 camUp = glm::normalize(this->camera->getUpDir());
 		glm::vec3 camLook = glm::normalize(this->camera->getLookDir());
 		glm::vec3 camRight = glm::normalize(glm::cross(camLook,camUp));
-		glm::vec3 moveX = glm::vec3(translationAmount,0,0);//translationAmount*camRight;
-		glm::vec3 moveY = glm::vec3(0,translationAmount,0);//translationAmount*camUp;
-		glm::vec3 moveZ = glm::vec3(0,0,translationAmount);//translationAmount*camLook;
+		glm::vec3 moveX = /*glm::vec3(translationAmount,0,0);*/translationAmount*camRight;
+		glm::vec3 moveY = /*glm::vec3(0,translationAmount,0);*/translationAmount*camUp;
+		glm::vec3 moveZ = /*glm::vec3(0,0,translationAmount);*/translationAmount*camLook;
 
 		if(eventHandler->isKeyDown(sf::Keyboard::A))
 			selectedObject->translate(-moveX);

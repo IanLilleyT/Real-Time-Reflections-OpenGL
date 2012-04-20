@@ -3,7 +3,7 @@
 //Static vars
 std::string Light::className = "Light";
 
-glm::vec4 Light::ambientIntensity = glm::vec4(0.2f,0.2f,0.2f,1.0f);
+glm::vec4 Light::ambientIntensity = glm::vec4(0.0f,0.0f,0.0f,1.0f);
 float Light::lightAttenuation = 0.1f;
 float Light::maxIntensity = 1.0f;
 float Light::gamma = 2.2f;

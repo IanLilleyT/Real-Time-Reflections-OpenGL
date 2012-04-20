@@ -6,7 +6,7 @@
     <mesh>cube</mesh>
     <program>Material</program>
     <translation>0 0 0</translation>
-    <scale>10 1 10</scale>
+    <scale>1000 1 1000</scale>
     <diffuseColor>0 1 1 1</diffuseColor>
   </object>
   <!--
