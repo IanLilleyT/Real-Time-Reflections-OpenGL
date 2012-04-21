@@ -26,7 +26,7 @@ void ShadowLight::initialize()
 }
 
 //Type
-std::string ShadowLight::getType()
+std::string ShadowLight::getClassname()
 {
 	return ShadowLight::className;
 }

@@ -31,7 +31,7 @@ void ExampleObject::initialize(int value)
 }
 
 //Type
-std::string ExampleObject::getType()
+std::string ExampleObject::getClassname()
 {
 	return ExampleObject::className;
 }

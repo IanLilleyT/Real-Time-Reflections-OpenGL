@@ -25,7 +25,7 @@ public:
 	void initialize(std::string name);
 
 	//Type
-	virtual std::string getType();
+	virtual std::string getClassname();
 
 	//Update
 	virtual void update();

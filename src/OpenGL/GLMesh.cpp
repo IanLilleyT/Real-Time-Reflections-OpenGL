@@ -3,16 +3,27 @@
 GLMesh::GLMesh(){}
 GLMesh::~GLMesh(){}
 
-/*-----------------------------------------------------------------------------
-//// GLMesh ///////////////////////////////////////////////////////////////////
------------------------------------------------------------------------------*/
-
-//Program
-void GLMesh::setProgram(std::string programName)
+//Initialize
+void GLMesh::initialize(std::vector<GLfloat> vboData, std::vector<GLushort> iboData, 
+	GLuint numElements, GLenum drawType)
 {
-	//Make sure to call setGLMeshData first!
-	this->program = Singleton<GLProgramDatabase>::Instance()->loadProgram(programName);
-    
+	GLMeshData* newMeshData = new GLMeshData();
+	newMeshData->initialize(vboData, iboData, numElements, drawType);
+	this->initialize(newMeshData);
+}
+void GLMesh::initialize(GLMeshData* meshData)
+{
+	this->meshData = meshData;
+	this->Generate();
+}
+GLMeshData* GLMesh::getGLMeshData()
+{
+	return this->meshData;
+}
+
+//Rendering
+void GLMesh::Generate()
+{
 	//Generate and bind the array buffer
     glGenBuffers(1, &this->vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
@@ -24,13 +35,12 @@ void GLMesh::setProgram(std::string programName)
 
     //Enable attributes
 	size_t offset = 0;
-	std::vector<GLAttribute*> attributes = this->program->getAttributes();
-    for(unsigned int i = 0; i < attributes.size(); i++)
+	int numAttributes = 2;
+    for(unsigned int i = 0; i < numAttributes; i++)
     {
-        GLAttribute* attribute = attributes.at(i);
-        glEnableVertexAttribArray(attribute->getAttributePos()); //enable attribute
-        glVertexAttribPointer(attribute->getAttributePos(), attribute->getSize(), attribute->getType(), GL_FALSE, 0, (void*) offset);
-		offset += this->meshData->numElements*attribute->getSize()*sizeof(GLfloat);
+		glEnableVertexAttribArray(i); //enable attribute
+		glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, 0, (void*) offset);
+		offset += this->meshData->numElements*3*sizeof(GLfloat);
     }
 
 	//Put data in ARRAY buffer
@@ -46,10 +56,6 @@ void GLMesh::setProgram(std::string programName)
     //Unbind
     glBindVertexArray(0); //unbind vao
 }
-GLProgram* GLMesh::getProgram()
-{
-	return this->program;
-}
 void GLMesh::Render()
 {
 	//Bind program and vao
@@ -64,33 +70,14 @@ void GLMesh::Render()
 	glUseProgram(0);
 }
 
-//GLMeshData
-void GLMesh::setGLMeshData(std::vector<GLfloat> vboData, std::vector<GLushort> iboData, 
-	GLuint numElements, GLenum drawType)
+//Program
+void GLMesh::setProgram(std::string programName)
 {
-	GLMeshData* newMeshData = new GLMeshData();
-	newMeshData->initialize(vboData, iboData, numElements, drawType);
-	this->meshData = newMeshData;
+	this->program = Singleton<GLProgramDatabase>::Instance()->loadProgram(programName);
 }
-void GLMesh::setGLMeshData(GLMeshData* meshData)
+GLProgram* GLMesh::getProgram()
 {
-	this->meshData = meshData;
-}
-GLMeshData* GLMesh::getGLMeshData()
-{
-	return this->meshData;
-}
-std::vector<GLfloat>& GLMesh::getVBOData()
-{
-	return this->meshData->vertexBufferData;
-}
-std::vector<GLushort>& GLMesh::getIBOData()
-{
-	return this->meshData->indexBufferData;
-}
-int GLMesh::getNumElements()
-{
-	return this->meshData->numElements;
+	return this->program;
 }
 
 //Name

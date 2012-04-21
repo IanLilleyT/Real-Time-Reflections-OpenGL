@@ -32,7 +32,7 @@ void Light::initialize(glm::vec4 intensity)
 }
 
 //Type
-std::string Light::getType()
+std::string Light::getClassname()
 {
 	return Light::className;
 }

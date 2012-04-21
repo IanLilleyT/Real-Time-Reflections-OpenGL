@@ -20,7 +20,7 @@ GLMesh* MeshDatabase::loadMesh(std::string meshName)
 		if(meshData != 0)
 		{
 			mesh = new GLMesh();
-			mesh->setGLMeshData(meshData);
+			mesh->initialize(meshData);
 			mesh->setName(meshName); //By default GLMesh given same name as GLMeshData
 		}
 	}

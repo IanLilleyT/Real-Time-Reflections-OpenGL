@@ -19,7 +19,7 @@ public:
 	void initialize(std::string name, glm::vec4 intensity);
 	
 	//Type
-	virtual std::string getType();
+	virtual std::string getClassname();
 
 	//Intensity
 	void setIntensity(glm::vec4 intensity);

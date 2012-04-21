@@ -16,7 +16,7 @@ public:
 	void initialize(std::string name, glm::vec3 cameraPos);
 
 	//Type
-	virtual std::string getType();
+	virtual std::string getClassname();
 
 	//Modifiers
 	virtual void setCameraPos(glm::vec3 newPos);

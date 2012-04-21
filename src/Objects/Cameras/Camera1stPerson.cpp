@@ -23,7 +23,7 @@ void Camera1stPerson::initialize(std::string name, glm::vec3 cameraPos)
 }
 
 //Type
-std::string Camera1stPerson::getType()
+std::string Camera1stPerson::getClassname()
 {
 	return Camera1stPerson::className;
 }

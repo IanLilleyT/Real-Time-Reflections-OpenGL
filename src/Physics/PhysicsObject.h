@@ -43,7 +43,7 @@ public:
 	virtual void update();
 
 	//Type
-	virtual std::string getType();
+	virtual std::string getClassname();
 
 	//Rigidbody
 	btRigidBody* getRigidBody();

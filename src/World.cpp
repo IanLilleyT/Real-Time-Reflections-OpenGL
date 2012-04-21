@@ -57,13 +57,13 @@ void World::render()
 void World::addObject(Object* object)
 {
 	if(object != 0)
-		(this->objectMap[object->getType()]).push_back(object);
+		(this->objectMap[object->getClassname()]).push_back(object);
 }
 void World::removeObject(Object* object)
 {
 	if(object != 0)
 	{
-		std::vector<Object*>& objects = this->getObjectsByType(object->getType());
+		std::vector<Object*>& objects = this->getObjectsByType(object->getClassname());
 		std::vector<Object*>::iterator iter = std::find(objects.begin(),objects.end(),object);
 		if(iter != objects.end())
 			objects.erase(iter);

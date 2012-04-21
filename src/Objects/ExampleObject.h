@@ -17,7 +17,7 @@ public:
 	void initialize(std::string name, int value);
 	
 	//Type
-	virtual std::string getType();
+	virtual std::string getClassname();
 
 protected:
 	void initialize(int value);

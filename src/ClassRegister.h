@@ -5,7 +5,6 @@
 //Objects
 #include "Objects/Object.h"
 #include "Objects/RenderObject.h"
-#include "Objects/Jello.h"
 #include "Objects/Lights/Light.h"
 #include "Objects/Lights/ShadowLight.h"
 #include "Objects/Cameras/Camera.h"
@@ -39,7 +38,6 @@ public:
 		//Objects
 		factory->register_class<Object>(Object::className);
 		factory->register_class<RenderObject>(RenderObject::className);
-		factory->register_class<Jello>(Jello::className);
 		factory->register_class<Light>(Light::className);
 		factory->register_class<ShadowLight>(ShadowLight::className);
 		factory->register_class<Camera1stPerson>(Camera1stPerson::className);
@@ -53,11 +51,10 @@ public:
 		/*-------------------------------------------
 		//// Class Hierarchy ////////////////////////
 		-------------------------------------------*/
-		tree<std::string>::iterator object, renderObject, jello, light, shadowLight,
+		tree<std::string>::iterator object, renderObject, light, shadowLight,
 			                        physicsObject, camera, camera1stPerson, camera3rdPerson;
 		object =          Object::classHierarchy.set_head(Object::className);
 		renderObject =    Object::classHierarchy.append_child(object,RenderObject::className);
-		jello =           Object::classHierarchy.append_child(renderObject,Jello::className);
 		light =           Object::classHierarchy.append_child(object,Light::className);
 		shadowLight =     Object::classHierarchy.append_child(light,ShadowLight::className);
 		physicsObject =   Object::classHierarchy.append_child(object,PhysicsObject::className);

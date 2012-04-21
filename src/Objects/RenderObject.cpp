@@ -54,7 +54,7 @@ void RenderObject::initialize(std::string mesh, std::string material, std::strin
 }
 
 //Type
-std::string RenderObject::getType()
+std::string RenderObject::getClassname()
 {
 	return RenderObject::className;
 }

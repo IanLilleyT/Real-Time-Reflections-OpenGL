@@ -48,7 +48,7 @@ void Object::initialize(std::string name)
 }
 
 //Type
-std::string Object::getType()
+std::string Object::getClassname()
 {
 	return Object::className;
 }

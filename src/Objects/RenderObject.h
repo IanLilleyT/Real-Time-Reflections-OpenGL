@@ -26,7 +26,7 @@ public:
 		std::string material, std::string program);
 
 	//Type
-	virtual std::string getType();
+	virtual std::string getClassname();
 
 	//Update
 	virtual void render();

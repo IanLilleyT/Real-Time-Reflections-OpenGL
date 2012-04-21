@@ -27,7 +27,7 @@ void Camera::initialize(glm::vec3 cameraPos)
 }
 
 //Type
-std::string Camera::getType()
+std::string Camera::getClassname()
 {
 	return Camera::className;
 }

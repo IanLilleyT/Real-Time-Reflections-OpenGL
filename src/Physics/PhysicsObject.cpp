@@ -37,7 +37,7 @@ void PhysicsObject::createRigidBody(float mass, float friction, float restitutio
 }
 
 //Type
-std::string PhysicsObject::getType()
+std::string PhysicsObject::getClassname()
 {
 	return PhysicsObject::className;
 }
