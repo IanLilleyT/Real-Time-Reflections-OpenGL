@@ -235,6 +235,9 @@ void GLDisplay::checkKeyPress()
 	if(this->selectedObject != 0)
 	{
 		float translationAmount = .03f;
+		float rotationAmount = 1.0f;
+		float colorAmount = 0.05f;
+		float scaleAmount = 1.01f;
 		glm::vec3 camUp = glm::normalize(this->camera->getUpDir());
 		glm::vec3 camLook = glm::normalize(this->camera->getLookDir());
 		glm::vec3 camRight = glm::normalize(glm::cross(camLook,camUp));
@@ -254,6 +257,16 @@ void GLDisplay::checkKeyPress()
 			selectedObject->translate(moveZ);
 		if(eventHandler->isKeyDown(sf::Keyboard::E))
 			selectedObject->translate(-moveZ);
+		if(eventHandler->isKeyDown(sf::Keyboard::R))
+			selectedObject->rotate(glm::vec3(0.0f,1.0f,0.0f),rotationAmount);
+		if(eventHandler->isKeyDown(sf::Keyboard::V))
+			selectedObject->getMaterial()->diffuseColor += colorAmount;
+		if(eventHandler->isKeyDown(sf::Keyboard::C))
+			selectedObject->getMaterial()->diffuseColor -= colorAmount;
+		if(eventHandler->isKeyDown(sf::Keyboard::Z))
+			selectedObject->scale(scaleAmount);
+		if(eventHandler->isKeyDown(sf::Keyboard::X))
+			selectedObject->scale(2.0f-scaleAmount);
 	}
 }
 

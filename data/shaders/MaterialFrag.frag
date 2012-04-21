@@ -175,7 +175,7 @@ bool findIntersection(in int faceType, in int effectType)
 		linearizeDepth(texture(depthTextureFront, samplePos).x) :
 		linearizeDepth(texture(depthTextureBack, samplePos).x);
 	float diff = currentDepth - sampleDepth;
-	float error = effectType == REFLECTION ? length(screenSpaceVector) : 100;
+	float error = effectType == REFLECTION ? length(screenSpaceVector) : 1;
 	if(diff >= 0 && diff < error)
 	{
 		screenSpaceVector *= stepRefinementAmount;
