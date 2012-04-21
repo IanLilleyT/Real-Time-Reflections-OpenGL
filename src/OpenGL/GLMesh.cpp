@@ -14,13 +14,13 @@ void GLMesh::setProgram(std::string programName)
 	this->program = Singleton<GLProgramDatabase>::Instance()->loadProgram(programName);
     
 	//Generate and bind the array buffer
-    glGenBuffers(1, &this->vertexBuffer); //generate vertex buffer
-	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer); //bind vertex buffer
-	glGenBuffers(1, &this->indexBuffer); //generate index buffer
+    glGenBuffers(1, &this->vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer);
+	glGenBuffers(1, &this->indexBuffer);
 
-    //Vertex array object setup
+    //Generate and bind the vao
     glGenVertexArrays(1, &this->vao);
-    glBindVertexArray(this->vao); //bind vao
+    glBindVertexArray(this->vao);
 
     //Enable attributes
 	size_t offset = 0;
@@ -33,6 +33,16 @@ void GLMesh::setProgram(std::string programName)
 		offset += this->meshData->numElements*attribute->getSize()*sizeof(GLfloat);
     }
 
+	//Put data in ARRAY buffer
+	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer); //bind vertex buffer
+	glBufferData(GL_ARRAY_BUFFER, this->meshData->vertexBufferData.size()*sizeof(GLfloat),
+		&(this->meshData->vertexBufferData.at(0)), GL_STATIC_DRAW); //put vertex array data in vertex buffer
+
+	//Put data in INDEX buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBuffer); //bind index buffer
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->meshData->indexBufferData.size()*sizeof(GLushort),
+		&(this->meshData->indexBufferData.at(0)), GL_STATIC_DRAW); //put index array data in the index buffer
+
     //Unbind
     glBindVertexArray(0); //unbind vao
 }
@@ -42,28 +52,16 @@ GLProgram* GLMesh::getProgram()
 }
 void GLMesh::Render()
 {
-	//Use program
+	//Bind program and vao
 	glUseProgram(this->program->getProgram());
+	glBindVertexArray(this->vao);
 
-	//Put data in VERTEX buffer
-	glBindVertexArray(this->vao); //bind vao
-	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBuffer); //bind vertex buffer
-	glBufferData(GL_ARRAY_BUFFER, this->meshData->vertexBufferData.size()*sizeof(GLfloat),
-		&(this->meshData->vertexBufferData.at(0)), GL_DYNAMIC_DRAW); //put vertex array data in vertex buffer
-
-	//Fill uniforms
 	this->program->fillUniforms();
+	glDrawElements(this->meshData->drawType, this->meshData->indexBufferData.size(), GL_UNSIGNED_SHORT, 0);
 
-	//Draw the mesh
-	//Put data in INDEX buffer
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBuffer); //bind index buffer
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->meshData->indexBufferData.size()*sizeof(GLushort),
-		&(this->meshData->indexBufferData.at(0)), GL_DYNAMIC_DRAW); //put index array data in the index buffer
-	glDrawElements(this->meshData->drawType, this->meshData->indexBufferData.size(), GL_UNSIGNED_SHORT, 0); //Draw on the screen
-
-	//Unbind
-	glBindVertexArray(0); //unbind vao
-	glUseProgram(0); //unbind program
+	//Unbind program and vao
+	glBindVertexArray(0);
+	glUseProgram(0);
 }
 
 //GLMeshData
