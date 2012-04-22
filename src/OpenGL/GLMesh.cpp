@@ -35,8 +35,7 @@ void GLMesh::Generate()
 
     //Enable attributes
 	size_t offset = 0;
-	int numAttributes = 2;
-    for(int i = 0; i < numAttributes; i++)
+    for(int i = 0; i < this->meshData->numAttributes; i++)
     {
 		glEnableVertexAttribArray(i); //enable attribute
 		glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, 0, (void*) offset);

@@ -79,6 +79,8 @@ bool GLMeshData::initializeOBJ(std::string filename)
 			}
 		}
 		file.close();
+		if(vertexVBOData.size() > 0) this->numAttributes += 1;
+		if(normalVBOData.size() > 0) this->numAttributes += 1;
 		vboData.insert(vboData.end(), vertexVBOData.begin(), vertexVBOData.end());
 		vboData.insert(vboData.end(), normalVBOData.begin(), normalVBOData.end());
 		this->boundingBox = new BoundingBox(min,max);

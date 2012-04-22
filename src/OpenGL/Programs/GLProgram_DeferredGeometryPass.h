@@ -11,7 +11,6 @@ public:
 protected:
 	virtual void bindUniformBlocks()
 	{
-		GLProgram::bindUniformBlocks();
 		this->bindUniformBlock(GLUniformBlockHelper::TYPE_PROJECTION);
 	}
 	virtual void fillUniforms()

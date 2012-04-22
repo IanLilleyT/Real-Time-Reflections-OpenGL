@@ -34,6 +34,7 @@ public:
     std::vector<GLfloat> vertexBufferData;
     std::vector<GLushort> indexBufferData;
 	GLuint numElements;
+	int numAttributes;
 	std::string name;
 	BoundingBox* boundingBox;
 

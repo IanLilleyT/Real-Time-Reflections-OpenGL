@@ -16,4 +16,10 @@ public:
 	glm::mat4 cameraToClipMatrix;
 	Material* material;
 	std::string globalProgramName;
+
+	int positionTextureUnit;
+	int normalTextureUnit;
+	int diffuseColorTextureUnit;
+	int specularColorTextureUnit;
+	int otherTextureUnit;
 };
