@@ -43,8 +43,8 @@ void GLUniformBlockHelper::update(std::string name)
 		projectionBlock.cameraToClipMatrix = cameraToClipMatrix;
 		projectionBlock.zNear = glView->getFrustumNear();
 		projectionBlock.zFar = glView->getFrustumFar();
-		projectionBlock.screenWidth = glView->getWindowDimensions().x;
-		projectionBlock.screenHeight = glView->getWindowDimensions().y;
+		projectionBlock.screenWidth = (float)glView->getWindowDimensions().x;
+		projectionBlock.screenHeight = (float)glView->getWindowDimensions().y;
 		projectionUniformBlock->setData(&projectionBlock);
 	}
 }

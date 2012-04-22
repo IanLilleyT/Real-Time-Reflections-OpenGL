@@ -13,7 +13,7 @@ public:
 	MeshDatabase();
 	virtual ~MeshDatabase();
 
-	GLMesh* loadMesh(std::string meshName);
+	GLMeshData* loadMesh(std::string meshName);
 
 	static std::string NONE;
 

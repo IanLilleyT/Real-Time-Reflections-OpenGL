@@ -22,4 +22,5 @@ public:
 	int diffuseColorTextureUnit;
 	int specularColorTextureUnit;
 	int otherTextureUnit;
+	int depthTextureUnit;
 };

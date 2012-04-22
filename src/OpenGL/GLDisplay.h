@@ -51,6 +51,7 @@ private:
 	World* world;
 	PhysicsWorld* physicsWorld;
 	GLFramebuffer_GBuffer* gbufferFBO;
+	GLMesh* fullScreenQuadMesh;
 
 	void initializeGL();
 	void initializeCamera();

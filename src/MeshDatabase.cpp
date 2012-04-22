@@ -5,26 +5,20 @@ std::string MeshDatabase::NONE = "NONE";
 MeshDatabase::MeshDatabase(){}
 MeshDatabase::~MeshDatabase(){}
 
-GLMesh* MeshDatabase::loadMesh(std::string meshName)
+GLMeshData* MeshDatabase::loadMesh(std::string meshName)
 {
-	GLMesh* mesh = 0;
+	GLMeshData* meshData = 0;
 	if(meshName != MeshDatabase::NONE)
 	{
-		GLMeshData* meshData = this->findMesh(meshName);
+		meshData = this->findMesh(meshName);
 		if(meshData == 0) 
 		{
 			meshData = this->openMeshFile(meshName);
 			if(meshData != 0)
 				this->meshMap[meshData->name] = meshData;
 		}
-		if(meshData != 0)
-		{
-			mesh = new GLMesh();
-			mesh->initialize(meshData);
-			mesh->setName(meshName); //By default GLMesh given same name as GLMeshData
-		}
 	}
-	return mesh;
+	return meshData;
 }
 GLMeshData* MeshDatabase::findMesh(std::string meshName)
 {

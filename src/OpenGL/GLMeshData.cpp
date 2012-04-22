@@ -48,6 +48,8 @@ bool GLMeshData::initializeOBJ(std::string filename)
 				{
 					glm::vec3 vertex = Utils::parseIntoVec3(line);
 					intermediateVertices.push_back(vertex);
+
+					//Get minimum for computing bounding box
 					if(vertex.x < min.x) min.x = vertex.x;
 					if(vertex.y < min.y) min.y = vertex.y;
 					if(vertex.z < min.z) min.z = vertex.z;
@@ -61,17 +63,34 @@ bool GLMeshData::initializeOBJ(std::string filename)
 				{
 					for(unsigned int i = 1; i < results.size(); i++)
 					{
+						//Determine if attributes are accessible
 						std::vector<std::string> elementVector = Utils::splitByCharacter(results.at(i),'/');
-						int vertexIndex = atoi(elementVector.at(0).c_str())-1;
-						int normalIndex = atoi(elementVector.at(2).c_str())-1;
-						glm::vec3 vertex = intermediateVertices.at(vertexIndex);
-						glm::vec3 normal = intermediateNormals.at(normalIndex);
-						vertexVBOData.push_back((GLfloat)vertex.x);
-						vertexVBOData.push_back((GLfloat)vertex.y);
-						vertexVBOData.push_back((GLfloat)vertex.z);
-						normalVBOData.push_back((GLfloat)normal.x);
-						normalVBOData.push_back((GLfloat)normal.y);
-						normalVBOData.push_back((GLfloat)normal.z);
+						int vertexLocation = -1;
+						int normalLocation = -1;
+						if(elementVector.size() >= 1) vertexLocation = 0;
+						if(elementVector.size() >= 2) normalLocation = 1;
+						if(elementVector.size() >= 3) normalLocation = 2;
+						
+						//Vertices
+						if(vertexLocation != -1)
+						{
+							int vertexIndex = atoi(elementVector.at(0).c_str())-1;
+							glm::vec3 vertex = intermediateVertices.at(vertexIndex);
+							vertexVBOData.push_back((GLfloat)vertex.x);
+							vertexVBOData.push_back((GLfloat)vertex.y);
+							vertexVBOData.push_back((GLfloat)vertex.z);
+						}
+						
+						//Normals
+						if(normalLocation != -1)
+						{
+							int normalIndex = atoi(elementVector.at(2).c_str())-1;
+							glm::vec3 normal = intermediateNormals.at(normalIndex);
+							normalVBOData.push_back((GLfloat)normal.x);
+							normalVBOData.push_back((GLfloat)normal.y);
+							normalVBOData.push_back((GLfloat)normal.z);
+						}
+						
 						iboData.push_back((GLushort)iboData.size());
 						numElements++;
 					}
@@ -79,8 +98,13 @@ bool GLMeshData::initializeOBJ(std::string filename)
 			}
 		}
 		file.close();
+
+		//Calculate how many attributes this mesh has
+		this->numAttributes = 0;
 		if(vertexVBOData.size() > 0) this->numAttributes += 1;
 		if(normalVBOData.size() > 0) this->numAttributes += 1;
+
+		//Create final vector and initialize
 		vboData.insert(vboData.end(), vertexVBOData.begin(), vertexVBOData.end());
 		vboData.insert(vboData.end(), normalVBOData.begin(), normalVBOData.end());
 		this->boundingBox = new BoundingBox(min,max);
