@@ -36,7 +36,7 @@ void GLMesh::Generate()
     //Enable attributes
 	size_t offset = 0;
 	int numAttributes = 2;
-    for(unsigned int i = 0; i < numAttributes; i++)
+    for(int i = 0; i < numAttributes; i++)
     {
 		glEnableVertexAttribArray(i); //enable attribute
 		glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, 0, (void*) offset);
@@ -58,11 +58,18 @@ void GLMesh::Generate()
 }
 void GLMesh::Render()
 {
+	//Decide if we should use a global program or not
+	GLProgram* programToUse = this->program;
+	std::string globalProgramString = Singleton<GLState>::Instance()->globalProgramName;
+	GLProgram* globalProgram = Singleton<GLProgramDatabase>::Instance()->loadProgram(globalProgramString);
+	if(globalProgram != 0)
+		programToUse = globalProgram;
+
 	//Bind program and vao
-	glUseProgram(this->program->getProgram());
+	glUseProgram(programToUse->getProgram());
 	glBindVertexArray(this->vao);
 
-	this->program->fillUniforms();
+	programToUse->fillUniforms();
 	glDrawElements(this->meshData->drawType, this->meshData->indexBufferData.size(), GL_UNSIGNED_SHORT, 0);
 
 	//Unbind program and vao

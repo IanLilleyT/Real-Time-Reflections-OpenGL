@@ -5,8 +5,8 @@ Material::Material()
 	this->diffuseColor = glm::vec4(1,1,1,1);
 	this->specularColor = glm::vec4(1,1,1,1);
 	this->specularShininess = .1f;
+	this->roughness = 0.0f;
 	this->reflectivity = 0.0f;
-	this->reflectiveScatter = 0.0f;
 	this->refractivity = 0.0f;
 	this->refractiveIndex = 1.0f;
 	this->transparency = 0.0f;
@@ -32,13 +32,13 @@ void Material::initialize(TiXmlElement* element)
 	TiXmlElement* specularShininessElement = element->FirstChildElement("specularShininess");
 	if(specularShininessElement) this->specularShininess = Utils::convertStringToFloat(specularShininessElement->FirstChild()->Value());
 
+	//roughness
+	TiXmlElement* roughnessElement = element->FirstChildElement("roughness");
+	if(roughnessElement) this->roughness = Utils::convertStringToFloat(roughnessElement->FirstChild()->Value());
+
 	//reflectivity
 	TiXmlElement* reflectivityElement = element->FirstChildElement("reflectivity");
 	if(reflectivityElement) this->reflectivity = Utils::convertStringToFloat(reflectivityElement->FirstChild()->Value());
-
-	//reflectivity scatter
-	TiXmlElement* reflectiveScatterElement = element->FirstChildElement("reflectiveScatter");
-	if(reflectiveScatterElement) this->reflectiveScatter = Utils::convertStringToFloat(reflectiveScatterElement->FirstChild()->Value());
 
 	//refractivity
 	TiXmlElement* refractivityElement = element->FirstChildElement("refractivity");

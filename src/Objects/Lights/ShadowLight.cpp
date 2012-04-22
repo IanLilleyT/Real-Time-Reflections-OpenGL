@@ -3,10 +3,7 @@
 //Static vars
 std::string ShadowLight::className = "ShadowLight";
 
-ShadowLight::ShadowLight() : Light() 
-{
-	this->lightCamera = new Camera3rdPerson();
-}
+ShadowLight::ShadowLight() : Light() {}
 ShadowLight::~ShadowLight(){}
 
 //Initialize
@@ -22,7 +19,7 @@ void ShadowLight::initialize(std::string name, glm::vec4 intensity)
 }
 void ShadowLight::initialize()
 {
-	//Nothing
+	this->lightCamera = new Camera3rdPerson();
 }
 
 //Type
@@ -37,5 +34,5 @@ void ShadowLight::updateTransformationMatrix()
 	Light::updateTransformationMatrix();
 	this->lightCamera->setCameraPos(this->getTranslation());
 	glm::mat4 worldToCameraMatrix = this->lightCamera->getWorldToCameraMatrix();
-	Singleton<GLState>::Instance()->shadowLightWorldToCameraMatrix = worldToCameraMatrix;
+	//Singleton<GLState>::Instance()->shadowLightWorldToCameraMatrix = worldToCameraMatrix;
 }

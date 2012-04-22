@@ -7,17 +7,14 @@
 #include "../Utils/Ray.h" //For picking
 #include "../Utils/Singleton.h" //For accessing GLState
 
-class GLCamera
+class GLView
 {
 public:
-	GLCamera();
-	~GLCamera();
+	GLView();
+	~GLView();
 
 	void calcCameraToClipMatrix(float viewAngle, float frustumNear, float frustumFar);
 	glm::mat4 getCameraToClipMatrix();
-
-	void setWorldToCameraMatrix(glm::mat4 worldToCameraMatrix);
-	glm::mat4 getWorldToCameraMatrix();
 
 	Ray getPickingRay(int x, int y);
 	void setWindowDimensions(int w, int h);

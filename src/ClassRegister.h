@@ -13,8 +13,7 @@
 #include "Physics/PhysicsObject.h"
 
 //Programs
-#include "OpenGL/Programs/GLProgram_Material.h"
-#include "OpenGL/Programs/GLProgram_White.h"
+#include "OpenGL/Programs/GLProgram_DeferredGeometryPass.h"
 
 #include "Utils/Singleton.h" //For accessing Factory
 #include "Utils/Factory.h" //For registration
@@ -45,8 +44,7 @@ public:
 		factory->register_class<PhysicsObject>(PhysicsObject::className);
 
 		//Programs
-		factory->register_class<GLProgram_Material>("GLProgram_Material");
-		factory->register_class<GLProgram_White>("GLProgram_White");
+		factory->register_class<GLProgram_DeferredGeometryPass>("GLProgram_DeferredGeometryPass");
 
 		/*-------------------------------------------
 		//// Class Hierarchy ////////////////////////

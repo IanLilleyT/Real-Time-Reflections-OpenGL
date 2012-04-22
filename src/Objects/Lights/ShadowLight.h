@@ -3,7 +3,7 @@
 #include "Light.h" //Superclass
 #include "../Cameras/Camera3rdPerson.h"
 #include "../../OpenGL/GLState.h"
-#include "../../OpenGL/GLCamera.h"
+#include "../../OpenGL/GLView.h"
 
 class ShadowLight: public Light
 {

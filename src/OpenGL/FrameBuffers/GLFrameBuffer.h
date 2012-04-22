@@ -7,7 +7,7 @@
 #include <gl3w/gl3w.h>
 
 #include "../../Utils/Singleton.h"
-#include "../GLCamera.h"
+#include "../GLView.h"
 
 class GLFramebuffer
 {
@@ -42,7 +42,7 @@ protected:
 	}
 	void generateColorTexture(GLuint* texture)
 	{
-		glm::ivec2 windowDimensions = Singleton<GLCamera>::Instance()->getWindowDimensions();
+		glm::ivec2 windowDimensions = Singleton<GLView>::Instance()->getWindowDimensions();
 		GLuint width = (GLuint)windowDimensions.x;
 		GLuint height = (GLuint)windowDimensions.y;
 
@@ -58,7 +58,7 @@ protected:
 	}
 	void generateDepthTexture(GLuint* texture)
 	{
-		glm::ivec2 windowDimensions = Singleton<GLCamera>::Instance()->getWindowDimensions();
+		glm::ivec2 windowDimensions = Singleton<GLView>::Instance()->getWindowDimensions();
 		GLuint width = (GLuint)windowDimensions.x;
 		GLuint height = (GLuint)windowDimensions.y;
 

@@ -3,10 +3,9 @@
 #include <glm/glm.hpp>
 #include <gl3w/gl3w.h>
 
-#include "GLCamera.h" //For handling camera
+#include "GLView.h" //For handling camera
 #include "GLUniformBlockHelper.h" //For calling updates to unform blocks
-#include "Framebuffers/GLFramebuffer_Reflection.h" //For color buffer drawing
-#include "Framebuffers/GLFramebuffer_ShadowMap.h"
+#include "Framebuffers/GLFramebuffer_GBuffer.h"
 #include "../Utils/EventHandler.h" //For enter frame events
 #include "../Utils/Singleton.h" //For accessing several globals
 #include "../Utils/IntersectionAlgorithms.h"
@@ -50,17 +49,13 @@ public:
 private:
 	Camera* camera;
 	World* world;
-	GLFramebuffer_Reflection* reflectionBufferFront;
-	GLFramebuffer_Reflection* reflectionBufferBack;
-	GLFramebuffer_ShadowMap* shadowMapBuffer;
 	PhysicsWorld* physicsWorld;
+	GLFramebuffer_GBuffer* gbufferFBO;
 
 	void initializeGL();
 	void initializeCamera();
 	void initializeFramebuffers();
-	
 	void clearGL();
-	void updateFramebuffers();
 
 	//IO Events
 	void resize(sf::Event sfEvent);
@@ -71,5 +66,4 @@ private:
 
 	//THERE SHOULD BE A BETTER PLACE TO DO THIS
 	RenderObject* selectedObject;
-
 };

@@ -6,7 +6,7 @@
 #include "../Utils/Singleton.h"
 #include "../Utils/EventHandler.h"
 #include "../Utils/Ray.h"
-#include "../OpenGL/GLCamera.h"
+#include "../OpenGL/GLView.h"
 
 class PhysicsIO
 {
@@ -49,7 +49,7 @@ public:
 		if(!eventHandler->isAltDown())
 		{
 			PhysicsObject* projectile = 0;
-			Ray shootingRay = Singleton<GLCamera>::Instance()->getPickingRay(sfEvent.MouseButton.X,sfEvent.MouseButton.Y);
+			Ray shootingRay = Singleton<GLView>::Instance()->getPickingRay(sfEvent.MouseButton.X,sfEvent.MouseButton.Y);
 			glm::vec3 position = shootingRay.origin;
 			
 			if(sfEvent.MouseButton.Button == sf::Mouse::Left)

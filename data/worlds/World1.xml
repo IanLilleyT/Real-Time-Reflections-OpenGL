@@ -4,12 +4,10 @@
     <name>floor</name>
     <material>reflective</material>
     <mesh>cube</mesh>
-    <program>Material</program>
     <translation>0 0 0</translation>
-    <scale>1000 1 1000</scale>
+    <scale>10 1 10</scale>
     <diffuseColor>0 1 1 1</diffuseColor>
   </object>
-  <!--
   <object type="RenderObject">
     <name>wall</name>
     <material>reflective</material>
@@ -28,7 +26,6 @@
     <scale>1 5 10</scale>
     <diffuseColor>0 0 1 1</diffuseColor>
   </object>
-  -->
   <object type="RenderObject">
     <name>cow2</name>
     <material>red</material>
@@ -77,11 +74,13 @@
     <intensity>1 .5 0 1</intensity>
     <translation>-1 3 4</translation>
   </object>
+  <!--
   <object type="ShadowLight">
     <name>light2</name>
     <intensity>0 0 0 1</intensity>
     <translation>0 20 0</translation>
   </object>
+  -->
   
   <object type="Camera3rdPerson">
     <name>mainCamera</name>

@@ -6,7 +6,7 @@
 
 #include "GLUniformBlock.h" //For storing UniformBlocks
 #include "GLState.h" //For getting current world values
-#include "GLCamera.h" //For camera values
+#include "GLView.h" //For camera values
 #include "../Objects/Lights/Light.h" //For lights
 #include "../Utils/Singleton.h" //For accessing GLState
 
@@ -22,14 +22,6 @@ public:
 	GLUniformBlock* findUniformBlock(std::string name);
 
 	static std::string TYPE_PROJECTION;
-	static std::string TYPE_LIGHTS;
-	static std::string TYPE_EFFECT_TYPE;
-
-	static const int DIFFUSE = 0;
-	static const int REFLECTION = 1;
-	static const int REFRACTION = 2;
-	static const int SHADOW_BEGIN = 3;
-	static const int SHADOW_END = 4;
 
 private:
 	std::map<std::string, GLUniformBlock*> uniformBlockMap;
@@ -44,23 +36,6 @@ struct ProjectionBlock
 	glm::mat4 shadowLightWorldToCameraMatrix;
 	float zNear;
 	float zFar;
-};
-struct PerLight
-{
-	glm::vec4 cameraSpaceLightPos;
-	glm::vec4 lightIntensity;
-};
-const int MAX_NUMBER_OF_LIGHTS = 8;
-struct LightsBlock
-{
-	glm::vec4 ambientIntensity;
-	float lightAttenuation;
-	float maxIntensity;
-	float gamma;
-	float padding;
-	PerLight lights[MAX_NUMBER_OF_LIGHTS];
-};
-struct EffectTypeBlock
-{
-	int effectType;
+	int screenWidth;
+	int screenHeight;
 };

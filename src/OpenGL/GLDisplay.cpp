@@ -44,18 +44,12 @@ void GLDisplay::initializeCamera()
 	float fov = 45.0f;
 	float nearPlane = 0.1f;
 	float farPlane = 100.0f;
-	Singleton<GLCamera>::Instance()->calcCameraToClipMatrix(fov,nearPlane,farPlane);
+	Singleton<GLView>::Instance()->calcCameraToClipMatrix(fov,nearPlane,farPlane);
 }
 void GLDisplay::initializeFramebuffers()
 {
-	this->reflectionBufferFront = new GLFramebuffer_Reflection();
-	this->reflectionBufferFront->initialize();
-
-	this->reflectionBufferBack = new GLFramebuffer_Reflection();
-	this->reflectionBufferBack->initialize();
-
-	this->shadowMapBuffer = new GLFramebuffer_ShadowMap();
-	this->shadowMapBuffer->initialize();
+	this->gbufferFBO = new GLFramebuffer_GBuffer();
+	this->gbufferFBO->initialize();
 }
 void GLDisplay::initializePhysics()
 {
@@ -68,78 +62,40 @@ void GLDisplay::update()
 	if(this->world != 0)
 	{
 		GLState* glState = Singleton<GLState>::Instance();
-		GLCamera* glCamera = Singleton<GLCamera>::Instance();
-		GLUniformBlockHelper* uniformBlockHelper = Singleton<GLUniformBlockHelper>::Instance();
-
-		//Texture stuff
-		glState->setReflectionTextures(0,1,2,3);
-		glState->depthTextureShadow = 4;
-		int textureGroup0 = GLFramebuffer_Reflection::TEXTURE_GROUP0;
-		int textureGroup1 = GLFramebuffer_Reflection::TEXTURE_GROUP1;
+		GLView* glView = Singleton<GLView>::Instance();
+		GLUniformBlockHelper* glUniformBlockHelper = Singleton<GLUniformBlockHelper>::Instance();
 		
 		//Update everything
 		//physicsWorld->update();
 		world->update();
-		glm::mat4 worldToCameraMatrix = this->camera->getWorldToCameraMatrix();
-		//glm::mat4 worldToCameraMatrix = ((ShadowLight*)(this->world->getObjectsByType("ShadowLight").at(0)))->lightCamera->getWorldToCameraMatrix();
-		glCamera->setWorldToCameraMatrix(worldToCameraMatrix);
-		uniformBlockHelper->updateAll();
+		glState->worldToCameraMatrix = this->camera->getWorldToCameraMatrix();
+		glUniformBlockHelper->updateAll();
 
-		//Diffuse render to texture (front and back faces)
-		glState->effectType = GLUniformBlockHelper::DIFFUSE;
-		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
-		//Front face diffuse render
-		this->reflectionBufferFront->bindForWriting(textureGroup0);
-		glCullFace(GL_BACK);
-		this->clearGL();
-		world->render();
-		//this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup0);
-		//Back face diffuse render
-		//this->reflectionBufferBack->bindForWriting(textureGroup1);
-		//glCullFace(GL_FRONT);
-		//this->clearGL();
-		//world->render();
-
-		//Reflections render to texture (front faces)
-		glState->effectType = GLUniformBlockHelper::REFLECTION;
-		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
-		glCullFace(GL_BACK);
-		this->reflectionBufferFront->bindForReadingAndWriting(GL_TEXTURE0,GL_TEXTURE1,textureGroup0,textureGroup1);
-		//this->reflectionBufferBack->bindForReadingAndWriting(GL_TEXTURE2,GL_TEXTURE3,textureGroup0,textureGroup1);
-		//this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup1);
-		//this->reflectionBufferBack->bindForReading(GL_TEXTURE2,GL_TEXTURE3,textureGroup1);
+		//Render geometry to textures
+		glState->globalProgramName = "DeferredGeometryPass";
+		this->gbufferFBO->bindForWriting();
 		this->clearGL();
 		world->render();
 
-		//Refractions render to texture (front faces)
-		glState->effectType = GLUniformBlockHelper::REFRACTION;
-		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
-		glCullFace(GL_BACK);
-		this->reflectionBufferFront->bindForReadingAndWriting(GL_TEXTURE0,GL_TEXTURE1,textureGroup1,textureGroup0);
-		//this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup1);
-		//this->reflectionBufferBack->bindForReading(GL_TEXTURE2,GL_TEXTURE3,textureGroup1);
+		//Read from textures and draw quadrants screen
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		this->clearGL();
-		world->render();
-		
-		this->reflectionBufferFront->bindForReading(GL_TEXTURE0,GL_TEXTURE1,textureGroup0);
-		//this->clearGL();
-		//world->render();
-		
-		//Shadow map from light
-		glState->effectType = GLUniformBlockHelper::SHADOW_BEGIN;
-		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
-		glCullFace(GL_BACK);
-		this->shadowMapBuffer->bindForWriting();
-		this->clearGL();
-		world->render();
-
-		//Final
-		glState->effectType = GLUniformBlockHelper::SHADOW_END;
-		uniformBlockHelper->update(GLUniformBlockHelper::TYPE_EFFECT_TYPE);
-		glCullFace(GL_BACK);
-		this->shadowMapBuffer->bindForReading(GL_TEXTURE4);
-		this->clearGL();
-		world->render();
+		this->gbufferFBO->bindForReading();
+        
+		glm::ivec2 windowDimensions = glView->getWindowDimensions();
+		GLint windowWidth = (GLint)(windowDimensions.x);
+		GLint windowHeight = (GLint)(windowDimensions.y);
+        GLint halfWidth = (GLint)(windowDimensions.x/2.0f);
+        GLint halfHeight = (GLint)(windowDimensions.y/2.0f);
+        
+        this->gbufferFBO->setReadBuffer(GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
+        glBlitFramebuffer(0, 0, windowWidth, windowHeight, 0, 0, halfWidth, halfHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+        this->gbufferFBO->setReadBuffer(GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
+        glBlitFramebuffer(0, 0, windowWidth, windowHeight, 0, halfHeight, halfWidth, windowHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+        this->gbufferFBO->setReadBuffer(GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE_COLOR);
+        glBlitFramebuffer(0, 0, windowWidth, windowHeight, halfWidth, halfHeight, windowWidth, windowHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+        this->gbufferFBO->setReadBuffer(GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR_COLOR);
+        glBlitFramebuffer(0, 0, windowWidth, windowHeight, halfWidth, 0, windowWidth, halfHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);	
 	}
 }
 void GLDisplay::clearGL()
@@ -158,7 +114,7 @@ void GLDisplay::resize(sf::Event sfEvent)
 //IO Events
 void GLDisplay::resize(int width, int height)
 {
-	Singleton<GLCamera>::Instance()->setWindowDimensions(width,height);
+	Singleton<GLView>::Instance()->setWindowDimensions(width,height);
 }
 void GLDisplay::mouseButtonPressed(sf::Event sfEvent)
 {
@@ -172,7 +128,7 @@ void GLDisplay::mouseButtonPressed(sf::Event sfEvent)
 			this->selectedObject = 0;
 			float closestDistance = FLT_MAX;
 
-			Ray clickRay = Singleton<GLCamera>::Instance()->getPickingRay(mousePos.x,mousePos.y);
+			Ray clickRay = Singleton<GLView>::Instance()->getPickingRay(mousePos.x,mousePos.y);
 			std::vector<Object*> renderObjects = this->world->getObjectsByType("RenderObject");
 			for(unsigned int i = 0; i < renderObjects.size(); i++)
 			{

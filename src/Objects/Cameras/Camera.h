@@ -7,9 +7,9 @@
 #include <SFML/Window/Keyboard.hpp> //For key events
 
 #include "../Object.h"
-#include "../../Utils/Singleton.h" //For GLCamera
+#include "../../Utils/Singleton.h" //For GLView
 #include "../../Utils/Utils.h" //Used by subclasses for creating rotation matrix
-#include "../../OpenGL/GLCamera.h" //For sending worldToCamera matrix
+#include "../../OpenGL/GLView.h" //For sending worldToCamera matrix
 #include "../../Utils/EventHandler.h" //For mouse events
 
 //TODO: Synchronize with translation code in Object

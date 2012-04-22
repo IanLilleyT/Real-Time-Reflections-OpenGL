@@ -19,10 +19,6 @@ void World::initialize(TiXmlElement* element)
 
 void World::update()
 {
-	//Update lights to GLState
-	std::vector<Object*>& lights = this->getObjectsByType("Light",false);
-	Singleton<GLState>::Instance()->lights = lights;
-
 	//Update all objects
 	std::map<std::string,std::vector<Object*>>::iterator iter;
 	for(iter = this->objectMap.begin(); iter != this->objectMap.end(); ++iter)

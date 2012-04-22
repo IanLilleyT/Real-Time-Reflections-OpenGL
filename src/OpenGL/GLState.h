@@ -1,32 +1,19 @@
 #pragma once
 
-#include <vector> //For loading in lights
-#include <string> //For program names
+#include <string>
 
 #include <glm/glm.hpp> //For loading in matrices
 
-#include "../Material.h" //For loading in materials
-#include "../Objects/Object.h" //For loading in lights
+#include "../Material.h"
 
 class GLState
 {
 public:
-	GLState();
-	~GLState();
-
+	GLState(){}
+	~GLState(){}
 	glm::mat4 modelToWorldMatrix;
 	glm::mat4 worldToCameraMatrix;
 	glm::mat4 cameraToClipMatrix;
-	glm::mat4 shadowLightWorldToCameraMatrix;
 	Material* material;
-	std::vector<Object*> lights;
-	int effectType;
-
-	//Texture attachments
-	int colorTextureFront;
-	int depthTextureFront;
-	int colorTextureBack;
-	int depthTextureBack;
-	int depthTextureShadow;
-	void setReflectionTextures(int colorFront, int depthFront, int colorBack, int depthBack);
+	std::string globalProgramName;
 };

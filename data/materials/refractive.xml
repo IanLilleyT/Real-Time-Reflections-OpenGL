@@ -4,7 +4,7 @@
 	<specularColor>1 1 1 1</specularColor>
 	<specularShininess>.1</specularShininess>
 	<reflectivity>0</reflectivity>
-  <reflectiveScatter>0</reflectiveScatter>
+  <roughness>0</roughness>
   <refractivity>1</refractivity>
   <refractiveIndex>1.2</refractiveIndex>
 </material>
