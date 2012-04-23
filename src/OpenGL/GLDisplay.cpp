@@ -31,6 +31,7 @@ void GLDisplay::initializeGL()
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LEQUAL);
     glDepthRange(0.0f, 1.0f);
+	glDisable(GL_BLEND);
     //glPointSize(10);
 	//glLineWidth(2);
 	//glEnable (GL_BLEND); 

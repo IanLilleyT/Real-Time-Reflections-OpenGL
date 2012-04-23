@@ -65,7 +65,7 @@ vec3 ComputeLighting()
 	vec3 newLightIntensity = attenuation * lightIntensity;
 	
 	float cosAngIncidence = dot(cameraSpaceSurfaceNormal, lightDir);
-	cosAngIncidence = cosAngIncidence < 0.0001 ? 0.0 : cosAngIncidence;
+	cosAngIncidence = max(0.0,cosAngIncidence);//cosAngIncidence < 0.0001 ? 0.0 : cosAngIncidence;
 	
 	vec3 viewDirection = normalize(-cameraSpacePosition);
 	vec3 halfAngle = normalize(lightDir + viewDirection);
@@ -76,7 +76,7 @@ vec3 ComputeLighting()
 	gaussianTerm = cosAngIncidence != 0.0 ? gaussianTerm : 0.0;
 	
 	vec3 lighting = diffuseColor * newLightIntensity * cosAngIncidence;
-	//lighting += specularColor * newLightIntensity * gaussianTerm;
+	lighting += specularColor * newLightIntensity * gaussianTerm;
 	return lighting;
 }
 

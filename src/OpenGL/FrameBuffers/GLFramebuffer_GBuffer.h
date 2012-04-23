@@ -39,10 +39,8 @@ public:
 		for (unsigned int i = 0 ; i < GBUFFER_NUM_TEXTURES ; i++) 
 		{
 			glBindTexture(GL_TEXTURE_2D, textures[i]);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, windowDimensions.x, windowDimensions.y, 0, GL_RGBA, GL_FLOAT, NULL);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, windowDimensions.x, windowDimensions.y, 0, GL_RGBA, GL_FLOAT, NULL);
 			//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, windowDimensions.x, windowDimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-			//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, windowDimensions.x, windowDimensions.y, 0,
-			//	GL_RGBA, GL_UNSIGNED_INT_8_8_8_8 , NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, textures[i], 0);
