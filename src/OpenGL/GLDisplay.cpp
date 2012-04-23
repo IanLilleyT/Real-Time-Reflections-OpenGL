@@ -88,17 +88,16 @@ void GLDisplay::update()
 		glState->globalProgramName = "DeferredGeometryPass";
 		this->gbufferFBO->bindForWriting();
 		this->clearGL(); //clear buffers
-		//glDepthMask(GL_TRUE); //enable writing to depth buffer
-		//glEnable(GL_DEPTH_TEST); //enable depth testing
 		world->render(); //render world to textures
-		//glDepthMask(GL_FALSE); //disable writing to depth buffer
-		//glDisable(GL_DEPTH_TEST); //disable depth testing
 
 		//Read from textures and draw quadrants screen
 		glState->globalProgramName = "DeferredLightingPass";
+		ShadowLight* light = (ShadowLight*)this->world->getObjectsByType("ShadowLight").at(0);
+		glState->lightIntensity = glm::vec3(light->getIntensity());
+		glState->lightCameraSpacePosition = glm::vec3(this->camera->getWorldToCameraMatrix()*glm::vec4(light->getTranslation(),1.0f));
+
 		this->gbufferFBO->bindForReading();
 		this->clearGL();
-		//glClear(GL_COLOR_BUFFER_BIT);
 		this->fullScreenQuadMesh->Render();
 
 		/*

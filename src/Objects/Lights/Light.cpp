@@ -14,17 +14,15 @@ Light::~Light(){}
 //Initialize
 void Light::initialize(TiXmlElement* element)
 {
-	Object::initialize(element);
-
 	std::string intensityString = element->FirstChildElement("intensity")->FirstChild()->Value();
 	glm::vec4 intensityVal = Utils::parseIntoVec4(intensityString);
-
 	this->initialize(intensityVal);
+	Object::initialize(element);
 }
 void Light::initialize(std::string name, glm::vec4 intensity)
 {
-	Object::initialize(name);
 	this->initialize(intensity);
+	Object::initialize(name);
 }
 void Light::initialize(glm::vec4 intensity)
 {

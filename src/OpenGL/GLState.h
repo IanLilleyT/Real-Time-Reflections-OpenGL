@@ -23,4 +23,7 @@ public:
 	int specularColorTextureUnit;
 	int otherTextureUnit;
 	int depthTextureUnit;
+
+	glm::vec3 lightCameraSpacePosition;
+	glm::vec3 lightIntensity;
 };

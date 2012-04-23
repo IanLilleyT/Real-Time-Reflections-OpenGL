@@ -29,7 +29,7 @@ void main()
 	outputPosition.w = 1.0;
 
 	//Camera space normals
-	outputNormal.xyz = cameraSpaceNormal;
+	outputNormal.xyz = normalize(cameraSpaceNormal);
 	outputNormal.w = 1.0;
 
 	//Diffuse color

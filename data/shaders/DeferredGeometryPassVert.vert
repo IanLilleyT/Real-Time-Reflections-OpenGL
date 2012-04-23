@@ -21,12 +21,12 @@ uniform ProjectionBlock
 	float zFar;
 	float screenWidth;
 	float screenHeight;
-} ProjectionBlck;
+};
 
 //Main
 void main()
 {
 	cameraSpaceNormal = vec3(normalize(normalModelToCameraMatrix * normal));
 	cameraSpacePosition = vec3(modelToCameraMatrix * vec4(position, 1.0));
-	gl_Position = ProjectionBlck.cameraToClipMatrix * vec4(cameraSpacePosition,1.0);
+	gl_Position = cameraToClipMatrix * vec4(cameraSpacePosition,1.0);
 }

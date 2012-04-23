@@ -12,6 +12,7 @@ protected:
 	virtual void bindUniformBlocks()
 	{
 		this->bindUniformBlock(GLUniformBlockHelper::TYPE_PROJECTION);
+		this->bindUniformBlock(GLUniformBlockHelper::TYPE_LIGHT);
 	}
 	virtual void fillUniforms()
 	{
@@ -46,5 +47,14 @@ protected:
 		int depthTexture = glState->depthTextureUnit;
 		GLuint depthTextureUniform = glGetUniformLocation(this->program, "depthTexture");
 		glUniform1i(depthTextureUniform, depthTexture);
+
+		//Light stuff (add support for more later)
+		glm::vec3 lightCameraSpacePosition = glState->lightCameraSpacePosition;
+		GLuint lightCameraSpacePositionUniform = glGetUniformLocation(this->program, "lightCameraSpacePosition");
+		glUniform3fv(lightCameraSpacePositionUniform, 1, glm::value_ptr(lightCameraSpacePosition));
+
+		glm::vec3 lightIntensity = glState->lightIntensity;
+		GLuint lightIntensityUniform = glGetUniformLocation(this->program,"lightIntensity");
+		glUniform3fv(lightIntensityUniform, 1, glm::value_ptr(lightIntensity));
 	}
 };

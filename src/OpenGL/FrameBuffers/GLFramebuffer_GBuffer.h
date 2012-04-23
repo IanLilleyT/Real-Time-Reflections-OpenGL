@@ -39,16 +39,21 @@ public:
 		for (unsigned int i = 0 ; i < GBUFFER_NUM_TEXTURES ; i++) 
 		{
 			glBindTexture(GL_TEXTURE_2D, textures[i]);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, windowDimensions.x, windowDimensions.y, 0, GL_RGB, GL_FLOAT, NULL);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, windowDimensions.x, windowDimensions.y, 0, GL_RGBA, GL_FLOAT, NULL);
+			//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, windowDimensions.x, windowDimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+			//glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, windowDimensions.x, windowDimensions.y, 0,
+			//	GL_RGBA, GL_UNSIGNED_INT_8_8_8_8 , NULL);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, textures[i], 0);
 			drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
 		}
 
 		//Depth attachment
 		glBindTexture(GL_TEXTURE_2D, depthTexture);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, windowDimensions.x, windowDimensions.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, windowDimensions.x, windowDimensions.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
 	
 		//Set draw buffers
@@ -66,8 +71,6 @@ public:
 	}
 	void bindForReading()
 	{
-		//glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
-		
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		
 		//Colors
@@ -77,12 +80,10 @@ public:
 		}
 
 		//Depth
+		GLenum first = GL_TEXTURE0;
+		GLenum thing = GL_TEXTURE0 + GBUFFER_NUM_TEXTURES;
 		glActiveTexture(GL_TEXTURE0 + GBUFFER_NUM_TEXTURES);		
 		glBindTexture(GL_TEXTURE_2D, depthTexture);
-	}
-	void setReadBuffer(GBUFFER_TEXTURE_TYPE TextureType)
-	{
-		glReadBuffer(GL_COLOR_ATTACHMENT0 + TextureType);
 	}
 private:
 	GLuint textures[GBUFFER_NUM_TEXTURES];
