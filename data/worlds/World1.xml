@@ -57,10 +57,10 @@
   <object type="RenderObject">
     <name>cow_soft</name>
     <material>cow</material>
-    <mesh>sphere</mesh>
+    <mesh>cow</mesh>
     <program>Material</program>
     <translation>2 2.5 -3</translation>
-    <scale>5 5 5</scale>
+    <scale>.1 .1 .1</scale>
     <rotation>0 1 0 -45</rotation>
     <diffuseColor>1 0 0 1</diffuseColor>
   </object>
@@ -79,7 +79,7 @@
   <object type="ShadowLight">
     <name>light2</name>
     <intensity>1 1 1 1</intensity>
-    <translation>0 7 0</translation>
+    <translation>0 5 0</translation>
   </object>
   
   <object type="Camera3rdPerson">

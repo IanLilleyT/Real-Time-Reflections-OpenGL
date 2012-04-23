@@ -44,6 +44,9 @@ glm::ivec2 GLView::getWindowDimensions()
 }
 Ray GLView::getPickingRay(int x, int y)
 {
+	GLState* glState = Singleton<GLState>::Instance();
+	glm::mat4 worldToCameraMatrix = glState->worldToCameraMatrix;
+
 	glm::ivec2 windowDimensions = GLView::getWindowDimensions();
 	float winWidth = (float)windowDimensions.x;
 	float winHeight = (float)windowDimensions.y;
@@ -73,7 +76,6 @@ Ray GLView::getPickingRay(int x, int y)
 	closePoint = clipToCamera * closePoint;
 	farPoint = clipToCamera * farPoint;
 
-	glm::mat4 worldToCameraMatrix = this->worldToCameraMatrix;
 	glm::mat4 cameraToWorld = glm::inverse(worldToCameraMatrix);
 	closePoint = cameraToWorld * closePoint;
 	farPoint = cameraToWorld * farPoint;

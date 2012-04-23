@@ -31,7 +31,6 @@ void GLDisplay::initializeGL()
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LEQUAL);
     glDepthRange(0.0f, 1.0f);
-	glDisable(GL_BLEND);
     //glPointSize(10);
 	//glLineWidth(2);
 	//glEnable (GL_BLEND); 
@@ -49,6 +48,8 @@ void GLDisplay::initializeCamera()
 }
 void GLDisplay::initializeFramebuffers()
 {
+	GLState* glState = Singleton<GLState>::Instance();
+
 	this->gbufferFBO = new GLFramebuffer_GBuffer();
 	this->gbufferFBO->initialize();
 
@@ -56,6 +57,14 @@ void GLDisplay::initializeFramebuffers()
 	GLMeshData* quadMeshData = Singleton<MeshDatabase>::Instance()->loadMesh("quad");
 	this->fullScreenQuadMesh = new GLMesh();
 	this->fullScreenQuadMesh->initialize(quadMeshData);
+
+	//Set texture unit positions
+	glState->positionTextureUnit = GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_POSITION;
+	glState->normalTextureUnit = GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL;
+	glState->diffuseColorTextureUnit = GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE_COLOR;
+	glState->specularColorTextureUnit = GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR_COLOR;
+	glState->otherTextureUnit = GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_OTHER;
+	glState->depthTextureUnit = GLFramebuffer_GBuffer::GBUFFER_NUM_TEXTURES;
 }
 void GLDisplay::initializePhysics()
 {
@@ -70,14 +79,6 @@ void GLDisplay::update()
 		GLState* glState = Singleton<GLState>::Instance();
 		GLView* glView = Singleton<GLView>::Instance();
 		GLUniformBlockHelper* glUniformBlockHelper = Singleton<GLUniformBlockHelper>::Instance();
-		
-		//Update texture unit positions
-		glState->positionTextureUnit = GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_POSITION;
-		glState->normalTextureUnit = GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL;
-		glState->diffuseColorTextureUnit = GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE_COLOR;
-		glState->specularColorTextureUnit = GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR_COLOR;
-		glState->otherTextureUnit = GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_OTHER;
-		glState->depthTextureUnit = GLFramebuffer_GBuffer::GBUFFER_NUM_TEXTURES;
 
 		//Update everything
 		//physicsWorld->update();
@@ -89,6 +90,7 @@ void GLDisplay::update()
 		glState->globalProgramName = "DeferredGeometryPass";
 		this->gbufferFBO->bindForWriting();
 		this->clearGL(); //clear buffers
+		glDisable(GL_BLEND);
 		world->render(); //render world to textures
 
 		//Read from textures and draw quadrants screen
@@ -100,26 +102,6 @@ void GLDisplay::update()
 		this->gbufferFBO->bindForReading();
 		this->clearGL();
 		this->fullScreenQuadMesh->Render();
-
-		/*
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-		this->clearGL();
-		this->gbufferFBO->bindForReading();
-		glm::ivec2 windowDimensions = glView->getWindowDimensions();
-		GLint windowWidth = (GLint)(windowDimensions.x);
-		GLint windowHeight = (GLint)(windowDimensions.y);
-        GLint halfWidth = (GLint)(windowDimensions.x/2.0f);
-        GLint halfHeight = (GLint)(windowDimensions.y/2.0f);
-        
-        this->gbufferFBO->setReadBuffer(GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_POSITION);
-        glBlitFramebuffer(0, 0, windowWidth, windowHeight, 0, 0, halfWidth, halfHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-        this->gbufferFBO->setReadBuffer(GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL);
-        glBlitFramebuffer(0, 0, windowWidth, windowHeight, 0, halfHeight, halfWidth, windowHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-        this->gbufferFBO->setReadBuffer(GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE_COLOR);
-        glBlitFramebuffer(0, 0, windowWidth, windowHeight, halfWidth, halfHeight, windowWidth, windowHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-        this->gbufferFBO->setReadBuffer(GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR_COLOR);
-        glBlitFramebuffer(0, 0, windowWidth, windowHeight, halfWidth, 0, windowWidth, halfHeight, GL_COLOR_BUFFER_BIT, GL_LINEAR);
-		*/
 	}
 }
 void GLDisplay::clearGL()

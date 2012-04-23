@@ -27,7 +27,6 @@ public:
 private:
 
 	glm::mat4 cameraToClipMatrix;
-	glm::mat4 worldToCameraMatrix;
 	float viewAngle;
 	float frustumScale;
 	float frustumNear;
