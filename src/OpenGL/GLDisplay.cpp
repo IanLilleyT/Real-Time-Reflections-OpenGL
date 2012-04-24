@@ -75,9 +75,9 @@ void GLDisplay::initializeFramebuffers()
 }
 void GLDisplay::initializePhysics()
 {
-	Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
-	this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
-	Singleton<PhysicsIO>::Instance()->initialize();
+	//Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
+	//this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
+	//Singleton<PhysicsIO>::Instance()->initialize();
 }
 void GLDisplay::update()
 { 
@@ -88,7 +88,7 @@ void GLDisplay::update()
 		GLUniformBlockHelper* glUniformBlockHelper = Singleton<GLUniformBlockHelper>::Instance();
 
 		//Update everything
-		physicsWorld->update();
+		//physicsWorld->update();
 		world->update();
 		glState->worldToCameraMatrix = this->camera->getWorldToCameraMatrix();
 		glUniformBlockHelper->updateAll();

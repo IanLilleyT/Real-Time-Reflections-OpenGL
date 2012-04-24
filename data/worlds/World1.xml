@@ -1,6 +1,5 @@
 <world>
   <name> World1 </name>
-  <!--
   <object type="RenderObject">
     <name>floor</name>
     <material>reflective</material>
@@ -9,6 +8,7 @@
     <scale>10 1 10</scale>
     <diffuseColor>0 1 1 1</diffuseColor>
   </object>
+  <!--
   <object type="RenderObject">
     <name>wall</name>
     <material>reflective</material>
@@ -54,7 +54,7 @@
     <scale>.5 .5 .5</scale>
     <diffuseColor>1 0 0 1</diffuseColor>
   </object>
-  
+  -->
   <object type="RenderObject">
     <name>cow_soft</name>
     <material>cow</material>
@@ -65,7 +65,16 @@
     <rotation>0 1 0 -45</rotation>
     <diffuseColor>1 0 0 1</diffuseColor>
   </object>
-  -->
+  <object type="RenderObject">
+    <name>cow_soft</name>
+    <material>cow</material>
+    <mesh>sphere</mesh>
+    <program>Material</program>
+    <translation>-2 2.5 -3</translation>
+    <scale>3 3 3</scale>
+    <rotation>0 1 0 -45</rotation>
+    <diffuseColor>1 0 0 1</diffuseColor>
+  </object>
   <!--
   <object type="Light">
     <name>light1</name>

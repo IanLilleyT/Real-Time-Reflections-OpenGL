@@ -53,6 +53,7 @@ vec4 ComputeReflection()
 	float initialStepAmount = .01;
 	float stepRefinementAmount = .7;
 	int maxRefinements = 3;
+	int maxDepth = 1;
 	
 	//Values from textures
 	vec2 screenSpacePosition2D = getScreenSpacePosition();
@@ -62,7 +63,8 @@ vec4 ComputeReflection()
 	float reflectivity = texture(otherTexture,screenSpacePosition2D).y;
 
 	//Screen space vector
-	vec3 cameraSpaceVector = normalize(reflect(normalize(cameraSpacePosition),cameraSpaceSurfaceNormal));
+	vec3 cameraSpaceViewDir = normalize(cameraSpacePosition);
+	vec3 cameraSpaceVector = normalize(reflect(cameraSpaceViewDir,cameraSpaceSurfaceNormal));
 	vec3 screenSpacePosition = convertCameraSpaceToScreenSpace(cameraSpacePosition);
 	vec3 cameraSpaceVectorPosition = cameraSpacePosition + cameraSpaceVector;
 	vec3 screenSpaceVectorPosition = convertCameraSpaceToScreenSpace(cameraSpaceVectorPosition);
@@ -78,40 +80,52 @@ vec4 ComputeReflection()
 	vec4 color = vec4(0,0,0,1);
 	int count = 0;
 	int numRefinements = 0;
+	int depth = 0;
 
 	//Ray trace!
-	while(count < 1000)
+	while(depth < maxDepth)
 	{
-		//Stop ray trace when it goes outside screen space
-		if(currentPosition.x < 0 || currentPosition.x > 1 ||
-		   currentPosition.y < 0 || currentPosition.y > 1 ||
-		   currentPosition.z < 0 || currentPosition.z > 1)
-			break;
-
-		//intersections
-		vec2 samplePos = currentPosition.xy;
-		float currentDepth = linearizeDepth(currentPosition.z);
-		float sampleDepth = linearizeDepth(texture(depthTexture, samplePos).x);
-		float diff = currentDepth - sampleDepth;
-		float error = length(screenSpaceVector);
-		if(diff >= 0 && diff < error)
+		while(count < 1000)
 		{
-			screenSpaceVector *= stepRefinementAmount;
-			currentPosition = oldPosition;
-			numRefinements++;
-			if(numRefinements >= maxRefinements)
-			{
-				color = texture(colorBufferTexture, samplePos);
+			//Stop ray trace when it goes outside screen space
+			if(currentPosition.x < 0 || currentPosition.x > 1 ||
+			   currentPosition.y < 0 || currentPosition.y > 1 ||
+			   currentPosition.z < 0 || currentPosition.z > 1)
 				break;
+
+			//intersections
+			vec2 samplePos = currentPosition.xy;
+			float currentDepth = linearizeDepth(currentPosition.z);
+			float sampleDepth = linearizeDepth(texture(depthTexture, samplePos).x);
+			float diff = currentDepth - sampleDepth;
+			float error = length(screenSpaceVector);
+			if(diff >= 0 && diff < error)
+			{
+				screenSpaceVector *= stepRefinementAmount;
+				currentPosition = oldPosition;
+				numRefinements++;
+				if(numRefinements >= maxRefinements)
+				{
+					vec3 normalAtPos = texture(normalTexture, samplePos).xyz;
+					float orientation = dot(cameraSpaceVector,normalAtPos);
+					if(orientation < 0)
+					{
+						float cosAngIncidence = -dot(cameraSpaceViewDir,cameraSpaceSurfaceNormal);
+						cosAngIncidence = clamp(1-cosAngIncidence,0.0,1.0);
+						color = texture(colorBufferTexture, samplePos) * cosAngIncidence;
+					}
+					break;
+				}
 			}
+
+			//Step ray
+			oldPosition = currentPosition;
+			currentPosition = oldPosition + screenSpaceVector;
+			count++;
 		}
-
-		//Step ray
-		oldPosition = currentPosition;
-		currentPosition = oldPosition + screenSpaceVector;
-		count++;
+		depth++;
 	}
-
+	
 	//Fade the reflection at large distance
 	float travelLength = clamp(2*distance(screenSpacePosition, currentPosition),0,1);
 	color *= 1.0 - travelLength*roughness;
@@ -123,9 +137,8 @@ void main()
 {
 	vec2 screenSpacePosition = getScreenSpacePosition();
 	outputColor = texture(colorBufferTexture, screenSpacePosition);
-	float depth = linearizeDepth(texture(depthTexture,screenSpacePosition).x);
 	float reflectivity = texture(otherTexture, screenSpacePosition).y;
-	if(depth < .999 && reflectivity > .01) //Don't draw background or non reflective pixels
+	if(reflectivity > .01) //Don't draw background or non reflective pixels
 	{
 		outputColor = reflectivity*ComputeReflection() + (1.0 - reflectivity)*outputColor;
 	}
