@@ -49,6 +49,11 @@ vec3 convertCameraSpaceToScreenSpace(in vec3 cameraSpace)
 
 vec4 ComputeReflection()
 {
+	//Tweakable variables
+	float initialStepAmount = .01;
+	float stepRefinementAmount = .7;
+	int maxRefinements = 3;
+	
 	//Values from textures
 	vec2 screenSpacePosition2D = getScreenSpacePosition();
 	vec3 cameraSpacePosition = texture(positionTexture,screenSpacePosition2D).xyz;
@@ -61,27 +66,19 @@ vec4 ComputeReflection()
 	vec3 screenSpacePosition = convertCameraSpaceToScreenSpace(cameraSpacePosition);
 	vec3 cameraSpaceVectorPosition = cameraSpacePosition + cameraSpaceVector;
 	vec3 screenSpaceVectorPosition = convertCameraSpaceToScreenSpace(cameraSpaceVectorPosition);
-	vec3 screenSpaceVector = normalize(screenSpaceVectorPosition - screenSpacePosition);
-
+	vec3 screenSpaceVector = initialStepAmount*normalize(screenSpaceVectorPosition - screenSpacePosition);
 	
 	//Jitter the initial ray
-	//float randomOffset = clamp(rand(gl_FragCoord.xy),0,1)/10000.0;
-	//screenSpaceVector *= initialStepAmount;
+	float randomOffset = clamp(rand(gl_FragCoord.xy),0,1)/10000.0;
 	vec3 oldPosition = screenSpacePosition;// + screenSpaceVector;
-	//oldPosition *= clamp((1-randomOffset*roughness),0,1);
-	vec3 currentPosition = oldPosition + screenSpaceVector/10.0;
+	oldPosition *= clamp((1-randomOffset*roughness),0,1);
+	vec3 currentPosition = oldPosition + screenSpaceVector;
 	
-	//Tweakable variables
-	float initialStepAmount = .01;
-	float stepRefinementAmount = .7;
-	int maxRefinements = 3;
-
 	//State
 	vec4 color = vec4(0,0,0,1);
 	int count = 0;
 	int numRefinements = 0;
 
-	/*
 	//Ray trace!
 	while(count < 1000)
 	{
@@ -92,8 +89,9 @@ vec4 ComputeReflection()
 			break;
 
 		//intersections
+		vec2 samplePos = currentPosition.xy;
 		float currentDepth = linearizeDepth(currentPosition.z);
-		float sampleDepth = linearizeDepth(texture(depthTexture, currentPosition.xy).x);
+		float sampleDepth = linearizeDepth(texture(depthTexture, samplePos).x);
 		float diff = currentDepth - sampleDepth;
 		float error = length(screenSpaceVector);
 		if(diff >= 0 && diff < error)
@@ -103,7 +101,7 @@ vec4 ComputeReflection()
 			numRefinements++;
 			if(numRefinements >= maxRefinements)
 			{
-				color = texture(colorBufferTexture, currentPosition.xy);
+				color = texture(colorBufferTexture, samplePos);
 				break;
 			}
 		}
@@ -113,15 +111,10 @@ vec4 ComputeReflection()
 		currentPosition = oldPosition + screenSpaceVector;
 		count++;
 	}
-	
-	*/
 
 	//Fade the reflection at large distance
-	//float travelLength = clamp(2*distance(screenSpacePosition, currentPosition),0,1);
-	//color *= 1.0 - travelLength*roughness;
-
-	color = texture(colorBufferTexture, currentPosition.xy);
-	//color = vec4(screenSpacePosition.xy,0,1.0);
+	float travelLength = clamp(2*distance(screenSpacePosition, currentPosition),0,1);
+	color *= 1.0 - travelLength*roughness;
 	return color;
 }
 
