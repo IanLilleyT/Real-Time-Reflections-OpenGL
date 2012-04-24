@@ -53,8 +53,8 @@ void GLDisplay::initializeFramebuffers()
 	this->gbufferFBO = new GLFramebuffer_GBuffer();
 	this->gbufferFBO->initialize();
 
-	//this->colorBufferFBO = new GLFramebuffer_ColorBuffer();
-	//this->colorBufferFBO->initialize();
+	this->colorBufferFBO = new GLFramebuffer_ColorBuffer();
+	this->colorBufferFBO->initialize();
 
 	//Instantiate quad mesh that we use to render the whole screen
 	GLMeshData* quadMeshData = Singleton<MeshDatabase>::Instance()->loadMesh("quad");
@@ -106,16 +106,15 @@ void GLDisplay::update()
 		ShadowLight* light = (ShadowLight*)this->world->getObjectsByType("ShadowLight").at(0);
 		glState->lightIntensity = glm::vec3(light->getIntensity());
 		glState->lightCameraSpacePosition = glm::vec3(this->camera->getWorldToCameraMatrix()*glm::vec4(light->getTranslation(),1.0f));
-		//this->colorBufferFBO->bindForWriting();
+		this->colorBufferFBO->bindForWriting();
 		this->clearGL();
 		this->fullScreenQuadMesh->Render();
 
 		//Reflections
-		//glState->globalProgramName = "Reflection";
-		//this->colorBufferFBO->bindForReading(glState->colorBufferTextureUnit);
-		//this->clearGL();
-		//this->fullScreenQuadMesh->Render();
-
+		glState->globalProgramName = "Reflection";
+		this->colorBufferFBO->bindForReading(glState->colorBufferTextureUnit);
+		this->clearGL();
+		this->fullScreenQuadMesh->Render();
 	}
 }
 void GLDisplay::clearGL()

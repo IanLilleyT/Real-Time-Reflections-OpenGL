@@ -50,7 +50,7 @@ public:
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		
 		//Colors
-		glActiveTexture(textureUnit);		
+		glActiveTexture(GL_TEXTURE0 + textureUnit);		
 		glBindTexture(GL_TEXTURE_2D, colorBufferTexture);
 	}
 private:
