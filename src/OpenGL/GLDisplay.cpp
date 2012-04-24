@@ -53,18 +53,25 @@ void GLDisplay::initializeFramebuffers()
 	this->gbufferFBO = new GLFramebuffer_GBuffer();
 	this->gbufferFBO->initialize();
 
+	//this->colorBufferFBO = new GLFramebuffer_ColorBuffer();
+	//this->colorBufferFBO->initialize();
+
 	//Instantiate quad mesh that we use to render the whole screen
 	GLMeshData* quadMeshData = Singleton<MeshDatabase>::Instance()->loadMesh("quad");
 	this->fullScreenQuadMesh = new GLMesh();
 	this->fullScreenQuadMesh->initialize(quadMeshData);
 
 	//Set texture unit positions
-	glState->positionTextureUnit = GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_POSITION;
-	glState->normalTextureUnit = GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_NORMAL;
-	glState->diffuseColorTextureUnit = GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_DIFFUSE_COLOR;
-	glState->specularColorTextureUnit = GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_SPECULAR_COLOR;
-	glState->otherTextureUnit = GLFramebuffer_GBuffer::GBUFFER_TEXTURE_TYPE_OTHER;
-	glState->depthTextureUnit = GLFramebuffer_GBuffer::GBUFFER_NUM_TEXTURES;
+	int i = 0;
+	//GBuffer
+	glState->positionTextureUnit = i++;
+	glState->normalTextureUnit = i++;
+	glState->diffuseColorTextureUnit = i++;
+	glState->specularColorTextureUnit = i++;
+	glState->otherTextureUnit = i++;
+	glState->depthTextureUnit = i++;
+	//Other
+	glState->colorBufferTextureUnit = i++;
 }
 void GLDisplay::initializePhysics()
 {
@@ -92,16 +99,23 @@ void GLDisplay::update()
 		this->clearGL(); //clear buffers
 		glDisable(GL_BLEND);
 		world->render(); //render world to textures
-
-		//Read from textures and draw quadrants screen
+		this->gbufferFBO->bindForReading(glState->positionTextureUnit); //first gbuffer texture
+		
+		//Diffuse and specular lighting
 		glState->globalProgramName = "DeferredLightingPass";
 		ShadowLight* light = (ShadowLight*)this->world->getObjectsByType("ShadowLight").at(0);
 		glState->lightIntensity = glm::vec3(light->getIntensity());
 		glState->lightCameraSpacePosition = glm::vec3(this->camera->getWorldToCameraMatrix()*glm::vec4(light->getTranslation(),1.0f));
-
-		this->gbufferFBO->bindForReading();
+		//this->colorBufferFBO->bindForWriting();
 		this->clearGL();
 		this->fullScreenQuadMesh->Render();
+
+		//Reflections
+		//glState->globalProgramName = "Reflection";
+		//this->colorBufferFBO->bindForReading(glState->colorBufferTextureUnit);
+		//this->clearGL();
+		//this->fullScreenQuadMesh->Render();
+
 	}
 }
 void GLDisplay::clearGL()

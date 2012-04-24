@@ -9,7 +9,6 @@ uniform sampler2D positionTexture;
 uniform sampler2D normalTexture;
 uniform sampler2D diffuseColorTexture;
 uniform sampler2D specularColorTexture;
-uniform sampler2D otherTexture;
 uniform sampler2D depthTexture;
 
 //Single light (add support for more later)
@@ -38,9 +37,7 @@ uniform LightBlock
 //Z buffer is nonlinear by default, so we fix this here
 float linearizeDepth(float depth)
 {
-	float n = zNear;
-	float f = zFar;
-	return (2.0 * n) / (f + n - depth * (f - n));
+	return (2.0 * zNear) / (zFar + zNear - depth * (zFar - zNear));
 }
 
 vec2 getScreenSpacePosition()
@@ -65,7 +62,7 @@ vec3 ComputeLighting()
 	vec3 newLightIntensity = attenuation * lightIntensity;
 	
 	float cosAngIncidence = dot(cameraSpaceSurfaceNormal, lightDir);
-	cosAngIncidence = max(0.0,cosAngIncidence);//cosAngIncidence < 0.0001 ? 0.0 : cosAngIncidence;
+	cosAngIncidence = max(0.0,cosAngIncidence);
 	
 	vec3 viewDirection = normalize(-cameraSpacePosition);
 	vec3 halfAngle = normalize(lightDir + viewDirection);
@@ -84,17 +81,14 @@ vec3 ComputeLighting()
 void main()
 {
 	vec2 screenSpacePosition = getScreenSpacePosition();
-	//outputColor = texture(normalTexture,screenSpacePosition);
 	float depth = linearizeDepth(texture(depthTexture,screenSpacePosition).x);
-	if(depth < .999)
+	if(depth < .999) //Don't draw background color pixels
 	{
-		outputColor = vec4(0,0,0,0);
+		//outputColor = diffuseColor * ambientIntensity;
 		outputColor += vec4(ComputeLighting(),1.0);
 		//outputColor = outputColor / maxIntensity;
 		//vec4 gamma = vec4(vec3(1.0 / gamma),1.0);
 		//outputColor = pow(outputColor, gamma);
 		outputColor.w = 1.0;
-		//outputColor = vec4(1,0,0,1);
-	
 	}
 }

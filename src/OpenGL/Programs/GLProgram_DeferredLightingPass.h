@@ -38,11 +38,6 @@ protected:
 		GLuint specularColorTextureUniform = glGetUniformLocation(this->program, "specularColorTexture");
 		glUniform1i(specularColorTextureUniform, specularColorTexture);
 
-		//other texture
-		int otherTexture = glState->otherTextureUnit;
-		GLuint otherTextureUniform = glGetUniformLocation(this->program, "otherTexture");
-		glUniform1i(otherTextureUniform, otherTexture);
-
 		//depth texture
 		int depthTexture = glState->depthTextureUnit;
 		GLuint depthTextureUniform = glGetUniformLocation(this->program, "depthTexture");

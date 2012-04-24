@@ -6,6 +6,7 @@
 #include "GLView.h" //For handling camera
 #include "GLUniformBlockHelper.h" //For calling updates to unform blocks
 #include "Framebuffers/GLFramebuffer_GBuffer.h"
+#include "Framebuffers/GLFramebuffer_ColorBuffer.h"
 #include "../Utils/EventHandler.h" //For enter frame events
 #include "../Utils/Singleton.h" //For accessing several globals
 #include "../Utils/IntersectionAlgorithms.h"
@@ -51,6 +52,7 @@ private:
 	World* world;
 	PhysicsWorld* physicsWorld;
 	GLFramebuffer_GBuffer* gbufferFBO;
+	GLFramebuffer_ColorBuffer* colorBufferFBO;
 	GLMesh* fullScreenQuadMesh;
 
 	void initializeGL();

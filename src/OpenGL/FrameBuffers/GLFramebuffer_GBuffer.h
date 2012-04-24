@@ -36,7 +36,7 @@ public:
 
 		//Color attachments
 		GLenum drawBuffers[GBUFFER_NUM_TEXTURES];
-		for (unsigned int i = 0 ; i < GBUFFER_NUM_TEXTURES ; i++) 
+		for (unsigned int i = 0; i < GBUFFER_NUM_TEXTURES ; i++) 
 		{
 			glBindTexture(GL_TEXTURE_2D, textures[i]);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, windowDimensions.x, windowDimensions.y, 0, GL_RGBA, GL_FLOAT, NULL);
@@ -67,20 +67,18 @@ public:
 	{
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo);
 	}
-	void bindForReading()
+	void bindForReading(int firstTextureUnit)
 	{
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		
 		//Colors
 		for (unsigned int i = 0; i < GBUFFER_NUM_TEXTURES; i++) {
-			glActiveTexture(GL_TEXTURE0 + i);		
+			glActiveTexture(GL_TEXTURE0 + i + firstTextureUnit);		
 			glBindTexture(GL_TEXTURE_2D, textures[i]);
 		}
 
 		//Depth
-		GLenum first = GL_TEXTURE0;
-		GLenum thing = GL_TEXTURE0 + GBUFFER_NUM_TEXTURES;
-		glActiveTexture(GL_TEXTURE0 + GBUFFER_NUM_TEXTURES);		
+		glActiveTexture(GL_TEXTURE0 + GBUFFER_NUM_TEXTURES + firstTextureUnit);		
 		glBindTexture(GL_TEXTURE_2D, depthTexture);
 	}
 private:

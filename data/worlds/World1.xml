@@ -57,10 +57,10 @@
   <object type="RenderObject">
     <name>cow_soft</name>
     <material>cow</material>
-    <mesh>cow</mesh>
+    <mesh>sphere</mesh>
     <program>Material</program>
     <translation>2 2.5 -3</translation>
-    <scale>.1 .1 .1</scale>
+    <scale>3 3 3</scale>
     <rotation>0 1 0 -45</rotation>
     <diffuseColor>1 0 0 1</diffuseColor>
   </object>
