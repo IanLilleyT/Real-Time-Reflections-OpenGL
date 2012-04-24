@@ -28,7 +28,7 @@ public:
 		//this->makeWall(glm::vec3(5,1,5),glm::vec3(0,2.5,0),glm::vec4(0,1,0,1),"reflective");
 
 		//Bullet
-		int numObjects = 50;
+		int numObjects = 100;
 		for(int i = 0; i < numObjects; i++)
 		{
 			glm::vec3 position = glm::vec3(0,3.0f*i+5.0f,0);
@@ -40,12 +40,12 @@ public:
 		}
 
 		//standing cow
-		RenderObject* cow = new RenderObject();
+		/*RenderObject* cow = new RenderObject();
 		cow->initialize("floor","cube","refractive","Material");
 		cow->getMaterial()->diffuseColor = glm::vec4(1,0,0,1);
 		cow->setScale(glm::vec3(5,1,5));
 		cow->setTranslationY(5.5);
-		world->addObject(cow);
+		world->addObject(cow);*/
 	}
 	PhysicsObject* makeRandomCube(glm::vec3 position)
 	{

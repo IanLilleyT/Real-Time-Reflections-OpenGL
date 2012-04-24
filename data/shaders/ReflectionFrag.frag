@@ -122,13 +122,12 @@ vec4 ComputeReflection()
 void main()
 {
 	vec2 screenSpacePosition = getScreenSpacePosition();
+	outputColor = texture(colorBufferTexture, screenSpacePosition);
 	float depth = linearizeDepth(texture(depthTexture,screenSpacePosition).x);
-	if(depth < .999) //Don't draw background color pixels
+	float reflectivity = texture(otherTexture, screenSpacePosition).y;
+	if(depth < .999 && reflectivity > .01) //Don't draw background or non reflective pixels
 	{
-		float reflectivity = texture(otherTexture, screenSpacePosition).y;
-		vec4 diffuseColor = texture(colorBufferTexture, screenSpacePosition);
-		float diffuse = 1.0 - reflectivity;
-		outputColor = reflectivity*ComputeReflection() + diffuse*diffuseColor;
-		outputColor.w = 1.0;
+		outputColor = reflectivity*ComputeReflection() + (1.0 - reflectivity)*outputColor;
 	}
+	outputColor.w = 1.0;
 }
