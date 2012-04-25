@@ -21,10 +21,10 @@ public:
 		this->world = world;
 
 		//walls
-		this->makeWall(glm::vec3(10,1,10),glm::vec3(0,0,0),glm::vec4(0,1,0,1),"reflective");
-		this->makeWall(glm::vec3(12,5,1),glm::vec3(0,2,5.5),glm::vec4(0,0,1,1),"reflective");
-		this->makeWall(glm::vec3(1,5,10),glm::vec3(5.5,2,0),glm::vec4(1,0,1,1),"reflective");
-		this->makeWall(glm::vec3(1,5,10),glm::vec3(-5.5,2,0),glm::vec4(1,0,0,1),"reflective");
+		this->makeWall(glm::vec3(10,1,10),glm::vec3(0,0,0),glm::vec4(0,0,0,1),"reflective");
+		this->makeWall(glm::vec3(12,5,1),glm::vec3(0,2,5.5),glm::vec4(0,0,0,1),"reflective");
+		this->makeWall(glm::vec3(1,5,10),glm::vec3(5.5,2,0),glm::vec4(0,0,0,1),"reflective");
+		this->makeWall(glm::vec3(1,5,10),glm::vec3(-5.5,2,0),glm::vec4(0,0,0,1),"reflective");
 		//this->makeWall(glm::vec3(5,1,5),glm::vec3(0,2.5,0),glm::vec4(0,1,0,1),"reflective");
 
 		//Bullet
@@ -51,7 +51,7 @@ public:
 	{
 		RenderObject* fallingObject = new RenderObject();	
 		PhysicsObject* projectile = new PhysicsObject();
-		fallingObject->initialize("cube","cube","reflective","Material");
+		fallingObject->initialize("cube","cow_small","reflective","Material");
 		projectile->initialize(
 			PRIMITIVE_BOX,
 			fallingObject,
@@ -59,7 +59,8 @@ public:
 		projectile->setScale(Utils::getRandomVec3(.5f,2.0f));
 			
 		glm::vec4 randomColor = Utils::getRandomColor();
-		float randomReflectivity = Utils::getRandom(.3f,0.5f);
+		randomColor = glm::vec4(1,1,1,1);
+		float randomReflectivity = Utils::getRandom(.3f,0.8f);
 		fallingObject->getMaterial()->diffuseColor = randomColor;
 		fallingObject->getMaterial()->reflectivity = randomReflectivity;
 
@@ -85,7 +86,7 @@ public:
 		projectile->setScale(Utils::getRandom(min,max));
 		
 		glm::vec4 randomColor = Utils::getRandomColor();
-		float randomReflectivity = Utils::getRandom(.3f,0.5f);
+		float randomReflectivity = Utils::getRandom(.3f,0.8f);
 		fallingObject->getMaterial()->diffuseColor = randomColor;
 		fallingObject->getMaterial()->reflectivity = randomReflectivity;
 

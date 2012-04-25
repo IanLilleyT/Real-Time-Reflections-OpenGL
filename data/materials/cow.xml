@@ -3,5 +3,5 @@
 	<diffuseColor>0 0 1 1</diffuseColor>
 	<specularColor>1 1 1 1</specularColor>
 	<specularShininess>.1</specularShininess>
-	<reflectivity>.6</reflectivity>
+	<reflectivity>1</reflectivity>
 </material>

@@ -82,9 +82,9 @@ void GLDisplay::initializeFramebuffers()
 }
 void GLDisplay::initializePhysics()
 {
-	//Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
-	//this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
-	//Singleton<PhysicsIO>::Instance()->initialize();
+	Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
+	this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
+	Singleton<PhysicsIO>::Instance()->initialize();
 }
 void GLDisplay::update()
 { 
@@ -95,7 +95,7 @@ void GLDisplay::update()
 		GLUniformBlockHelper* glUniformBlockHelper = Singleton<GLUniformBlockHelper>::Instance();
 
 		//Update everything
-		//physicsWorld->update();
+		physicsWorld->update();
 		world->update();
 		glState->worldToCameraMatrix = this->camera->getWorldToCameraMatrix();
 		glUniformBlockHelper->updateAll();
@@ -105,8 +105,9 @@ void GLDisplay::update()
 		this->gbufferFBO->bindForWriting();
 		this->clearGL(); //clear buffers
 		glDisable(GL_BLEND);
-		for(unsigned int i = 0; i < this->nonRefractiveObjects.size(); i++)
-			this->nonRefractiveObjects.at(i)->render();
+		this->world->render();
+		//for(unsigned int i = 0; i < this->nonRefractiveObjects.size(); i++)
+		//	this->nonRefractiveObjects.at(i)->render();
 		this->gbufferFBO->bindForReading(glState->positionTextureUnit); //first gbuffer texture
 		
 		//Diffuse and specular lighting

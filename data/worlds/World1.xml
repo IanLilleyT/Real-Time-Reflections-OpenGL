@@ -1,5 +1,6 @@
 <world>
   <name> World1 </name>
+  
   <object type="RenderObject">
     <name>floor</name>
     <material>reflective</material>
@@ -8,6 +9,7 @@
     <scale>10 1 10</scale>
     <diffuseColor>0 1 1 1</diffuseColor>
   </object>
+  <!--
   <object type="RenderObject">
     <name>wall</name>
     <material>reflective</material>
@@ -64,22 +66,22 @@
     <rotation>0 1 1 45</rotation>
     <diffuseColor>1 1 1 1</diffuseColor>
   </object>
-  
+  -->
   <object type="Light">
     <name>light2</name>
-    <color>1 0 0 1</color>
+    <color>1 1 1 1</color>
     <intensity>.1</intensity>
     <translation>-1 3 4</translation>
   </object>
   <object type="Light">
     <name>light2</name>
-    <color>1 .5 0 1</color>
+    <color>1 0 0 1</color>
     <intensity>.1</intensity>
     <translation>-1 3 1</translation>
   </object>
   <object type="Light">
     <name>light2</name>
-    <color>1 1 0 1</color>
+    <color>1 1 1 1</color>
     <intensity>.1</intensity>
     <translation>-4 3 4</translation>
   </object>
@@ -95,12 +97,12 @@
     <name>light2</name>
     <color>1 1 1 1</color>
     <intensity>1</intensity>
-    <translation>0 30 0</translation>
+    <translation>3 30 0</translation>
   </object>
   
   <object type="Camera3rdPerson">
     <name>mainCamera</name>
-    <cameraPos>30 30 30</cameraPos>
+    <cameraPos>0 7 -12</cameraPos>
   </object>
   
 </world>
