@@ -50,11 +50,7 @@ float CalcShadowFactor()
 	vec3 screenSpaceLightPosition = convertCameraSpaceToScreenSpace(lightSpacePosition);
 	float textureDepth = linearizeDepth(texture(shadowMapTexture, screenSpaceLightPosition.xy).x);
 	float currDepth = linearizeDepth(screenSpaceLightPosition.z);
-	if(textureDepth < (currDepth-.01))
-	{
-		return 0.5;
-	}
-	return 1.0;
+	return clamp(1-30*(currDepth-.01-textureDepth),.5,1);
 }  
 
 //Main
@@ -65,6 +61,6 @@ void main()
 	if(depth < .999) //Don't draw background pixels
 	{
 		float shadowAmount = CalcShadowFactor();
-		outputColor = shadowAmount*texture(colorBufferTexture, screenSpacePosition);
+		outputColor = shadowAmount * texture(colorBufferTexture, screenSpacePosition);
 	}
 }

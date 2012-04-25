@@ -73,8 +73,9 @@ vec3 ComputeLighting()
 	float gaussianTerm = exp(exponent);
 	gaussianTerm = cosAngIncidence != 0.0 ? gaussianTerm : 0.0;
 	
-	vec3 lighting = diffuseColor * newLightColor * cosAngIncidence * lightIntensity;
-	lighting += specularColor * newLightColor * gaussianTerm * lightIntensity;
+	vec3 lighting = diffuseColor * newLightColor * cosAngIncidence;
+	lighting += specularColor * newLightColor * gaussianTerm;
+	lighting *= lightIntensity;
 	return lighting;
 }
 

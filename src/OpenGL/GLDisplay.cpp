@@ -82,9 +82,9 @@ void GLDisplay::initializeFramebuffers()
 }
 void GLDisplay::initializePhysics()
 {
-	//Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
-	//this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
-	//Singleton<PhysicsIO>::Instance()->initialize();
+	Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
+	this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
+	Singleton<PhysicsIO>::Instance()->initialize();
 }
 void GLDisplay::update()
 { 
@@ -95,7 +95,7 @@ void GLDisplay::update()
 		GLUniformBlockHelper* glUniformBlockHelper = Singleton<GLUniformBlockHelper>::Instance();
 
 		//Update everything
-		//physicsWorld->update();
+		physicsWorld->update();
 		world->update();
 		glState->worldToCameraMatrix = this->camera->getWorldToCameraMatrix();
 		glUniformBlockHelper->updateAll();
@@ -127,14 +127,14 @@ void GLDisplay::update()
 			glState->lightCameraSpacePosition = glm::vec3(this->camera->getWorldToCameraMatrix()*glm::vec4(light->getTranslation(),1.0f));
 			
 			//Calc light sphere size
-			float MaxChannel = std::max(std::max(lightColor.x, lightColor.y), lightColor.z);
-			float c = MaxChannel * lightIntensity;
-			float scaleAmount = 8.0f * sqrtf(c) + 1.0f;
+			//float maxVal = std::max(std::max(lightColor.x, lightColor.y), lightColor.z);
+			//float c = maxVal * lightIntensity;
+			//float scaleAmount = 8.0f * sqrtf(c) + 1.0f;
 
 			//Transform and render sphere
-			this->lightSphere->setTranslation(light->getTranslation());
-			this->lightSphere->setScale(scaleAmount);
-			glState->modelToWorldMatrix = this->lightSphere->getTransformationMatrix();
+			//this->lightSphere->setTranslation(light->getTranslation());
+			//this->lightSphere->setScale(scaleAmount);
+			//glState->modelToWorldMatrix = this->lightSphere->getTransformationMatrix();
 			//this->lightSphere->render();
 			this->fullScreenQuadMesh->Render();
 		}

@@ -71,7 +71,9 @@ vec4 ComputeReflection()
 	vec3 screenSpaceVector = initialStepAmount*normalize(screenSpaceVectorPosition - screenSpacePosition);
 	
 	//Jitter the initial ray
-	vec3 oldPosition = screenSpacePosition;// + screenSpaceVector;
+	float randomOffset = clamp(rand(gl_FragCoord.xy),0,1)/10000.0;
+	vec3 oldPosition = screenSpacePosition + screenSpaceVector;
+	oldPosition *= clamp((1-randomOffset*roughness),0,1);
 	vec3 currentPosition = oldPosition + screenSpaceVector;
 	
 	//State
@@ -108,9 +110,9 @@ vec4 ComputeReflection()
 					float orientation = dot(cameraSpaceVector,normalAtPos);
 					if(orientation < 0)
 					{
-						//float cosAngIncidence = -dot(cameraSpaceViewDir,cameraSpaceSurfaceNormal);
-						//cosAngIncidence = clamp(1-cosAngIncidence,0.0,1.0);
-						color = texture(colorBufferTexture, samplePos);// * cosAngIncidence;
+						float cosAngIncidence = -dot(cameraSpaceViewDir,cameraSpaceSurfaceNormal);
+						cosAngIncidence = clamp(1-cosAngIncidence,0.0,1.0);
+						color = texture(colorBufferTexture, samplePos) * cosAngIncidence;
 					}
 					break;
 				}
