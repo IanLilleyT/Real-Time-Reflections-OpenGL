@@ -105,7 +105,7 @@ void GLDisplay::update()
 		this->gbufferFBO->bindForWriting();
 		this->clearGL(); //clear buffers
 		glDisable(GL_BLEND);
-		for(int i = 0; i < this->nonRefractiveObjects.size(); i++)
+		for(unsigned int i = 0; i < this->nonRefractiveObjects.size(); i++)
 			this->nonRefractiveObjects.at(i)->render();
 		this->gbufferFBO->bindForReading(glState->positionTextureUnit); //first gbuffer texture
 		
@@ -147,6 +147,17 @@ void GLDisplay::update()
 		this->clearGL();
 		this->fullScreenQuadMesh->Render();
 
+		//Refractions
+		//glState->globalProgramName = "Refraction";
+		//this->colorBufferFBO->bindForReadingAndWriting(glState->colorBufferTextureUnit);
+		//this->clearGL();
+		//this->world->render();
+		//for(unsigned int i = 0; i < this->nonRefractiveObjects.size(); i++)
+		//	this->nonRefractiveObjects.at(i)->render();
+		//for(unsigned int i = 0; i < this->refractiveObjects.size(); i++)
+		//	this->refractiveObjects.at(i)->render();
+		this->colorBufferFBO->bindForReading(glState->colorBufferTextureUnit);
+		
 		//Shadow map first pass (get depth from light source)
 		glState->globalProgramName = "Passthrough";
 		ShadowLight* shadowLight = (ShadowLight*)this->world->getObjectsByType("ShadowLight").at(0);
@@ -159,16 +170,9 @@ void GLDisplay::update()
 		//Shadow map second pass (draw shadows)
 		glState->globalProgramName = "ShadowMap";
 		glState->worldToCameraMatrix = this->camera->getWorldToCameraMatrix();
-		this->colorBufferFBO->bindForReading(glState->colorBufferTextureUnit);
 		this->shadowMapFBO->bindForReading(glState->shadowMapTextureUnit);
 		this->clearGL();
 		this->fullScreenQuadMesh->Render();
-
-		//Refractions
-		//glState->globalProgramName = "Refraction";
-		//this->colorBufferFBO->bindForReading(glState->colorBufferTextureUnit);
-		//this->clearGL();
-		//this->fullScreenQuadMesh->Render();
 	}
 }
 void GLDisplay::clearGL()
@@ -215,10 +219,10 @@ void GLDisplay::mouseButtonPressed(sf::Event sfEvent)
 					this->selectedObject = renderObject;	
 				}
 			}
-			if(selectedObject != 0)
-				this->selectedObject->getMaterial()->diffuseColor += 1.0f;
-			if(oldSelectedObject != 0)
-				oldSelectedObject->getMaterial()->diffuseColor -= 1.0f;
+			//if(selectedObject != 0)
+			//	this->selectedObject->getMaterial()->diffuseColor += 1.0f;
+			//if(oldSelectedObject != 0)
+			//	oldSelectedObject->getMaterial()->diffuseColor -= 1.0f;
 		}
 	}
 }
@@ -308,7 +312,7 @@ void GLDisplay::setWorld(World* world)
 
 	//Set up different object types
 	std::vector<Object*> allRenderObjects = this->world->getObjectsByType("RenderObject",true);
-	for(int i = 0; i < allRenderObjects.size(); i++)
+	for(unsigned int i = 0; i < allRenderObjects.size(); i++)
 	{
 		RenderObject* renderObject = (RenderObject*)allRenderObjects.at(i);
 		if(renderObject->getMaterial()->refractivity > .01f)

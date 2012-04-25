@@ -50,7 +50,7 @@ vec3 ComputeLighting()
 {
 	vec2 screenSpacePosition = getScreenSpacePosition();
 	vec3 cameraSpacePosition = texture(positionTexture,screenSpacePosition).xyz;
-	vec3 cameraSpaceSurfaceNormal = texture(normalTexture,screenSpacePosition).xyz;
+	vec3 cameraSpaceNormal = texture(normalTexture,screenSpacePosition).xyz;
 	vec3 diffuseColor = texture(diffuseColorTexture,screenSpacePosition).xyz;
 	vec4 specularValues = texture(specularColorTexture,screenSpacePosition);
 	vec3 specularColor = specularValues.xyz;
@@ -62,12 +62,12 @@ vec3 ComputeLighting()
 	float attenuation = (1.0 / ( 1.0 + lightAttenuation * lightDistanceSqr));
 	vec3 newLightColor = attenuation * lightColor;
 	
-	float cosAngIncidence = dot(cameraSpaceSurfaceNormal, lightDir);
+	float cosAngIncidence = dot(cameraSpaceNormal, lightDir);
 	cosAngIncidence = max(0.0,cosAngIncidence);
 	
 	vec3 viewDirection = normalize(-cameraSpacePosition);
 	vec3 halfAngle = normalize(lightDir + viewDirection);
-	float angleNormalHalf = acos(dot(halfAngle, cameraSpaceSurfaceNormal));
+	float angleNormalHalf = acos(dot(halfAngle, cameraSpaceNormal));
 	float exponent = angleNormalHalf / specularShininess;
 	exponent = -(exponent * exponent);
 	float gaussianTerm = exp(exponent);

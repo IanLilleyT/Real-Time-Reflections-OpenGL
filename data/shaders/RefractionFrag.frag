@@ -1,15 +1,21 @@
 #version 330
 layout(std140) uniform;
 
+//Input
+in vec3 cameraSpaceNormal;
+in vec3 cameraSpacePosition;
+
 //Output
 out vec4 outputColor;
 
 //Uniforms
 uniform sampler2D positionTexture;
 uniform sampler2D normalTexture;
-uniform sampler2D otherTexture;
 uniform sampler2D depthTexture;
 uniform sampler2D colorBufferTexture;
+
+uniform float refractivity;
+uniform float refractiveIndex;
 
 //Projection matrix
 uniform ProjectionBlock
@@ -20,12 +26,6 @@ uniform ProjectionBlock
 	float screenWidth;
 	float screenHeight;
 };
-
-//Random function used for jittering rays
-float rand(vec2 co)
-{
-    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-}
 
 //Z buffer is nonlinear by default, so we fix this here
 float linearizeDepth(float depth)
@@ -54,24 +54,16 @@ vec4 ComputeRefraction()
 	float stepRefinementAmount = .7;
 	int maxRefinements = 3;
 	
-	//Values from textures
-	vec2 screenSpacePosition2D = getScreenSpacePosition();
-	vec3 cameraSpacePosition = texture(positionTexture,screenSpacePosition2D).xyz;
-	vec3 cameraSpaceSurfaceNormal = texture(normalTexture,screenSpacePosition2D).xyz;
-	float roughness = texture(otherTexture,screenSpacePosition2D).x;
-	float refractivity = texture(otherTexture,screenSpacePosition2D).z;
-	float refractiveIndex = texture(otherTexture,screenSpacePosition2D).w;
-
 	//Screen space vector
 	vec3 cameraSpaceViewDir = normalize(cameraSpacePosition);
-	vec3 cameraSpaceVector = normalize(refract(cameraSpaceViewDir,cameraSpaceSurfaceNormal,1.0/refractiveIndex));
+	vec3 cameraSpaceVector = normalize(refract(cameraSpaceViewDir,cameraSpaceNormal,1.0/refractiveIndex));
 	vec3 screenSpacePosition = convertCameraSpaceToScreenSpace(cameraSpacePosition);
 	vec3 cameraSpaceVectorPosition = cameraSpacePosition + cameraSpaceVector;
 	vec3 screenSpaceVectorPosition = convertCameraSpaceToScreenSpace(cameraSpaceVectorPosition);
 	vec3 screenSpaceVector = initialStepAmount*normalize(screenSpaceVectorPosition - screenSpacePosition);
 	
 	//Jitter the initial ray
-	vec3 oldPosition = screenSpacePosition;// + screenSpaceVector;
+	vec3 oldPosition = screenSpacePosition + screenSpaceVector;
 	vec3 currentPosition = oldPosition + screenSpaceVector;
 	
 	//State
@@ -84,8 +76,8 @@ vec4 ComputeRefraction()
 	{
 		//Stop ray trace when it goes outside screen space
 		if(currentPosition.x < 0 || currentPosition.x > 1 ||
-			currentPosition.y < 0 || currentPosition.y > 1 ||
-			currentPosition.z < 0 || currentPosition.z > 1)
+		   currentPosition.y < 0 || currentPosition.y > 1 ||
+		   currentPosition.z < 0 || currentPosition.z > 1)
 			break;
 
 		//intersections
@@ -101,14 +93,7 @@ vec4 ComputeRefraction()
 			numRefinements++;
 			if(numRefinements >= maxRefinements)
 			{
-				vec3 normalAtPos = texture(normalTexture, samplePos).xyz;
-				float orientation = dot(cameraSpaceVector,normalAtPos);
-				if(orientation < 0)
-				{
-					float cosAngIncidence = -dot(cameraSpaceViewDir,cameraSpaceSurfaceNormal);
-					cosAngIncidence = clamp(1-cosAngIncidence,0.0,1.0);
-					color = texture(colorBufferTexture, samplePos) * cosAngIncidence;
-				}
+				color = texture(colorBufferTexture, samplePos);
 				break;
 			}
 		}
@@ -124,12 +109,13 @@ vec4 ComputeRefraction()
 //Main
 void main()
 {
-	vec2 screenSpacePosition = getScreenSpacePosition();
-	outputColor = texture(colorBufferTexture, screenSpacePosition);
-	float refractivity = texture(otherTexture, screenSpacePosition).z;
-	if(refractivity > .01) //Don't draw background or non refractive pixels
+	if(refractivity > 0.01)
 	{
-		outputColor = refractivity*ComputeRefraction() + (1.0 - refractivity)*outputColor;
+		outputColor = ComputeRefraction();
+	}
+	else
+	{
+		outputColor = texture(colorBufferTexture,getScreenSpacePosition());
 	}
 	outputColor.w = 1.0;
 }

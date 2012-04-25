@@ -58,13 +58,13 @@ vec4 ComputeReflection()
 	//Values from textures
 	vec2 screenSpacePosition2D = getScreenSpacePosition();
 	vec3 cameraSpacePosition = texture(positionTexture,screenSpacePosition2D).xyz;
-	vec3 cameraSpaceSurfaceNormal = texture(normalTexture,screenSpacePosition2D).xyz;
+	vec3 cameraSpaceNormal = texture(normalTexture,screenSpacePosition2D).xyz;
 	float roughness = texture(otherTexture,screenSpacePosition2D).x;
 	float reflectivity = texture(otherTexture,screenSpacePosition2D).y;
 
 	//Screen space vector
 	vec3 cameraSpaceViewDir = normalize(cameraSpacePosition);
-	vec3 cameraSpaceVector = normalize(reflect(cameraSpaceViewDir,cameraSpaceSurfaceNormal));
+	vec3 cameraSpaceVector = normalize(reflect(cameraSpaceViewDir,cameraSpaceNormal));
 	vec3 screenSpacePosition = convertCameraSpaceToScreenSpace(cameraSpacePosition);
 	vec3 cameraSpaceVectorPosition = cameraSpacePosition + cameraSpaceVector;
 	vec3 screenSpaceVectorPosition = convertCameraSpaceToScreenSpace(cameraSpaceVectorPosition);
@@ -83,7 +83,7 @@ vec4 ComputeReflection()
 	int depth = 0;
 
 	//Ray trace!
-	while(depth < maxDepth)
+	while(depth < maxDepth) //doesnt do anything right now
 	{
 		while(count < 1000)
 		{
@@ -110,7 +110,7 @@ vec4 ComputeReflection()
 					float orientation = dot(cameraSpaceVector,normalAtPos);
 					if(orientation < 0)
 					{
-						float cosAngIncidence = -dot(cameraSpaceViewDir,cameraSpaceSurfaceNormal);
+						float cosAngIncidence = -dot(cameraSpaceViewDir,cameraSpaceNormal);
 						cosAngIncidence = clamp(1-cosAngIncidence,0.0,1.0);
 						color = texture(colorBufferTexture, samplePos) * cosAngIncidence;
 					}

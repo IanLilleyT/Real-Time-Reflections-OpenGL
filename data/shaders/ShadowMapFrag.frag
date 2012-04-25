@@ -50,7 +50,7 @@ float CalcShadowFactor()
 	vec3 screenSpaceLightPosition = convertCameraSpaceToScreenSpace(lightSpacePosition);
 	float textureDepth = linearizeDepth(texture(shadowMapTexture, screenSpaceLightPosition.xy).x);
 	float currDepth = linearizeDepth(screenSpaceLightPosition.z);
-	return clamp(1-30*(currDepth-.01-textureDepth),.5,1);
+	return clamp(1-30*(currDepth-.01-textureDepth),.7,1);
 }  
 
 //Main

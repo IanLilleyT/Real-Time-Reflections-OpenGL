@@ -30,4 +30,7 @@ public:
 	glm::vec3 lightColor;
 	float lightIntensity;
 	glm::mat4 lightWorldToCameraMatrix;
+
+	float refractivity;
+	float refractiveIndex;
 };
