@@ -16,6 +16,9 @@
 #include "OpenGL/Programs/GLProgram_DeferredGeometryPass.h"
 #include "OpenGL/Programs/GLProgram_DeferredLightingPass.h"
 #include "OpenGL/Programs/GLProgram_Reflection.h"
+#include "OpenGL/Programs/GLProgram_Refraction.h"
+#include "OpenGL/Programs/GLProgram_Passthrough.h"
+#include "OpenGL/Programs/GLProgram_ShadowMap.h"
 
 #include "Utils/Singleton.h" //For accessing Factory
 #include "Utils/Factory.h" //For registration
@@ -49,6 +52,9 @@ public:
 		factory->register_class<GLProgram_DeferredGeometryPass>("GLProgram_DeferredGeometryPass");
 		factory->register_class<GLProgram_DeferredLightingPass>("GLProgram_DeferredLightingPass");
 		factory->register_class<GLProgram_Reflection>("GLProgram_Reflection");
+		factory->register_class<GLProgram_Refraction>("GLProgram_Refraction");
+		factory->register_class<GLProgram_Passthrough>("GLProgram_Passthrough");
+		factory->register_class<GLProgram_ShadowMap>("GLProgram_ShadowMap");
 
 		/*-------------------------------------------
 		//// Class Hierarchy ////////////////////////

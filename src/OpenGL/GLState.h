@@ -24,7 +24,9 @@ public:
 	int otherTextureUnit;
 	int depthTextureUnit;
 	int colorBufferTextureUnit;
+	int shadowMapTextureUnit;
 
 	glm::vec3 lightCameraSpacePosition;
 	glm::vec3 lightIntensity;
+	glm::mat4 lightWorldToCameraMatrix;
 };

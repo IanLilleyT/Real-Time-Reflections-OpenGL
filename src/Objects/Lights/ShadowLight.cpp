@@ -33,6 +33,10 @@ void ShadowLight::updateTransformationMatrix()
 {
 	Light::updateTransformationMatrix();
 	this->lightCamera->setCameraPos(this->getTranslation());
-	glm::mat4 worldToCameraMatrix = this->lightCamera->getWorldToCameraMatrix();
-	//Singleton<GLState>::Instance()->shadowLightWorldToCameraMatrix = worldToCameraMatrix;
+}
+
+//World to camera matrix
+glm::mat4 ShadowLight::getWorldToCameraMatrix()
+{
+	return this->lightCamera->getWorldToCameraMatrix();
 }

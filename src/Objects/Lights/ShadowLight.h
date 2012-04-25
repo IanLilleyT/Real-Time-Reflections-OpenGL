@@ -22,6 +22,8 @@ public:
 	//Type
 	virtual std::string getClassname();
 
+	glm::mat4 getWorldToCameraMatrix();
+
 	Camera3rdPerson* lightCamera;
 
 private:

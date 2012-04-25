@@ -56,6 +56,9 @@ void GLDisplay::initializeFramebuffers()
 	this->colorBufferFBO = new GLFramebuffer_ColorBuffer();
 	this->colorBufferFBO->initialize();
 
+	this->shadowMapFBO = new GLFramebuffer_DepthBuffer();
+	this->shadowMapFBO->initialize();
+
 	//Instantiate quad mesh that we use to render the whole screen
 	GLMeshData* quadMeshData = Singleton<MeshDatabase>::Instance()->loadMesh("quad");
 	this->fullScreenQuadMesh = new GLMesh();
@@ -71,7 +74,8 @@ void GLDisplay::initializeFramebuffers()
 	glState->otherTextureUnit = i++;
 	glState->depthTextureUnit = i++;
 	//Other
-	glState->colorBufferTextureUnit = i++;
+	glState->colorBufferTextureUnit = i++; //Ping pong fbo
+	glState->shadowMapTextureUnit = i++; //Shadow map
 }
 void GLDisplay::initializePhysics()
 {
@@ -98,7 +102,7 @@ void GLDisplay::update()
 		this->gbufferFBO->bindForWriting();
 		this->clearGL(); //clear buffers
 		glDisable(GL_BLEND);
-		world->render(); //render world to textures
+		this->world->render(); //render world to textures
 		this->gbufferFBO->bindForReading(glState->positionTextureUnit); //first gbuffer texture
 		
 		//Diffuse and specular lighting
@@ -106,15 +110,37 @@ void GLDisplay::update()
 		ShadowLight* light = (ShadowLight*)this->world->getObjectsByType("ShadowLight").at(0);
 		glState->lightIntensity = glm::vec3(light->getIntensity());
 		glState->lightCameraSpacePosition = glm::vec3(this->camera->getWorldToCameraMatrix()*glm::vec4(light->getTranslation(),1.0f));
+		glState->lightWorldToCameraMatrix = light->getWorldToCameraMatrix();
 		this->colorBufferFBO->bindForWriting();
 		this->clearGL();
 		this->fullScreenQuadMesh->Render();
 
 		//Reflections
 		glState->globalProgramName = "Reflection";
-		this->colorBufferFBO->bindForReading(glState->colorBufferTextureUnit);
+		this->colorBufferFBO->bindForReadingAndWriting(glState->colorBufferTextureUnit);
 		this->clearGL();
 		this->fullScreenQuadMesh->Render();
+
+		//Shadow map first pass (get depth from light source)
+		glState->globalProgramName = "Passthrough";
+		glState->worldToCameraMatrix = glState->lightWorldToCameraMatrix;
+		this->shadowMapFBO->bindForWriting();
+		this->clearGL();
+		this->world->render();
+		
+		//Shadow map second pass (draw shadows)
+		glState->globalProgramName = "ShadowMap";
+		glState->worldToCameraMatrix = this->camera->getWorldToCameraMatrix();
+		this->colorBufferFBO->bindForReading(glState->colorBufferTextureUnit);
+		this->shadowMapFBO->bindForReading(glState->shadowMapTextureUnit);
+		this->clearGL();
+		this->fullScreenQuadMesh->Render();
+
+		//Refractions
+		//glState->globalProgramName = "Refraction";
+		//this->colorBufferFBO->bindForReading(glState->colorBufferTextureUnit);
+		//this->clearGL();
+		//this->fullScreenQuadMesh->Render();
 	}
 }
 void GLDisplay::clearGL()
@@ -216,9 +242,9 @@ void GLDisplay::checkKeyPress()
 		glm::vec3 camUp = glm::normalize(this->camera->getUpDir());
 		glm::vec3 camLook = glm::normalize(this->camera->getLookDir());
 		glm::vec3 camRight = glm::normalize(glm::cross(camLook,camUp));
-		glm::vec3 moveX = /*glm::vec3(translationAmount,0,0);*/translationAmount*camRight;
-		glm::vec3 moveY = /*glm::vec3(0,translationAmount,0);*/translationAmount*camUp;
-		glm::vec3 moveZ = /*glm::vec3(0,0,translationAmount);*/translationAmount*camLook;
+		glm::vec3 moveX = glm::vec3(translationAmount,0,0);//translationAmount*camRight;
+		glm::vec3 moveY = glm::vec3(0,translationAmount,0);//translationAmount*camUp;
+		glm::vec3 moveZ = glm::vec3(0,0,translationAmount);//translationAmount*camLook;
 
 		if(eventHandler->isKeyDown(sf::Keyboard::A))
 			selectedObject->translate(-moveX);
@@ -238,9 +264,9 @@ void GLDisplay::checkKeyPress()
 			selectedObject->getMaterial()->diffuseColor += colorAmount;
 		if(eventHandler->isKeyDown(sf::Keyboard::C))
 			selectedObject->getMaterial()->diffuseColor -= colorAmount;
-		if(eventHandler->isKeyDown(sf::Keyboard::Z))
-			selectedObject->scale(scaleAmount);
 		if(eventHandler->isKeyDown(sf::Keyboard::X))
+			selectedObject->scale(scaleAmount);
+		if(eventHandler->isKeyDown(sf::Keyboard::Z))
 			selectedObject->scale(2.0f-scaleAmount);
 	}
 }

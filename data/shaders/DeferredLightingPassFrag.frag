@@ -86,9 +86,9 @@ void main()
 	{
 		//outputColor = diffuseColor * ambientIntensity;
 		outputColor += vec4(ComputeLighting(),1.0);
-		//outputColor = outputColor / maxIntensity;
-		//vec4 gamma = vec4(vec3(1.0 / gamma),1.0);
-		//outputColor = pow(outputColor, gamma);
+		outputColor = outputColor / maxIntensity;
+		vec4 gamma = vec4(vec3(1.0 / gamma),1.0);
+		outputColor = pow(outputColor, gamma);
 		outputColor.w = 1.0;
 	}
 }
