@@ -27,6 +27,7 @@ public:
 	int shadowMapTextureUnit;
 
 	glm::vec3 lightCameraSpacePosition;
-	glm::vec3 lightIntensity;
+	glm::vec3 lightColor;
+	float lightIntensity;
 	glm::mat4 lightWorldToCameraMatrix;
 };

@@ -16,14 +16,18 @@ public:
 
 	//Initialize
 	virtual void initialize(TiXmlElement* element);
-	void initialize(std::string name, glm::vec4 intensity);
+	void initialize(std::string name, glm::vec4 color, float intensity);
 	
 	//Type
 	virtual std::string getClassname();
 
+	//Color
+	void setColor(glm::vec4 color);
+	glm::vec4 getColor();
+
 	//Intensity
-	void setIntensity(glm::vec4 intensity);
-	glm::vec4 getIntensity();
+	void setIntensity(float intensity);
+	float getIntensity();
 
 	//Static
 	static void setAmbientIntensity(glm::vec4 ambientIntensity);
@@ -37,9 +41,10 @@ public:
 	static float getGamma();
 
 private:
-	void initialize(glm::vec4 intensity);
+	void initialize(glm::vec4 color, float intensity);
 
-	glm::vec4 intensity;
+	glm::vec4 color;
+	float intensity;
 
 	//Static
 	static glm::vec4 ambientIntensity;

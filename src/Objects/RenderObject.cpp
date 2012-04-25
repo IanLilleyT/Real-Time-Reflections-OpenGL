@@ -89,7 +89,10 @@ GLMesh* RenderObject::getMesh()
 void RenderObject::setMaterial(std::string material)
 {
 	Material* databaseMaterial = Singleton<MaterialDatabase>::Instance()->loadMaterial(material);
-	this->material = new Material(*databaseMaterial);
+	if(databaseMaterial != 0)
+		this->material = new Material(*databaseMaterial);
+	else
+		this->material = 0;
 }
 Material* RenderObject::getMaterial()
 {

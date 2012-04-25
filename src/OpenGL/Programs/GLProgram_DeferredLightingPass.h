@@ -17,6 +17,13 @@ protected:
 	virtual void fillUniforms()
 	{
 		GLState* glState = Singleton<GLState>::Instance();
+		glm::mat4 modelToWorldMatrix = glState->modelToWorldMatrix;
+		glm::mat4 worldToCameraMatrix = glState->worldToCameraMatrix;
+		glm::mat4 modelToCameraMatrix = worldToCameraMatrix * modelToWorldMatrix;
+
+		//Model to camera
+		GLuint modelToCameraMatrixUniform = glGetUniformLocation(this->program, "modelToCameraMatrix");
+		glUniformMatrix4fv(modelToCameraMatrixUniform, 1, GL_FALSE, glm::value_ptr(modelToCameraMatrix));
 
 		//position texture
 		int positionTexture = glState->positionTextureUnit;
@@ -48,8 +55,12 @@ protected:
 		GLuint lightCameraSpacePositionUniform = glGetUniformLocation(this->program, "lightCameraSpacePosition");
 		glUniform3fv(lightCameraSpacePositionUniform, 1, glm::value_ptr(lightCameraSpacePosition));
 
-		glm::vec3 lightIntensity = glState->lightIntensity;
+		glm::vec3 lightColor = glState->lightColor;
+		GLuint lightColorUniform = glGetUniformLocation(this->program,"lightColor");
+		glUniform3fv(lightColorUniform, 1, glm::value_ptr(lightColor));
+
+		float lightIntensity = glState->lightIntensity;
 		GLuint lightIntensityUniform = glGetUniformLocation(this->program,"lightIntensity");
-		glUniform3fv(lightIntensityUniform, 1, glm::value_ptr(lightIntensity));
+		glUniform1f(lightIntensityUniform,lightIntensity);
 	}
 };

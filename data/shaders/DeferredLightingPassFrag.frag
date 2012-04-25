@@ -13,7 +13,8 @@ uniform sampler2D depthTexture;
 
 //Single light (add support for more later)
 uniform vec3 lightCameraSpacePosition;
-uniform vec3 lightIntensity;
+uniform vec3 lightColor;
+uniform float lightIntensity;
 
 //Projection matrix
 uniform ProjectionBlock
@@ -59,7 +60,7 @@ vec3 ComputeLighting()
 	float lightDistanceSqr = dot(lightDifference, lightDifference);
 	vec3 lightDir = lightDifference * inversesqrt(lightDistanceSqr);
 	float attenuation = (1.0 / ( 1.0 + lightAttenuation * lightDistanceSqr));
-	vec3 newLightIntensity = attenuation * lightIntensity;
+	vec3 newLightColor = attenuation * lightColor;
 	
 	float cosAngIncidence = dot(cameraSpaceSurfaceNormal, lightDir);
 	cosAngIncidence = max(0.0,cosAngIncidence);
@@ -72,8 +73,8 @@ vec3 ComputeLighting()
 	float gaussianTerm = exp(exponent);
 	gaussianTerm = cosAngIncidence != 0.0 ? gaussianTerm : 0.0;
 	
-	vec3 lighting = diffuseColor * newLightIntensity * cosAngIncidence;
-	lighting += specularColor * newLightIntensity * gaussianTerm;
+	vec3 lighting = diffuseColor * newLightColor * cosAngIncidence * lightIntensity;
+	lighting += specularColor * newLightColor * gaussianTerm * lightIntensity;
 	return lighting;
 }
 

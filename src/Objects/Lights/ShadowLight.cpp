@@ -12,10 +12,10 @@ void ShadowLight::initialize(TiXmlElement* element)
 	this->initialize();
 	Light::initialize(element);
 }
-void ShadowLight::initialize(std::string name, glm::vec4 intensity)
+void ShadowLight::initialize(std::string name, glm::vec4 color, float intensity)
 {
 	this->initialize();
-	Light::initialize(name,intensity);
+	Light::initialize(name,color,intensity);
 }
 void ShadowLight::initialize()
 {

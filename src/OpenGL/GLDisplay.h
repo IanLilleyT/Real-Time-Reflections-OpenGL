@@ -8,6 +8,7 @@
 #include "Framebuffers/GLFramebuffer_GBuffer.h"
 #include "Framebuffers/GLFramebuffer_ColorBuffer.h"
 #include "Framebuffers/GLFramebuffer_DepthBuffer.h"
+#include "Programs/GLProgramDatabase.h"
 #include "../Utils/EventHandler.h" //For enter frame events
 #include "../Utils/Singleton.h" //For accessing several globals
 #include "../Utils/IntersectionAlgorithms.h"
@@ -21,6 +22,7 @@
 #include "../Physics/PhysicsSceneDefault.h"
 #include "../Physics/PhysicsIO.h"
 #include "../Objects/Lights/ShadowLight.h"
+#include "../MaterialDatabase.h"
 
 /*---------------------------------------------
 GLDisplay: Essentially a bridge between
@@ -56,6 +58,7 @@ private:
 	GLFramebuffer_ColorBuffer* colorBufferFBO;
 	GLFramebuffer_DepthBuffer* shadowMapFBO;
 	GLMesh* fullScreenQuadMesh;
+	RenderObject* lightSphere;
 
 	void initializeGL();
 	void initializeCamera();

@@ -14,18 +14,25 @@ Light::~Light(){}
 //Initialize
 void Light::initialize(TiXmlElement* element)
 {
-	std::string intensityString = element->FirstChildElement("intensity")->FirstChild()->Value();
-	glm::vec4 intensityVal = Utils::parseIntoVec4(intensityString);
-	this->initialize(intensityVal);
+	glm::vec4 color = glm::vec4(1,1,1,1);
+	TiXmlElement* colorElement = element->FirstChildElement("color");
+	if(colorElement) color = Utils::parseIntoVec4(colorElement->FirstChild()->Value());
+
+	float intensity = 1.0f;
+	TiXmlElement* intensityElement = element->FirstChildElement("intensity");
+	if(intensityElement) intensity = Utils::convertStringToFloat(intensityElement->FirstChild()->Value());
+	
+	this->initialize(color,intensity);
 	Object::initialize(element);
 }
-void Light::initialize(std::string name, glm::vec4 intensity)
+void Light::initialize(std::string name, glm::vec4 color, float intensity)
 {
-	this->initialize(intensity);
+	this->initialize(color,intensity);
 	Object::initialize(name);
 }
-void Light::initialize(glm::vec4 intensity)
+void Light::initialize(glm::vec4 color, float intensity)
 {
+	this->setColor(color);
 	this->setIntensity(intensity);
 }
 
@@ -35,12 +42,22 @@ std::string Light::getClassname()
 	return Light::className;
 }
 
+//Color
+void Light::setColor(glm::vec4 color)
+{
+	this->color = color;
+}
+glm::vec4 Light::getColor()
+{
+	return this->color;
+}
+
 //Intensity
-void Light::setIntensity(glm::vec4 intensity)
+void Light::setIntensity(float intensity)
 {
 	this->intensity = intensity;
 }
-glm::vec4 Light::getIntensity()
+float Light::getIntensity()
 {
 	return this->intensity;
 }

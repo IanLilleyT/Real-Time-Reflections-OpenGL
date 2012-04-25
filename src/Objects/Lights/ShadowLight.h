@@ -17,7 +17,7 @@ public:
 
 	//Initialize
 	virtual void initialize(TiXmlElement* element);
-	void initialize(std::string name, glm::vec4 intensity);
+	void initialize(std::string name, glm::vec4 color, float intensity);
 	
 	//Type
 	virtual std::string getClassname();

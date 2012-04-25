@@ -64,6 +64,9 @@ void GLDisplay::initializeFramebuffers()
 	this->fullScreenQuadMesh = new GLMesh();
 	this->fullScreenQuadMesh->initialize(quadMeshData);
 
+	this->lightSphere = new RenderObject();
+	this->lightSphere->initialize("lightSphere","sphere",MaterialDatabase::NONE,GLProgramDatabase::NONE);
+
 	//Set texture unit positions
 	int i = 0;
 	//GBuffer
@@ -107,13 +110,35 @@ void GLDisplay::update()
 		
 		//Diffuse and specular lighting
 		glState->globalProgramName = "DeferredLightingPass";
-		ShadowLight* light = (ShadowLight*)this->world->getObjectsByType("ShadowLight").at(0);
-		glState->lightIntensity = glm::vec3(light->getIntensity());
-		glState->lightCameraSpacePosition = glm::vec3(this->camera->getWorldToCameraMatrix()*glm::vec4(light->getTranslation(),1.0f));
-		glState->lightWorldToCameraMatrix = light->getWorldToCameraMatrix();
 		this->colorBufferFBO->bindForWriting();
 		this->clearGL();
-		this->fullScreenQuadMesh->Render();
+		glEnable(GL_BLEND);
+		glBlendEquation(GL_FUNC_ADD);
+		glBlendFunc(GL_ONE, GL_ONE);
+		std::vector<Object*> lights = this->world->getObjectsByType("Light",true);
+		for(unsigned int i = 0; i < lights.size(); i++)
+		{
+			Light* light = (Light*)lights.at(i);
+			glm::vec3 lightColor = glm::vec3(light->getColor());
+			float lightIntensity = light->getIntensity();
+
+			glState->lightColor = lightColor;
+			glState->lightIntensity = lightIntensity;
+			glState->lightCameraSpacePosition = glm::vec3(this->camera->getWorldToCameraMatrix()*glm::vec4(light->getTranslation(),1.0f));
+			
+			//Calc light sphere size
+			float MaxChannel = std::max(std::max(lightColor.x, lightColor.y), lightColor.z);
+			float c = MaxChannel * lightIntensity;
+			float scaleAmount = 8.0f * sqrtf(c) + 1.0f;
+
+			//Transform and render sphere
+			this->lightSphere->setTranslation(light->getTranslation());
+			this->lightSphere->setScale(scaleAmount);
+			glState->modelToWorldMatrix = this->lightSphere->getTransformationMatrix();
+			//this->lightSphere->render();
+			this->fullScreenQuadMesh->Render();
+		}
+		glDisable(GL_BLEND);
 
 		//Reflections
 		glState->globalProgramName = "Reflection";
@@ -123,6 +148,8 @@ void GLDisplay::update()
 
 		//Shadow map first pass (get depth from light source)
 		glState->globalProgramName = "Passthrough";
+		ShadowLight* shadowLight = (ShadowLight*)this->world->getObjectsByType("ShadowLight").at(0);
+		glState->lightWorldToCameraMatrix = shadowLight->getWorldToCameraMatrix();
 		glState->worldToCameraMatrix = glState->lightWorldToCameraMatrix;
 		this->shadowMapFBO->bindForWriting();
 		this->clearGL();

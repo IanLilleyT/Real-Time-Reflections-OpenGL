@@ -62,7 +62,7 @@ void main()
 {
 	vec2 screenSpacePosition = getScreenSpacePosition();
 	float depth = texture(depthTexture, screenSpacePosition).x;
-	if(depth < .99999) //Don't draw background pixels
+	if(depth < .999) //Don't draw background pixels
 	{
 		float shadowAmount = CalcShadowFactor();
 		outputColor = shadowAmount*texture(colorBufferTexture, screenSpacePosition);
