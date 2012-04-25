@@ -59,6 +59,8 @@ private:
 	GLFramebuffer_DepthBuffer* shadowMapFBO;
 	GLMesh* fullScreenQuadMesh;
 	RenderObject* lightSphere;
+	std::vector<RenderObject*> refractiveObjects;
+	std::vector<RenderObject*> nonRefractiveObjects;
 
 	void initializeGL();
 	void initializeCamera();

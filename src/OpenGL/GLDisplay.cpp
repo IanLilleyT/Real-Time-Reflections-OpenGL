@@ -82,9 +82,9 @@ void GLDisplay::initializeFramebuffers()
 }
 void GLDisplay::initializePhysics()
 {
-	Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
-	this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
-	Singleton<PhysicsIO>::Instance()->initialize();
+	//Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
+	//this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
+	//Singleton<PhysicsIO>::Instance()->initialize();
 }
 void GLDisplay::update()
 { 
@@ -95,7 +95,7 @@ void GLDisplay::update()
 		GLUniformBlockHelper* glUniformBlockHelper = Singleton<GLUniformBlockHelper>::Instance();
 
 		//Update everything
-		physicsWorld->update();
+		//physicsWorld->update();
 		world->update();
 		glState->worldToCameraMatrix = this->camera->getWorldToCameraMatrix();
 		glUniformBlockHelper->updateAll();
@@ -105,7 +105,8 @@ void GLDisplay::update()
 		this->gbufferFBO->bindForWriting();
 		this->clearGL(); //clear buffers
 		glDisable(GL_BLEND);
-		this->world->render(); //render world to textures
+		for(int i = 0; i < this->nonRefractiveObjects.size(); i++)
+			this->nonRefractiveObjects.at(i)->render();
 		this->gbufferFBO->bindForReading(glState->positionTextureUnit); //first gbuffer texture
 		
 		//Diffuse and specular lighting
@@ -304,6 +305,17 @@ void GLDisplay::setWorld(World* world)
 	this->world = world;
 	this->camera = (Camera3rdPerson*)this->world->getObjectsByType("Camera3rdPerson",true).at(0);
 	this->selectedObject = 0;
+
+	//Set up different object types
+	std::vector<Object*> allRenderObjects = this->world->getObjectsByType("RenderObject",true);
+	for(int i = 0; i < allRenderObjects.size(); i++)
+	{
+		RenderObject* renderObject = (RenderObject*)allRenderObjects.at(i);
+		if(renderObject->getMaterial()->refractivity > .01f)
+			this->refractiveObjects.push_back(renderObject);
+		else
+			this->nonRefractiveObjects.push_back(renderObject);
+	}
 }
 World* GLDisplay::getWorld()
 {

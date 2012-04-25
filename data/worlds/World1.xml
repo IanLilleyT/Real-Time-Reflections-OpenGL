@@ -1,6 +1,5 @@
 <world>
   <name> World1 </name>
-  <!--
   <object type="RenderObject">
     <name>floor</name>
     <material>reflective</material>
@@ -74,7 +73,7 @@
     <rotation>0 1 0 -45</rotation>
     <diffuseColor>1 0 0 1</diffuseColor>
   </object>
-  -->
+  
   <object type="Light">
     <name>light2</name>
     <color>0 1 1 1</color>
