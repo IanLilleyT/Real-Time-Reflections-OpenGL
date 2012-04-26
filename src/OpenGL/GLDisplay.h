@@ -50,6 +50,9 @@ public:
 	Camera* getCamera();
 	void setCamera(Camera* camera);
 
+	//Physics World
+	PhysicsWorld* getPhysicsWorld();
+
 private:
 	Camera* camera;
 	World* world;

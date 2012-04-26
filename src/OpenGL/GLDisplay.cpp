@@ -200,31 +200,28 @@ void GLDisplay::mouseButtonPressed(sf::Event sfEvent)
 	glm::ivec2 mousePos = eventHandler->getMousePos();
 	if(sfEvent.MouseButton.Button == sf::Mouse::Left)
 	{
-		if(!eventHandler->isAltDown())
-		{
-			RenderObject* oldSelectedObject = this->selectedObject;
-			this->selectedObject = 0;
-			float closestDistance = FLT_MAX;
+		RenderObject* oldSelectedObject = this->selectedObject;
+		this->selectedObject = 0;
+		float closestDistance = FLT_MAX;
 
-			Ray clickRay = Singleton<GLView>::Instance()->getPickingRay(mousePos.x,mousePos.y);
-			std::vector<Object*> renderObjects = this->world->getObjectsByType("RenderObject");
-			for(unsigned int i = 0; i < renderObjects.size(); i++)
+		Ray clickRay = Singleton<GLView>::Instance()->getPickingRay(mousePos.x,mousePos.y);
+		std::vector<Object*> renderObjects = this->world->getObjectsByType("RenderObject");
+		for(unsigned int i = 0; i < renderObjects.size(); i++)
+		{
+			RenderObject* renderObject = (RenderObject*)renderObjects.at(i);
+			glm::mat4 transformationMatrix = renderObject->getTransformationMatrix();
+			BoundingBox* boundingBox = renderObject->getMesh()->getGLMeshData()->boundingBox;
+			IntersectionData intersectionData = IntersectionAlgorithms::RayBoxIntersect(clickRay,transformationMatrix, boundingBox);
+			if(intersectionData.valid && intersectionData.distanceAlongRay < closestDistance)
 			{
-				RenderObject* renderObject = (RenderObject*)renderObjects.at(i);
-				glm::mat4 transformationMatrix = renderObject->getTransformationMatrix();
-				BoundingBox* boundingBox = renderObject->getMesh()->getGLMeshData()->boundingBox;
-				IntersectionData intersectionData = IntersectionAlgorithms::RayBoxIntersect(clickRay,transformationMatrix, boundingBox);
-				if(intersectionData.valid && intersectionData.distanceAlongRay < closestDistance)
-				{
-					closestDistance = intersectionData.distanceAlongRay;
-					this->selectedObject = renderObject;	
-				}
+				closestDistance = intersectionData.distanceAlongRay;
+				this->selectedObject = renderObject;	
 			}
-			//if(selectedObject != 0)
-			//	this->selectedObject->getMaterial()->diffuseColor += 1.0f;
-			//if(oldSelectedObject != 0)
-			//	oldSelectedObject->getMaterial()->diffuseColor -= 1.0f;
 		}
+		//if(selectedObject != 0)
+		//	this->selectedObject->getMaterial()->diffuseColor += 1.0f;
+		//if(oldSelectedObject != 0)
+		//	oldSelectedObject->getMaterial()->diffuseColor -= 1.0f;
 	}
 }
 void GLDisplay::mouseMoved(sf::Event sfEvent)
@@ -235,7 +232,7 @@ void GLDisplay::mouseMoved(sf::Event sfEvent)
 	int mouseXDiff = (mousePos.x - prevMousePos.x);
 	int mouseYDiff = (mousePos.y - prevMousePos.y);
 
-	bool altIsDown = eventHandler->isAltDown();
+	bool altIsDown = !eventHandler->isAltDown();
 	if(eventHandler->isLeftMouseDown() && altIsDown)
 	{	
 		float scaleFactor = .008f;
@@ -335,4 +332,10 @@ void GLDisplay::setCamera(Camera* camera)
 Camera* GLDisplay::getCamera()
 {
 	return this->camera;
+}
+
+//Physic World
+PhysicsWorld* GLDisplay::getPhysicsWorld()
+{
+	return this->physicsWorld;
 }

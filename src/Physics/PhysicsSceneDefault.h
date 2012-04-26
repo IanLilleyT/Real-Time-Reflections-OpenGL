@@ -32,11 +32,13 @@ public:
 		for(int i = 0; i < numObjects; i++)
 		{
 			glm::vec3 position = glm::vec3(0,3.0f*i+5.0f,0);
-			int type = i%2;
+			int type = i%3;
 			if(type == 0)
 				this->makeRandomCube(position);
-			else
+			else if(type == 1)
 				this->makeRandomSphere(position);
+			else
+				this->makeRandomCow(position);
 		}
 
 		//standing cow
@@ -47,11 +49,35 @@ public:
 		cow->setTranslationY(5.5);
 		world->addObject(cow);*/
 	}
+	PhysicsObject* makeRandomCow(glm::vec3 position)
+	{
+		RenderObject* fallingObject = new RenderObject();	
+		PhysicsObject* projectile = new PhysicsObject();
+		fallingObject->initialize("cube","cow_small_soft","reflective","Material");
+		projectile->initialize(
+			PRIMITIVE_BOX,
+			fallingObject,
+			1.0f,0.1f,0.7f);
+		projectile->setScale(2);
+			
+		glm::vec4 randomColor = Utils::getRandomColor();
+		//randomColor = glm::vec4(1,1,1,1);
+		float randomReflectivity = Utils::getRandom(.3f,0.8f);
+		fallingObject->getMaterial()->diffuseColor = randomColor;
+		fallingObject->getMaterial()->reflectivity = randomReflectivity;
+
+		projectile->setTranslation(position);
+		physicsWorld->addObject(projectile);
+		world->addObject(fallingObject);
+		world->addObject(projectile);
+
+		return projectile;
+	}
 	PhysicsObject* makeRandomCube(glm::vec3 position)
 	{
 		RenderObject* fallingObject = new RenderObject();	
 		PhysicsObject* projectile = new PhysicsObject();
-		fallingObject->initialize("cube","cow_small","reflective","Material");
+		fallingObject->initialize("cube","cube","reflective","Material");
 		projectile->initialize(
 			PRIMITIVE_BOX,
 			fallingObject,
@@ -59,7 +85,6 @@ public:
 		projectile->setScale(Utils::getRandomVec3(.5f,2.0f));
 			
 		glm::vec4 randomColor = Utils::getRandomColor();
-		randomColor = glm::vec4(1,1,1,1);
 		float randomReflectivity = Utils::getRandom(.3f,0.8f);
 		fallingObject->getMaterial()->diffuseColor = randomColor;
 		fallingObject->getMaterial()->reflectivity = randomReflectivity;

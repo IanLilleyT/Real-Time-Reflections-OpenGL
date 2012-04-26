@@ -29,5 +29,7 @@ private:
 	void showFPS();
 	sf::Clock clock;
 	int frameCount;
+	float framerate;
+	
 };
 

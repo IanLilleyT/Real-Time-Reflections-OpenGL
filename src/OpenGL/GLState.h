@@ -33,4 +33,6 @@ public:
 
 	float refractivity;
 	float refractiveIndex;
+
+	float fps;
 };

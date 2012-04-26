@@ -46,7 +46,7 @@ public:
 	{
 		EventHandler* eventHandler = Singleton<EventHandler>::Instance();
 
-		if(!eventHandler->isAltDown())
+		if(eventHandler->isAltDown())
 		{
 			PhysicsObject* projectile = 0;
 			Ray shootingRay = Singleton<GLView>::Instance()->getPickingRay(sfEvent.MouseButton.X,sfEvent.MouseButton.Y);
@@ -54,8 +54,11 @@ public:
 			
 			if(sfEvent.MouseButton.Button == sf::Mouse::Left)
 				projectile = Singleton<PhysicsSceneDefault>::Instance()->makeRandomSphere(position);
+			else if(sfEvent.MouseButton.Button == sf::Mouse::Middle)
+				projectile = Singleton<PhysicsSceneDefault>::Instance()->makeRandomCow(position);
 			else if(sfEvent.MouseButton.Button = sf::Mouse::Right)
 				projectile = Singleton<PhysicsSceneDefault>::Instance()->makeRandomCube(position);
+			
 
 			glm::vec3 torque = Utils::getRandomVec3(0.0f,100.0f);
 			float forceAmount = 1000.0f;
