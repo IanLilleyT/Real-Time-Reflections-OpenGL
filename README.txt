@@ -1,3 +1,5 @@
+For videos and the history of this project, go to: http://ianlilleycis565.blogspot.com/
+
 Note: Only runs on Windows. The code itself should be supported by most OS's, but the lib file are all built for 32-bit Windows
 
 How to build and run:
@@ -7,7 +9,7 @@ How to build and run:
 
 Controls:
 Left mouse to rotate
-Middle mouse click to pan
+Middle mouse to pan
 Middle mouse roll to zoom
 Right mouse to zoom
 
