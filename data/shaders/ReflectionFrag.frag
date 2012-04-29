@@ -71,9 +71,10 @@ vec4 ComputeReflection()
 	vec3 screenSpaceVector = initialStepAmount*normalize(screenSpaceVectorPosition - screenSpacePosition);
 	
 	//Jitter the initial ray
-	float randomOffset = clamp(rand(gl_FragCoord.xy),0,1)/10000.0;
+	//float randomOffset1 = clamp(rand(gl_FragCoord.xy),0,1)/1000.0;
+	//float randomOffset2 = clamp(rand(gl_FragCoord.yy),0,1)/1000.0;
+	//screenSpaceVector += vec3(randomOffset1,randomOffset2,0);
 	vec3 oldPosition = screenSpacePosition + screenSpaceVector;
-	oldPosition *= clamp((1-randomOffset*roughness),0,1);
 	vec3 currentPosition = oldPosition + screenSpaceVector;
 	
 	//State

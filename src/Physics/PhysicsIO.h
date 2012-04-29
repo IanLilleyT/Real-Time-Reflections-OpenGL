@@ -46,7 +46,7 @@ public:
 	{
 		EventHandler* eventHandler = Singleton<EventHandler>::Instance();
 
-		if(eventHandler->isAltDown())
+		if(eventHandler->isControlDown())
 		{
 			PhysicsObject* projectile = 0;
 			Ray shootingRay = Singleton<GLView>::Instance()->getPickingRay(sfEvent.MouseButton.X,sfEvent.MouseButton.Y);

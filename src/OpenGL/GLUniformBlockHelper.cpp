@@ -38,13 +38,12 @@ void GLUniformBlockHelper::update(std::string name)
 {
 	GLState* glState = Singleton<GLState>::Instance();
 	GLView* glView = Singleton<GLView>::Instance();
-	glm::mat4 cameraToClipMatrix = glView->getCameraToClipMatrix();
 
 	if(name == TYPE_PROJECTION)
 	{
 		GLUniformBlock* projectionUniformBlock = this->findUniformBlock(TYPE_PROJECTION);
 		ProjectionBlock projectionBlock = ProjectionBlock();
-		projectionBlock.cameraToClipMatrix = cameraToClipMatrix;
+		projectionBlock.cameraToClipMatrix = glState->cameraToClipMatrix;
 		projectionBlock.zNear = glView->getFrustumNear();
 		projectionBlock.zFar = glView->getFrustumFar();
 		projectionBlock.screenWidth = (float)glView->getWindowDimensions().x;

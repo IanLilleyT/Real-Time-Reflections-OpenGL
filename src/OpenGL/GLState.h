@@ -13,7 +13,9 @@ public:
 	~GLState(){}
 	glm::mat4 modelToWorldMatrix;
 	glm::mat4 worldToCameraMatrix;
+	glm::mat4 oldWorldToCameraMatrix;
 	glm::mat4 cameraToClipMatrix;
+
 	Material* material;
 	std::string globalProgramName;
 

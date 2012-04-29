@@ -10,7 +10,7 @@ void GLView::calcCameraToClipMatrix(float viewAngle, float frustumNear, float fr
 	this->viewAngle = viewAngle;
 	this->frustumNear = frustumNear;
 	this->frustumFar = frustumFar;
-	this->cameraToClipMatrix = glm::mat4(0.0f);
+	glm::mat4 cameraToClipMatrix = glm::mat4(0.0f);
 
 	//Calc frustum scale
 	const float degToRad = 3.14159f / 180.0f;
@@ -18,23 +18,27 @@ void GLView::calcCameraToClipMatrix(float viewAngle, float frustumNear, float fr
 	this->frustumScale = 1.0f / tan(viewAngleRad / 2.0f);
 
 	//Create matrix
-	this->cameraToClipMatrix[0].x = frustumScale;
-	this->cameraToClipMatrix[1].y = frustumScale;
-	this->cameraToClipMatrix[2].z = (this->frustumFar + this->frustumNear)/(this->frustumNear - this->frustumFar);
-	this->cameraToClipMatrix[2].w = -1.0f;
-	this->cameraToClipMatrix[3].z = (2.0f*this->frustumFar*this->frustumNear)/(this->frustumNear - this->frustumFar);
-}
-glm::mat4 GLView::getCameraToClipMatrix()
-{
-	return this->cameraToClipMatrix;
+	cameraToClipMatrix[0].x = frustumScale;
+	cameraToClipMatrix[1].y = frustumScale;
+	cameraToClipMatrix[2].z = (this->frustumFar + this->frustumNear)/(this->frustumNear - this->frustumFar);
+	cameraToClipMatrix[2].w = -1.0f;
+	cameraToClipMatrix[3].z = (2.0f*this->frustumFar*this->frustumNear)/(this->frustumNear - this->frustumFar);
+
+	GLState* glState = Singleton<GLState>::Instance();
+	glState->cameraToClipMatrix = cameraToClipMatrix;
 }
 
 //Other
 void GLView::setWindowDimensions(int width, int height)
 {
+	GLState* glState = Singleton<GLState>::Instance();
+	glm::mat4 cameraToClipMatrix = glState->cameraToClipMatrix;
+
 	glViewport(0, 0, (GLsizei) width, (GLsizei) height);
-	this->cameraToClipMatrix[0].x = frustumScale * (height/ (float)width);
-	this->cameraToClipMatrix[1].y = frustumScale;
+	cameraToClipMatrix[0].x = frustumScale * (height/ (float)width);
+	cameraToClipMatrix[1].y = frustumScale;
+
+	glState->cameraToClipMatrix = cameraToClipMatrix;
 }
 glm::ivec2 GLView::getWindowDimensions()
 {
@@ -71,7 +75,7 @@ Ray GLView::getPickingRay(int x, int y)
 	//NDC to clip
 	closePoint *= this->frustumNear;
 	farPoint *= this->frustumFar;
-	glm::mat4 clipToCamera = glm::inverse(this->cameraToClipMatrix);
+	glm::mat4 clipToCamera = glm::inverse(glState->cameraToClipMatrix);
 
 	closePoint = clipToCamera * closePoint;
 	farPoint = clipToCamera * farPoint;

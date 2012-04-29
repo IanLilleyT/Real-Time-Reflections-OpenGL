@@ -14,7 +14,6 @@ public:
 	~GLView();
 
 	void calcCameraToClipMatrix(float viewAngle, float frustumNear, float frustumFar);
-	glm::mat4 getCameraToClipMatrix();
 
 	Ray getPickingRay(int x, int y);
 	void setWindowDimensions(int w, int h);
@@ -26,7 +25,6 @@ public:
 
 private:
 
-	glm::mat4 cameraToClipMatrix;
 	float viewAngle;
 	float frustumScale;
 	float frustumNear;

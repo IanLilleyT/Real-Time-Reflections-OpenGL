@@ -82,9 +82,9 @@ void GLDisplay::initializeFramebuffers()
 }
 void GLDisplay::initializePhysics()
 {
-	Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
-	this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
-	Singleton<PhysicsIO>::Instance()->initialize();
+	//Singleton<PhysicsSceneDefault>::Instance()->makeDefaultScene(this->world);
+	//this->physicsWorld = Singleton<PhysicsSceneDefault>::Instance()->getScene();
+	//Singleton<PhysicsIO>::Instance()->initialize();
 }
 void GLDisplay::update()
 { 
@@ -95,7 +95,7 @@ void GLDisplay::update()
 		GLUniformBlockHelper* glUniformBlockHelper = Singleton<GLUniformBlockHelper>::Instance();
 
 		//Update everything
-		physicsWorld->update();
+		//physicsWorld->update();
 		world->update();
 		glState->worldToCameraMatrix = this->camera->getWorldToCameraMatrix();
 		glUniformBlockHelper->updateAll();
@@ -157,13 +157,14 @@ void GLDisplay::update()
 		//	this->nonRefractiveObjects.at(i)->render();
 		//for(unsigned int i = 0; i < this->refractiveObjects.size(); i++)
 		//	this->refractiveObjects.at(i)->render();
-		this->colorBufferFBO->bindForReading(glState->colorBufferTextureUnit);
+		
 		
 		//Shadow map first pass (get depth from light source)
 		glState->globalProgramName = "Passthrough";
 		ShadowLight* shadowLight = (ShadowLight*)this->world->getObjectsByType("ShadowLight").at(0);
 		glState->lightWorldToCameraMatrix = shadowLight->getWorldToCameraMatrix();
 		glState->worldToCameraMatrix = glState->lightWorldToCameraMatrix;
+		this->colorBufferFBO->bindForReading(glState->colorBufferTextureUnit);
 		this->shadowMapFBO->bindForWriting();
 		this->clearGL();
 		this->world->render();
@@ -172,8 +173,16 @@ void GLDisplay::update()
 		glState->globalProgramName = "ShadowMap";
 		glState->worldToCameraMatrix = this->camera->getWorldToCameraMatrix();
 		this->shadowMapFBO->bindForReading(glState->shadowMapTextureUnit);
+		this->colorBufferFBO->bindForReadingAndWriting(glState->colorBufferTextureUnit);
 		this->clearGL();
 		this->fullScreenQuadMesh->Render();
+		
+		//Motion blur
+		glState->globalProgramName = "MotionBlur";
+		this->colorBufferFBO->bindForReading(glState->colorBufferTextureUnit);
+		this->clearGL();
+		this->fullScreenQuadMesh->Render();
+		glState->oldWorldToCameraMatrix = glState->worldToCameraMatrix;
 	}
 }
 void GLDisplay::clearGL()
@@ -232,22 +241,21 @@ void GLDisplay::mouseMoved(sf::Event sfEvent)
 	int mouseXDiff = (mousePos.x - prevMousePos.x);
 	int mouseYDiff = (mousePos.y - prevMousePos.y);
 
-	bool altIsDown = !eventHandler->isAltDown();
-	if(eventHandler->isLeftMouseDown() && altIsDown)
+	if(eventHandler->isLeftMouseDown())
 	{	
 		float scaleFactor = .008f;
 		float mouseXDifference = -(float)mouseXDiff * scaleFactor;
 		float mouseYDifference = (float)mouseYDiff * scaleFactor;
 		this->camera->rotateRad(mouseXDifference,mouseYDifference);
 	}
-	else if(eventHandler->isMiddleMouseDown() && altIsDown)
+	else if(eventHandler->isMiddleMouseDown())
 	{
 		float scaleFactor = .01f;
 		float mouseXDifference = -(float)mouseXDiff * scaleFactor;
 		float mouseYDifference = (float)mouseYDiff * scaleFactor;
 		this->camera->pan(mouseXDifference,mouseYDifference);
 	}
-	else if(eventHandler->isRightMouseDown() && altIsDown)
+	else if(eventHandler->isRightMouseDown())
 	{
 		float scaleFactor = .05f;
 		float mouseYDifference = -(float)mouseYDiff * scaleFactor;

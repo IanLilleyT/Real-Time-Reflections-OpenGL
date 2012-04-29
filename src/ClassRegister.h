@@ -19,6 +19,7 @@
 #include "OpenGL/Programs/GLProgram_Refraction.h"
 #include "OpenGL/Programs/GLProgram_Passthrough.h"
 #include "OpenGL/Programs/GLProgram_ShadowMap.h"
+#include "OpenGL/Programs/GLProgram_MotionBlur.h"
 
 #include "Utils/Singleton.h" //For accessing Factory
 #include "Utils/Factory.h" //For registration
@@ -55,6 +56,7 @@ public:
 		factory->register_class<GLProgram_Refraction>("GLProgram_Refraction");
 		factory->register_class<GLProgram_Passthrough>("GLProgram_Passthrough");
 		factory->register_class<GLProgram_ShadowMap>("GLProgram_ShadowMap");
+		factory->register_class<GLProgram_MotionBlur>("GLProgram_MotionBlur");
 
 		/*-------------------------------------------
 		//// Class Hierarchy ////////////////////////
